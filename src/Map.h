@@ -7,6 +7,6 @@ class Map {
         Map();
     private:
 
-}
+};
 
 #endif
