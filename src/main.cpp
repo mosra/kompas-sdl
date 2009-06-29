@@ -5,6 +5,7 @@
 #include <SDL/SDL_image.h>
 
 #include "Skin.h"
+#include "Splash.h"
 
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
 
@@ -23,7 +24,6 @@ enum MAP_KEY {
  */
 SDL_Surface *screen = NULL;
 SDL_Joystick *joy = NULL;
-
 
 /**
  * Správné ukončení SDL a návrat do GP2X menu
@@ -60,7 +60,20 @@ int main(int argc, char **argv) {
 
     Skin skin("skin.conf");
 
-    Skin::propertyId splash = skin.set(Skin::SURFACE, "image", "splash");
+    Skin::propertyId splashImage = skin.set(Skin::SURFACE, "image", "splash");
+    Skin::propertyId splashWidth = skin.set(Skin::NUMBER, "width", "splash");
+    Skin::propertyId splashHeight = skin.set(Skin::NUMBER, "height", "splash");
+   // Skin::propertyId splashAlign = skin.set(Skin::ALIGN, "align", "splash");
+
+    int dummy = 0;
+
+    Splash splash(screen,
+        skin.get<SDL_Surface*>(splashImage),
+        skin.get<int>(splashWidth),
+        skin.get<int>(splashHeight),
+        //*skin.get<SDL_Surface*>(splashAlign),
+        (Align*) &dummy, &dummy, &dummy);
+
     Skin::propertyId author = skin.set(Skin::TEXT, "author");
     Skin::propertyId font = skin.set(Skin::FONT, "font", "splashAuthor");
 
@@ -89,7 +102,7 @@ int main(int argc, char **argv) {
             }
         }
 
-        SDL_BlitSurface(*skin.get<SDL_Surface*>(splash), NULL, screen, NULL);
+        splash.view();
         SDL_UpdateRect(screen, 0, 0, 0, 0);
 
        // sleep(1);

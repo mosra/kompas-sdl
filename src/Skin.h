@@ -6,14 +6,7 @@
 #include <SDL/SDL_ttf.h>
 
 #include "ConfParser.h"
-
-/**
- * Zarovnání
- */
-enum Align {
-    left = 0x01,    center = 0x02,      right =  0x04,
-    top =  0x08,    middle = 0x10,      bottom = 0x02
-};
+#include "Effects.h"
 
 /**
  * Skiny
@@ -28,7 +21,7 @@ class Skin {
         /**
          * Typ vlastnosti
          */
-        enum propertyType { TEXT, FONT, NUMBER, SURFACE };
+        enum propertyType { TEXT, FONT, NUMBER, SURFACE, ALIGN };
 
         /**
          * Alias pro lepší pochopení typu vracejícího
@@ -96,6 +89,11 @@ class Skin {
          * Vektor s čísly
          */
         std::vector<Property<int> > numbers;
+
+        /**
+         * Vektor se zarovnáními
+         */
+        std::vector<Property<Align> > aligns;
 
         /**
          * Vektor s texty
