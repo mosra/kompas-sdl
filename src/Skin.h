@@ -7,10 +7,12 @@
 
 #include "ConfParser.h"
 
-template<class T> struct Property {
-    std::string parameter;
-    std::string section;
-    T property;
+/**
+ * Zarovnání
+ */
+enum Align {
+    left = 0x01,    center = 0x02,      right =  0x04,
+    top =  0x08,    middle = 0x10,      bottom = 0x02
 };
 
 /**
@@ -24,9 +26,14 @@ template<class T> struct Property {
 class Skin {
     public:
         /**
-         * Typ
+         * Typ vlastnosti
          */
         enum propertyType { TEXT, FONT, NUMBER, SURFACE };
+
+        /**
+         * Alias pro lepší pochopení typu vracejícího
+         */
+        typedef int propertyId;
 
         /**
          * Konstruktor
@@ -51,20 +58,29 @@ class Skin {
          * @param   section     Sekce
          * @return  ID surface
          */
-        int init(propertyType type, const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
+        propertyId set(propertyType type, const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
 
         /**
          * Získání nějaké vlastnosti
          * @param   id          ID vlastnosti
          * @param   property    Kam uložit ukazatel na vlastnost
          */
-        template<class T> inline T* property(int id) { return NULL; }
+        template<class T> inline T* get(propertyId id) { return NULL; }
 
     private:
         /**
          * Konfigurák skinu
          */
         ConfParser conf;
+
+        /**
+        * Vlastnost skinu
+        */
+        template<class T> struct Property {
+            std::string parameter;
+            std::string section;
+            T property;
+        };
 
         /**
          * Vektor se surfacy

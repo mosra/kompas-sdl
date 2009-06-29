@@ -23,7 +23,7 @@ void Skin::load (const string& file) {
     free();
 
     /* Načtení surfaců z nového skinu */
-    for(vector<Property<SDL_Surface*> >::iterator it = surfaces.begin(); it != surfaces.end(); ++it) {
+    for(vector<Skin::Property<SDL_Surface*> >::iterator it = surfaces.begin(); it != surfaces.end(); ++it) {
         string file;
         conf.value((*it).parameter, file, conf.section((*it).section));
 
@@ -35,7 +35,7 @@ void Skin::load (const string& file) {
 
 
     /* Načtení fontů z nového skinu */
-    for(vector<Property<TTF_Font*> >::iterator it = fonts.begin(); it != fonts.end(); ++it) {
+    for(vector<Skin::Property<TTF_Font*> >::iterator it = fonts.begin(); it != fonts.end(); ++it) {
         string file;
         conf.value((*it).parameter, file, conf.section((*it).section));
         int fontSize = 0;
@@ -45,13 +45,13 @@ void Skin::load (const string& file) {
     }
 
     /* Načtení čísel z nového skinu */
-    for(vector<Property<int> >::iterator it = numbers.begin(); it != numbers.end(); ++it) {
+    for(vector<Skin::Property<int> >::iterator it = numbers.begin(); it != numbers.end(); ++it) {
         (*it).property = 0; /* inicializace, aby nedocházelo k nedefinovaným jevům */
         conf.value((*it).parameter, (*it).property, conf.section((*it).section));
     }
 
     /* Načtení textu z nového skinu */
-    for(vector<Property<string> >::iterator it = texts.begin(); it != texts.end(); ++it) {
+    for(vector<Skin::Property<string> >::iterator it = texts.begin(); it != texts.end(); ++it) {
         conf.value((*it).parameter, (*it).property, conf.section((*it).section));
     }
 }
@@ -59,29 +59,29 @@ void Skin::load (const string& file) {
 /* Uvolnění starého skinu */
 void Skin::free(void) {
     /* Uvolnění surfaců */
-    for(vector<Property<SDL_Surface*> >::iterator it = surfaces.begin(); it != surfaces.end(); ++it) {
+    for(vector<Skin::Property<SDL_Surface*> >::iterator it = surfaces.begin(); it != surfaces.end(); ++it) {
         if((*it).property != NULL) SDL_FreeSurface((*it).property);
     }
 
     /* Uvolnění fontů */
-    for(vector<Property<TTF_Font*> >::iterator it = fonts.begin(); it != fonts.end(); ++it) {
+    for(vector<Skin::Property<TTF_Font*> >::iterator it = fonts.begin(); it != fonts.end(); ++it) {
         if((*it).property != NULL) TTF_CloseFont((*it).property);
     }
 
     /* Smazání textů */
-    for(vector<Property<string> >::iterator it = texts.begin(); it != texts.end(); ++it) {
+    for(vector<Skin::Property<string> >::iterator it = texts.begin(); it != texts.end(); ++it) {
         (*it).property.clear();
     }
 }
 
 /* Inicializace vlastnosti */
-int Skin::init (Skin::propertyType type, const string& parameter, string section) {
+int Skin::set(Skin::propertyType type, const string& parameter, string section) {
     /* Surface */
     if(type == Skin::SURFACE) {
         string file;
         conf.value(parameter, file, conf.section(section));
 
-        Property<SDL_Surface*> property;
+        Skin::Property<SDL_Surface*> property;
         property.parameter = parameter;
         property.section = section;
         property.property = IMG_Load(file.c_str());
@@ -99,7 +99,7 @@ int Skin::init (Skin::propertyType type, const string& parameter, string section
         int fontSize = 0;
         conf.value(parameter + "Size", fontSize, conf.section(section));
 
-        Property<TTF_Font*> property;
+        Skin::Property<TTF_Font*> property;
         property.parameter = parameter;
         property.section = section;
         property.property = TTF_OpenFont(file.c_str(), fontSize);
@@ -114,7 +114,7 @@ int Skin::init (Skin::propertyType type, const string& parameter, string section
         int i = 0;
         conf.value(parameter, i, conf.section(section));
 
-        Property<int> property;
+        Skin::Property<int> property;
         property.parameter = parameter;
         property.section = section;
         property.property = i;
@@ -128,7 +128,7 @@ int Skin::init (Skin::propertyType type, const string& parameter, string section
     string text;
     conf.value(parameter, text, conf.section(section));
 
-    Property<string> property;
+    Skin::Property<string> property;
     property.parameter = parameter;
     property.section = section;
     property.property = text;
@@ -140,12 +140,15 @@ int Skin::init (Skin::propertyType type, const string& parameter, string section
 
 /* Získání ukazatele na vlastnost */
 /** @todo Není zde kontrola správnosti id kvůli bloatu a rychlosti inline */
-template<> SDL_Surface** Skin::property(int id) {
+template<> SDL_Surface** Skin::get(int id) {
     return &surfaces[id].property;
 }
-template<> string* Skin::property(int id) {
+template<> TTF_Font** Skin::get(int id) {
+    return &fonts[id].property;
+}
+template<> string* Skin::get(int id) {
     return &texts[id].property;
 }
-template<> int* Skin::property(int id) {
+template<> int* Skin::get(int id) {
     return &numbers[id].property;
 }

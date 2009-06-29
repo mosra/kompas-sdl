@@ -7,27 +7,27 @@
 #include <iostream> //debug
 
 /**
- * Parametr konfiguračního souboru
- */
-struct ConfParameter {
-    std::string parameter, value;
-};
-
-/**
- * Sekce konfiguračního souboru
- */
-struct ConfSection {
-    std::string section;
-    std::vector<ConfParameter>::const_iterator begin;
-};
-
-/**
  * Parser konfiguračních souborů
  * @todo Typy hodnot (+ double, align)
  * @todo Jaký sou výhody ukazatelů při vybírání hodnot?
  * @todo Testovat parametry jen na alfanumerické znaky
  */
 class ConfParser {
+    private:
+        /**
+         * Parametr konfiguračního souboru
+         */
+        struct Parameter {
+            std::string parameter, value;
+        };
+
+        /**
+         * Sekce konfiguračního souboru
+         */
+        struct Section {
+            std::string section;
+            std::vector<Parameter>::const_iterator begin;
+        };
     public:
         /**
          * Maximální délka řádku
@@ -50,12 +50,12 @@ class ConfParser {
         /**
          * Ukazatel na sekci
          */
-        typedef std::vector<ConfSection>::const_iterator sectionPointer;
+        typedef std::vector<Section>::const_iterator sectionPointer;
 
         /**
          * Ukazatel na parametr
          */
-        typedef std::vector<ConfParameter>::const_iterator parameterPointer;
+        typedef std::vector<Parameter>::const_iterator parameterPointer;
 
         /**
          * Získání názvu konfiguračního souboru
@@ -149,12 +149,12 @@ class ConfParser {
         /**
          * Vektor s parametry a komentáři
          */
-        std::vector<ConfParameter> parameters;
+        std::vector<Parameter> parameters;
 
         /**
          * Vektor s názvy a pozicemi sekcí
          */
-        std::vector<ConfSection> sections;
+        std::vector<Section> sections;
 
         /**
          * Zničení objektu

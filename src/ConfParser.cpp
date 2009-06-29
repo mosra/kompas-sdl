@@ -29,7 +29,10 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
     /* BOM u UTF-8 */
     if(file.peek() == 0xEF) {
 
-        char bom[4] = {0xEF, 0xBB, 0xBF, '\0'};
+        char bom[4] = {
+            (unsigned char) 0xEF, (unsigned char) 0xBB,
+            (unsigned char) 0xBF, '\0'
+        };
         file.get(buffer, 4);
 
         /* Tak to BOM nebyl */
@@ -45,7 +48,7 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
             file.ignore(1);
             file.getline(buffer, ConfParser::MAX_LINE_LENGTH-1);
 
-            ConfParameter parameter;
+            Parameter parameter;
             parameter.parameter = "#";
             parameter.value = buffer;
             parameters.push_back(parameter);
@@ -63,7 +66,7 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
             }
             file.ignore(ConfParser::MAX_LINE_LENGTH, '\n');
 
-            ConfParameter parameter;
+            Parameter parameter;
             parameter.parameter = "[";
             parameter.value = buffer;
             parameters.push_back(parameter);
@@ -88,7 +91,7 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
         file.ignore(1);
 
         /* Inicializace parametru */
-        ConfParameter parameter;
+        Parameter parameter;
         parameter.parameter = trim(buffer);
 
         /* Uvozovky */
@@ -112,6 +115,7 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
     reloadSections();
 }
 
+/* Operátor přiřazení */
 ConfParser& ConfParser::operator= (const ConfParser& conf) {
         /* Ne, vopravdu nebudu kopírovat sama do sebe,
             abych si před sebou zavřel svůj soubor */
@@ -132,14 +136,14 @@ void ConfParser::reloadSections(void) {
     sections.clear();
 
     /* Default sekce */
-    ConfSection section;
+    Section section;
     section.section = ConfParser::DEFAULT_SECTION;
     section.begin = parameters.begin();
     sections.push_back(section);
 
-    for(vector<ConfParameter>::const_iterator it = parameters.begin(); it != parameters.end(); ++it) {
+    for(vector<Parameter>::const_iterator it = parameters.begin(); it != parameters.end(); ++it) {
         if((*it).parameter == "[") {
-            ConfSection section;
+            Section section;
             section.section = (*it).value;
             section.begin = it+1;
             sections.push_back(section);
