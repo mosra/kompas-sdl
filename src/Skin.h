@@ -6,7 +6,7 @@
 #include <SDL/SDL_ttf.h>
 
 #include "ConfParser.h"
-#include "Effects.h"
+#include "utility.h"
 
 /**
  * Skiny
@@ -23,7 +23,7 @@ class Skin {
          * Konstruktor
          * @param   skinFile    Soubor se skinem
          */
-        inline Skin(const std::string& file): conf(file) { load(file); }
+        inline Skin(SDL_Surface* _screen, const std::string& file): screen(_screen), conf(file) { load(file); }
 
         /**
          * Destruktor
@@ -45,6 +45,11 @@ class Skin {
         template<class T> T set(const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
 
     private:
+        /**
+         * Displejová surface
+         */
+        SDL_Surface* screen;
+
         /**
          * Konfigurák skinu
          */

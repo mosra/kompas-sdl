@@ -8,6 +8,7 @@
 #include <SDL/SDL_ttf.h>
 
 #include "ConfParser.h"
+#include "utility.h"
 
 using std::string;  using std::cout;    using std::endl;    using std::cerr;
 using std::vector;
@@ -35,6 +36,11 @@ Skin::~Skin(void) {
     for(vector<Skin::Property<int*> >::iterator it = numbers.begin(); it != numbers.end(); ++it) {
         delete (*it).property;
     }
+
+    /* Smazání ukazatelů na zarovnání */
+    for(vector<Skin::Property<Align*> >::iterator it = aligns.begin(); it != aligns.end(); ++it) {
+        delete (*it).property;
+    }
 }
 
 /* Načtení skinu */
@@ -43,6 +49,9 @@ void Skin::load (const string& file) {
     if(conf.getFilename() != file) {
         conf = ConfParser(file);
     }
+
+    /* Vypnění černou barvou, aby nezůstávaly artefakty */
+    SDL_FillRect(screen, NULL, SDL_MapRGB((*screen).format, 0, 0, 0));
 
     /* Načtení surfaců z nového skinu */
     for(vector<Skin::Property<SDL_Surface**> >::iterator it = surfaces.begin(); it != surfaces.end(); ++it) {
@@ -79,6 +88,12 @@ void Skin::load (const string& file) {
     /* Načtení čísel z nového skinu */
     for(vector<Skin::Property<int*> >::iterator it = numbers.begin(); it != numbers.end(); ++it) {
         (*(*it).property) = 0; /* reset, aby nedocházelo k nedefinovaným jevům */
+        conf.value((*it).parameter, (*(*it).property), conf.section((*it).section));
+    }
+
+    /* Načtení zarovnání z nového skinu */
+    for(vector<Skin::Property<Align*> >::iterator it = aligns.begin(); it != aligns.end(); ++it) {
+        (*(*it).property) = (Align) 2; /* reset, aby nedocházelo k nedefinovaným jevům */
         conf.value((*it).parameter, (*(*it).property), conf.section((*it).section));
     }
 }
@@ -154,6 +169,21 @@ template<> int* Skin::set(const string& parameter, string section) {
     property.property = i;
 
     numbers.push_back(property);
+
+    return i;
+}
+
+/* Inicializace a získání ukazatele na zarovnání */
+template<> Align* Skin::set(const string& parameter, string section) {
+    Align *i = new Align; *i = (Align) 0;
+    conf.value(parameter, *i, conf.section(section), ConfParser::ALIGN);
+
+    Skin::Property<Align*> property;
+    property.parameter = parameter;
+    property.section = section;
+    property.property = i;
+
+    aligns.push_back(property);
 
     return i;
 }

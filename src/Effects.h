@@ -2,14 +2,7 @@
 #define EFFECTS_H
 
 #include <SDL/SDL.h>
-
-/**
- * Zarovnání
- */
-enum Align {
-    ALIGN_LEFT = 0x01,  ALIGN_CENTER = 0x02,    ALIGN_RIGHT  = 0x04,
-    ALIGN_TOP  = 0x08,  ALIGN_MIDDLE = 0x10,    ALIGN_BOTTOM = 0x02
-};
+#include "utility.h"
 
 /**
  * Funkce pro zarovnávání, posouvání textu a další fičurky

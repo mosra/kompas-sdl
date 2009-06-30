@@ -173,7 +173,6 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
     /* Spočtení konce sekce */
     ConfParser::parameterPointer end = (*++section).begin;
 
-
     /* Procházení sekce */
     for(ConfParser::parameterPointer it = begin; it != end; ++it) {
         if((*it).parameter == parameter) {
@@ -185,6 +184,27 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
     return parameters.end();
 }
 
+template<> ConfParser::parameterPointer ConfParser::value(const string& parameter, Align& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) {
+    string __value;
+    ConfParser::parameterPointer position = value(parameter, __value, section, begin);
+
+    /* pokud bylo něco nalezeno */
+    if(position != parameters.end()) {
+        istringstream str(__value);
+        string keyword;
+        while(str >> keyword) {
+                 if(keyword == "left")      _value = (Align) (_value | ALIGN_LEFT);
+            else if(keyword == "center")    _value = (Align) (_value | ALIGN_CENTER);
+            else if(keyword == "right")     _value = (Align) (_value | ALIGN_RIGHT);
+            else if(keyword == "top")       _value = (Align) (_value | ALIGN_TOP);
+            else if(keyword == "middle")    _value = (Align) (_value | ALIGN_MIDDLE);
+            else if(keyword == "bottom")    _value = (Align) (_value | ALIGN_BOTTOM);
+        }
+    }
+
+    return position;
+}
+
 /* Nalezení int / double hodnoty parametru */
 template<class Value> ConfParser::parameterPointer ConfParser::value(const string& parameter, Value& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) {
     string __value;
@@ -193,9 +213,12 @@ template<class Value> ConfParser::parameterPointer ConfParser::value(const strin
     /* pokud bylo něco nalezeno */
     if(position != parameters.end()) {
         istringstream str(__value);
-        /** @todo Dodělat Hex */
+
+        /* Hexadecimální hodnota */
         if(flags == ConfParser::HEX)    str >> std::hex >> _value;
-        else    str >> _value;
+
+        /* int nebo double */
+        else                            str >> _value;
     }
 
     return position;

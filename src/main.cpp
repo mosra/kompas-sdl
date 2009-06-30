@@ -6,6 +6,7 @@
 
 #include "Skin.h"
 #include "Splash.h"
+#include "utility.h"
 
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
 
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
     atexit (Terminate);
 
     /* Incializace videa */
-    if((screen = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE)) == NULL) {
+    if((screen = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE|SDL_RESIZABLE)) == NULL) {
         cerr << "Nelze nastavit video mód 320x240x16: " << SDL_GetError() << endl;
         exit (2);
     }
@@ -57,8 +58,7 @@ int main(int argc, char **argv) {
     /* Inicializace joysticku */
     if (SDL_NumJoysticks() > 0) if(!(joy = SDL_JoystickOpen(0)))
             cerr << "Nelze otevřít joystick 0: " << SDL_GetError() << endl;
-
-    Skin skin("skin.conf");
+    Skin skin(screen, "skin.conf");
 
     int dummy = 0;
 
@@ -66,8 +66,8 @@ int main(int argc, char **argv) {
         skin.set<SDL_Surface**>("image", "splash"),
         skin.set<int*>("width", "splash"),
         skin.set<int*>("height", "splash"),
-        //*skin.get<Align*>("align", "splash"),
-        (Align*) &dummy, &dummy, &dummy);
+        skin.set<Align*>("align", "splash"),
+        &dummy, &dummy);
 
     string*  author = skin.set<string*>("author");
     TTF_Font** font = skin.set<TTF_Font**>("font", "splashAuthor");
@@ -79,20 +79,26 @@ int main(int argc, char **argv) {
     while (!done) {
         SDL_Event event;
         while (SDL_PollEvent (&event)) {
-            if(event.type == SDL_KEYDOWN) switch (event.key.keysym.sym) {
-                case SDLK_c:
-                    if (event.key.keysym.mod& (KMOD_LCTRL|KMOD_RCTRL))
-                    done = 1;
-                    break;
-                case SDLK_s:
-                    skin.load("skin2.conf");
-                    cout << "Načtení druhého skinu, autor: " << *author << endl;
-                    break;
-                case SDLK_d:
-                    skin.load("skin.conf");
-                    cout << "Načtení prvního skinu, autor: " << *author << endl;
-                    break;
-                default:
+            switch(event.type) {
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_c:
+                            if (event.key.keysym.mod& (KMOD_LCTRL|KMOD_RCTRL))
+                            done = 1;
+                            break;
+                        case SDLK_s:
+                            skin.load("skin2.conf");
+                            cout << "Načtení druhého skinu, autor: " << *author << endl;
+                            break;
+                        case SDLK_d:
+                            skin.load("skin.conf");
+                            cout << "Načtení prvního skinu, autor: " << *author << endl;
+                            break;
+                        default:
+                            break;
+                    } break;
+                case SDL_VIDEORESIZE:
+                    screen = SDL_SetVideoMode(event.resize.w, event.resize.h, 16, SDL_SWSURFACE|SDL_RESIZABLE);
                     break;
             }
         }
