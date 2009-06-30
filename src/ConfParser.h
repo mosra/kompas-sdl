@@ -114,15 +114,15 @@ class ConfParser {
 
         template<class Value> inline parameterPointer value(const std::string& parameter, Value& _value, sectionPointer section, int flags = 0) {
             if(section == sections.end()) return parameters.end();
-            return value(parameter, _value, section, (*section).begin);
+            return value(parameter, _value, section, (*section).begin, flags);
         }
 
         template<class Value> inline parameterPointer value(const std::string& parameter, Value& _value, parameterPointer begin, int flags = 0) {
-            return value(parameter, _value, sections.begin(), begin);
+            return value(parameter, _value, sections.begin(), begin, flags);
         }
 
         template<class Value> inline parameterPointer value(const std::string& parameter, Value& _value, int flags = 0) {
-            return value(parameter, _value, sections.begin(), parameters.begin());
+            return value(parameter, _value, sections.begin(), parameters.begin(), flags);
         }
 
         /**

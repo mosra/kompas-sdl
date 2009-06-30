@@ -193,15 +193,16 @@ template<class Value> ConfParser::parameterPointer ConfParser::value(const strin
     /* pokud bylo něco nalezeno */
     if(position != parameters.end()) {
         istringstream str(__value);
-       /* if(flags == ConfParser::HEX)    str >> std::hex >> _value;
-        else    */                        str >> _value;
+        /** @todo Dodělat Hex */
+        if(flags == ConfParser::HEX)    str >> std::hex >> _value;
+        else    str >> _value;
     }
 
     return position;
 }
 
 /* Předdefinování určitě používaných template, aby linker neházel chyby o tom,
-    že v knihovně taková template nejsou instanciovaná */
+    že v knihovně taková template nejsou instancovaná */
 template ConfParser::parameterPointer ConfParser::value<int>(const string&, int&, ConfParser::sectionPointer, ConfParser::parameterPointer, int);
 template ConfParser::parameterPointer ConfParser::value<double>(const string&, double&, ConfParser::sectionPointer, ConfParser::parameterPointer, int);
 
