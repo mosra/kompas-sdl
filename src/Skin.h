@@ -18,15 +18,6 @@
  */
 class Skin {
     public:
-        /**
-         * Typ vlastnosti
-         */
-        enum propertyType { TEXT, FONT, NUMBER, SURFACE, ALIGN };
-
-        /**
-         * Alias pro lepší pochopení typu vracejícího
-         */
-        typedef int propertyId;
 
         /**
          * Konstruktor
@@ -37,7 +28,7 @@ class Skin {
         /**
          * Destruktor
          */
-        inline ~Skin(void) { free(); }
+        ~Skin(void);
 
         /**
          * Načtení skinu
@@ -46,19 +37,12 @@ class Skin {
         void load(const std::string& file);
 
         /**
-         * Inicializace vlastnosti
+         * Inicializace a získání ukazatele na vlastnost
          * @param   parameter   Parametr
          * @param   section     Sekce
          * @return  ID surface
          */
-        propertyId set(propertyType type, const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
-
-        /**
-         * Získání nějaké vlastnosti
-         * @param   id          ID vlastnosti
-         * @param   property    Kam uložit ukazatel na vlastnost
-         */
-        template<class T> inline T* get(propertyId id) { return NULL; }
+        template<class T> T set(const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
 
     private:
         /**
@@ -78,32 +62,27 @@ class Skin {
         /**
          * Vektor se surfacy
          */
-        std::vector<Property<SDL_Surface*> > surfaces;
+        std::vector<Property<SDL_Surface**> > surfaces;
 
         /**
          * Vektor s fonty
          */
-        std::vector<Property<TTF_Font*> > fonts;
+        std::vector<Property<TTF_Font**> > fonts;
 
         /**
          * Vektor s čísly
          */
-        std::vector<Property<int> > numbers;
+        std::vector<Property<int*> > numbers;
 
         /**
          * Vektor se zarovnáními
          */
-        std::vector<Property<Align> > aligns;
+        std::vector<Property<Align*> > aligns;
 
         /**
          * Vektor s texty
          */
-        std::vector<Property<std::string> > texts;
-
-        /**
-         * Uvolnění prostředků starého skinu
-         */
-        void free(void);
+        std::vector<Property<std::string*> > texts;
 };
 
 #endif

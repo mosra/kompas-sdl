@@ -60,24 +60,19 @@ int main(int argc, char **argv) {
 
     Skin skin("skin.conf");
 
-    Skin::propertyId splashImage = skin.set(Skin::SURFACE, "image", "splash");
-    Skin::propertyId splashWidth = skin.set(Skin::NUMBER, "width", "splash");
-    Skin::propertyId splashHeight = skin.set(Skin::NUMBER, "height", "splash");
-   // Skin::propertyId splashAlign = skin.set(Skin::ALIGN, "align", "splash");
-
     int dummy = 0;
 
     Splash splash(screen,
-        skin.get<SDL_Surface*>(splashImage),
-        skin.get<int>(splashWidth),
-        skin.get<int>(splashHeight),
-        //*skin.get<SDL_Surface*>(splashAlign),
+        skin.set<SDL_Surface**>("image", "splash"),
+        skin.set<int*>("width", "splash"),
+        skin.set<int*>("height", "splash"),
+        //*skin.get<Align*>("align", "splash"),
         (Align*) &dummy, &dummy, &dummy);
 
-    Skin::propertyId author = skin.set(Skin::TEXT, "author");
-    Skin::propertyId font = skin.set(Skin::FONT, "font", "splashAuthor");
+    string*  author = skin.set<string*>("author");
+    TTF_Font** font = skin.set<TTF_Font**>("font", "splashAuthor");
 
-    cout << "Načtení skinu, autor: " << *skin.get<string>(author) << endl;
+    cout << "Načtení skinu, autor: " << *author << endl;
 
     /* Hlavní smyčka programu */
     int done = 0;
@@ -91,11 +86,11 @@ int main(int argc, char **argv) {
                     break;
                 case SDLK_s:
                     skin.load("skin2.conf");
-                    cout << "Načtení druhého skinu, autor: " << *skin.get<string>(author) << endl;
+                    cout << "Načtení druhého skinu, autor: " << *author << endl;
                     break;
                 case SDLK_d:
                     skin.load("skin.conf");
-                    cout << "Načtení prvního skinu, autor: " << *skin.get<string>(author) << endl;
+                    cout << "Načtení prvního skinu, autor: " << *author << endl;
                     break;
                 default:
                     break;
