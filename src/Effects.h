@@ -10,46 +10,26 @@
 class Effects {
     public:
         /**
-         * Zarovnání objektu známých rozměrů do dané oblasti
-         * @param   areaW       Šířka oblasti
-         * @param   areaH       Výška oblasti
+         * Zarovnání objektu do dané oblasti
+         * @param   area        Oblast
          * @param   align       Zarovnání objektu
          * @param   objectW     Šířka objektu
          * @param   objectH     Výška objektu
          * @return  Pozice objektu
          */
-        static SDL_Rect align(int areaW, int areaH, Align align, int objectW, int objectH);
+        static SDL_Rect align(SDL_Rect area, Align _align, int objectW, int objectH, int moveX = 0, int moveY = 0);
 
         /**
-         * Zarovnání objektu proti posunuté oblasti
-         * @param   areaX       X-ová pozice oblasti
-         * @param   areaY       Y-ová pozice oblasti
-         * @param   areaW       Šířka oblasti
-         * @param   areaH       Výška oblasti
+         * Zarovnání objektu vůči displeji
+         * @param   screen      Displejová surface
          * @param   align       Zarovnání objektu
          * @param   objectW     Šířka objektu
          * @param   objectH     Výška objektu
          * @return  Pozice objektu
          */
-        inline static SDL_Rect alignMoved(int areaX, int areaY, int areaW, int areaH, Align align, int objectW, int objectH) {
-            SDL_Rect ret = Effects::align(areaW, areaH, align, objectW, objectH);
-            ret.x += areaX; ret.y += areaY;
-            return ret;
-        }
-
-        /**
-         * Vložení objektu do oblasti
-         * @param   area        Pozice oblasti
-         * @param   objectX     X-ová pozice objektu
-         * @param   objectY     Y-ová pozice objektu
-         * @param   objectW     Šířka objektu
-         * @param   objectH     Výška objektu
-         * @return  Pozice objektu
-         */
-        inline static SDL_Rect move(SDL_Rect area, int objectX, int objectY, int objectW, int objectH) {
-            area.x += objectX; area.y += objectY;
-            area.w = objectW; area.h = objectH;
-            return area;
+        inline static SDL_Rect align(SDL_Surface* screen, Align _align, int objectW, int objectH) {
+            SDL_Rect area = {0, 0, (*screen).w, (*screen).h};
+            return align(area, _align, objectW, objectH);
         }
 };
 

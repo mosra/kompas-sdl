@@ -1,14 +1,5 @@
 #include "ConfParser.h"
 
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <sstream>      /* std::istringstream */
-#include <cstring>      /** @todo zbavit se toho strcmp() */
-#include <cstdlib>
-
-#include "utility.h"
-
 using std::string;      using std::cout;            using std::cerr;
 using std::vector;      using std::istringstream;   using std::endl;
 using std::hex;
@@ -171,7 +162,7 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
     if(section == sections.end()) return parameters.end();
 
     /* Spočtení konce sekce */
-    ConfParser::parameterPointer end = (*++section).begin;
+    ConfParser::parameterPointer end = (*(section+1)).begin;
 
     /* Procházení sekce */
     for(ConfParser::parameterPointer it = begin; it != end; ++it) {
@@ -181,9 +172,14 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
         }
     }
 
+    /* Nic nenalezeno, pokud hledáme poprvé, vyhození hlášky */
+    if(begin == (*section).begin)
+        cerr << "Hodnota parametru '" << parameter << "' nebyla v sekci [" << (*section).section << "] nalezena." << endl;
+
     return parameters.end();
 }
 
+/* Nalezení zarovnání */
 template<> ConfParser::parameterPointer ConfParser::value(const string& parameter, Align& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) {
     string __value;
     ConfParser::parameterPointer position = value(parameter, __value, section, begin);
@@ -192,6 +188,7 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
     if(position != parameters.end()) {
         istringstream str(__value);
         string keyword;
+        _value = (Align) 0;
         while(str >> keyword) {
                  if(keyword == "left")      _value = (Align) (_value | ALIGN_LEFT);
             else if(keyword == "center")    _value = (Align) (_value | ALIGN_CENTER);
@@ -216,6 +213,13 @@ template<class Value> ConfParser::parameterPointer ConfParser::value(const strin
 
         /* Hexadecimální hodnota */
         if(flags == ConfParser::HEX)    str >> std::hex >> _value;
+
+        /* Barva ve formátu #FF3366 / FF3366 */
+        else if(flags == ConfParser::COLOR) {
+            if(str.peek() == '#') str.ignore(1);
+            str >> std::hex >> _value;
+            /** @todo Barvy ve formátu 255,255,0 */
+        }
 
         /* int nebo double */
         else                            str >> _value;

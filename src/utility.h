@@ -11,6 +11,7 @@
  * Zarovnání
  */
 enum Align {
+    ALIGN_DEFAULT = 0,
     ALIGN_LEFT = 0x01,  ALIGN_CENTER = 0x02,    ALIGN_RIGHT  = 0x04,
     ALIGN_TOP  = 0x10,  ALIGN_MIDDLE = 0x20,    ALIGN_BOTTOM = 0x40
 };

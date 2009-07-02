@@ -3,6 +3,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 
 #include "Skin.h"
 #include "Splash.h"
@@ -57,8 +58,16 @@ int main(int argc, char **argv) {
 
     /* Inicializace joysticku */
     if (SDL_NumJoysticks() > 0) if(!(joy = SDL_JoystickOpen(0)))
-            cerr << "Nelze otevřít joystick 0: " << SDL_GetError() << endl;
+        cerr << "Nelze otevřít joystick 0: " << SDL_GetError() << endl;
+
+    /* Inicializace TTF */
+    if(TTF_Init() != 0) {
+        cerr << "Nelze inicializovat TTF: " << SDL_GetError() << endl;
+        exit(3);
+    }
+
     Skin skin(screen, "skin.conf");
+    string* author = skin.set<string*>("author");
 
     int dummy = 0;
 
@@ -69,7 +78,29 @@ int main(int argc, char **argv) {
         skin.set<Align*>("align", "splash"),
         &dummy, &dummy);
 
-    string*  author = skin.set<string*>("author");
+    string text;
+    splash.addText(
+        skin.set<TTF_Font**>("font", "splashAuthor"),
+        skin.set<SDL_Color*>("color", "splashAuthor"),
+        skin.set<int*>("x", "splashAuthor"),
+        skin.set<int*>("y", "splashAuthor"),
+        skin.set<int*>("w", "splashAuthor"),
+        skin.set<int*>("h", "splashAuthor"),
+        skin.set<Align*>("align", "splashAuthor"),
+        &text
+    );
+    string version = "SVN r1865773";
+    splash.addText(
+        skin.set<TTF_Font**>("font", "splashVersion"),
+        skin.set<SDL_Color*>("color", "splashVersion"),
+        skin.set<int*>("x", "splashVersion"),
+        skin.set<int*>("y", "splashVersion"),
+        skin.set<int*>("w", "splashVersion"),
+        skin.set<int*>("h", "splashVersion"),
+        skin.set<Align*>("align", "splashVersion"),
+        &version
+    );
+
     TTF_Font** font = skin.set<TTF_Font**>("font", "splashAuthor");
 
     cout << "Načtení skinu, autor: " << *author << endl;
@@ -88,11 +119,9 @@ int main(int argc, char **argv) {
                             break;
                         case SDLK_s:
                             skin.load("skin2.conf");
-                            cout << "Načtení druhého skinu, autor: " << *author << endl;
                             break;
                         case SDLK_d:
                             skin.load("skin.conf");
-                            cout << "Načtení prvního skinu, autor: " << *author << endl;
                             break;
                         default:
                             break;
@@ -103,6 +132,7 @@ int main(int argc, char **argv) {
             }
         }
 
+        text = "Autor skinu: " + *author;
         splash.view();
         SDL_UpdateRect(screen, 0, 0, 0, 0);
 

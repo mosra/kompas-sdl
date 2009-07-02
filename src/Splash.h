@@ -1,6 +1,7 @@
 #ifndef SPLASH_H
 #define SPLASH_H
 
+#include <iostream>
 #include <vector>
 #include <string>
 #include <SDL/SDL.h>
@@ -28,24 +29,52 @@ class Splash {
             screen(_screen), image(_image), w(_w), h(_h), image_x(x), image_y(y), align(_align) {}
 
         /**
+         * Vložení textu
+         */
+        void addText(TTF_Font** font, SDL_Color* color, int* x, int* y, int* w, int *h, Align* align, std::string* text);
+
+        /**
          * Zobrazení splashe
          */
         void view(void);
     private:
         /**
          * Displejová surface, obrázek splashe
+         * @todo Možné problémy při resize screen (ztráta cíle ukazatele) => dvojitý?
          */
         SDL_Surface *screen, **image;
 
         /**
-         * Šířka a výška ohraničujícího rámce, pozice obrázku vůči němu
+         * Šířka a výška ohraničujícího rámce
          */
-        int *w, *h, *image_x, *image_y;
+        int *w, *h;
+
+        /**
+         * Pozice obrázku vůči rámci
+         */
+        int *image_x, *image_y;
 
         /**
          * Zarování rámce vůči displeji
          */
         Align* align;
+
+        /**
+         * Struktura pro text
+         */
+        struct Text {
+            TTF_Font** font;
+            SDL_Color* color;
+            int *x, *y;
+            int *w, *h;
+            Align* align;
+            std::string* text;
+        };
+
+        /**
+         * Vektor s texty
+         */
+        std::vector<Text> texts;
 };
 
 #endif

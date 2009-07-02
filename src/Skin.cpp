@@ -1,15 +1,5 @@
 #include "Skin.h"
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
-
-#include "ConfParser.h"
-#include "utility.h"
-
 using std::string;  using std::cout;    using std::endl;    using std::cerr;
 using std::vector;
 
@@ -28,19 +18,20 @@ Skin::~Skin(void) {
     }
 
     /* Smazání ukazatelů na texty */
-    for(vector<Skin::Property<string*> >::iterator it = texts.begin(); it != texts.end(); ++it) {
+    for(vector<Skin::Property<string*> >::iterator it = texts.begin(); it != texts.end(); ++it)
         delete (*it).property;
-    }
+
+    /* Smazání ukazatelů na barvy */
+    for(vector<Skin::Property<SDL_Color*> >::iterator it = colors.begin(); it != colors.end(); ++it)
+        delete (*it).property;
 
     /* Smazání ukazatelů na čísla */
-    for(vector<Skin::Property<int*> >::iterator it = numbers.begin(); it != numbers.end(); ++it) {
+    for(vector<Skin::Property<int*> >::iterator it = numbers.begin(); it != numbers.end(); ++it)
         delete (*it).property;
-    }
 
     /* Smazání ukazatelů na zarovnání */
-    for(vector<Skin::Property<Align*> >::iterator it = aligns.begin(); it != aligns.end(); ++it) {
+    for(vector<Skin::Property<Align*> >::iterator it = aligns.begin(); it != aligns.end(); ++it)
         delete (*it).property;
-    }
 }
 
 /* Načtení skinu */
@@ -85,6 +76,16 @@ void Skin::load (const string& file) {
         conf.value((*it).parameter, (*(*it).property), conf.section((*it).section));
     }
 
+    /* Načtení barev z nového skinu */
+    for(vector<Skin::Property<SDL_Color*> >::iterator it = colors.begin(); it != colors.end(); ++it) {
+        int col = 0;
+        conf.value((*it).parameter, col, conf.section((*it).section), ConfParser::COLOR);
+
+        (*(*it).property).r = (col & 0xFF0000) >> 16;
+        (*(*it).property).g = (col & 0x00FF00) >> 8;
+        (*(*it).property).b =  col & 0x0000FF;
+    }
+
     /* Načtení čísel z nového skinu */
     for(vector<Skin::Property<int*> >::iterator it = numbers.begin(); it != numbers.end(); ++it) {
         (*(*it).property) = 0; /* reset, aby nedocházelo k nedefinovaným jevům */
@@ -93,7 +94,7 @@ void Skin::load (const string& file) {
 
     /* Načtení zarovnání z nového skinu */
     for(vector<Skin::Property<Align*> >::iterator it = aligns.begin(); it != aligns.end(); ++it) {
-        (*(*it).property) = (Align) 2; /* reset, aby nedocházelo k nedefinovaným jevům */
+        (*(*it).property) = (Align) 0; /* reset, aby nedocházelo k nedefinovaným jevům */
         conf.value((*it).parameter, (*(*it).property), conf.section((*it).section));
     }
 }
@@ -158,6 +159,26 @@ template<> string* Skin::set(const string& parameter, string section) {
     return text;
 }
 
+/* Inicializace a získání ukazatele na barvu */
+template<> SDL_Color* Skin::set(const string& parameter, string section) {
+    int col = 0;
+    conf.value(parameter, col, conf.section(section), ConfParser::COLOR);
+
+    SDL_Color* color = new SDL_Color;
+    (*color).r = (col & 0xFF0000) >> 16;
+    (*color).g = (col & 0x00FF00) >> 8;
+    (*color).b =  col & 0x0000FF;
+
+    Skin::Property<SDL_Color*> property;
+    property.parameter = parameter;
+    property.section = section;
+    property.property = color;
+
+    colors.push_back(property);
+
+    return color;
+}
+
 /* Inicializace a získání ukazatele na číslo */
 template<> int* Skin::set(const string& parameter, string section) {
     int *i = new int; *i = 0;
@@ -176,7 +197,7 @@ template<> int* Skin::set(const string& parameter, string section) {
 /* Inicializace a získání ukazatele na zarovnání */
 template<> Align* Skin::set(const string& parameter, string section) {
     Align *i = new Align; *i = (Align) 0;
-    conf.value(parameter, *i, conf.section(section), ConfParser::ALIGN);
+    conf.value(parameter, *i, conf.section(section));
 
     Skin::Property<Align*> property;
     property.parameter = parameter;

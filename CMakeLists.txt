@@ -17,6 +17,7 @@ add_library(utility STATIC src/utility.cpp)
 
 #Meziknihovní závislosti
 target_link_libraries(ConfParser utility)
+target_link_libraries(Effects utility)
 target_link_libraries(Skin ConfParser Effects ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${SDLTTF_LIBRARY})
 target_link_libraries(Splash Effects ${SDL_LIBRARY})
 

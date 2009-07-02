@@ -1,10 +1,14 @@
 #ifndef CONFPARSER_H
 #define CONFPARSER_H
 
+#include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <iostream> //debug
+#include <sstream>      /* std::istringstream */
+#include <cstring>      /** @todo zbavit se toho strcmp() */
+
+#include "utility.h"
 
 /**
  * Parser konfiguračních souborů
@@ -42,10 +46,7 @@ class ConfParser {
         /**
          * Typ dat
          */
-        enum dataType {
-            BOOL = 0x01, ALIGN = 0x02, INT = 0x04, DOUBLE = 0x08, STRING = 0x10,
-            HEX = 0x20
-        };
+        enum flags { HEX = 0x01, COLOR = 0x02 };
 
         /**
          * Ukazatel na sekci

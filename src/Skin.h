@@ -1,12 +1,15 @@
 #ifndef SKIN_H
 #define SKIN_H
 
+#include <iostream>
 #include <string>
+#include <vector>
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 
 #include "ConfParser.h"
-#include "utility.h"
+#include "Effects.h"
 
 /**
  * Skiny
@@ -47,6 +50,7 @@ class Skin {
     private:
         /**
          * Displejová surface
+         * @todo Možné problémy při resize (ztráta cíle ukazatele) => dvojitý?
          */
         SDL_Surface* screen;
 
@@ -73,6 +77,11 @@ class Skin {
          * Vektor s fonty
          */
         std::vector<Property<TTF_Font**> > fonts;
+
+        /**
+         * Vektor s barvami
+         */
+        std::vector<Property<SDL_Color*> > colors;
 
         /**
          * Vektor s čísly
