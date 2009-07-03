@@ -17,7 +17,8 @@
  * Umožňuje úplnou konfigurovatelnost skinů v conf souborech a jejich změnu bez
  * nutnosti restartu aplikace
  *
- * @todo Property typu font
+ * @todo Přepsat z ukazatelů na reference (asi nepude?)
+ * @todo SDL_Rect* místo *x,*y,*w,*h (zautomatizovat)
  */
 class Skin {
     public:

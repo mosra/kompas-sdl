@@ -73,10 +73,10 @@ int main(int argc, char **argv) {
 
     Splash splash(screen,
         skin.set<SDL_Surface**>("image", "splash"),
+        &dummy, &dummy,
         skin.set<int*>("width", "splash"),
         skin.set<int*>("height", "splash"),
-        skin.set<Align*>("align", "splash"),
-        &dummy, &dummy);
+        skin.set<Align*>("align", "splash"));
 
     string text;
     splash.addText(

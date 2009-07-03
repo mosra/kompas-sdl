@@ -19,19 +19,19 @@ class Splash {
         /**
          * Konstruktor
          * @param   _image  Obrázek
+         * @param   _x      X-ové posunutí rámce
+         * @param   _y      Y-ové posunutí rámce
          * @param   _w      Šířka ohraničujícího rámce
          * @param   _h      Výška ohraničujícího rámce
          * @param   _align  Zarovnání rámce vůči displeji
-         * @param   x       X-ová pozice obrázku v rámci
-         * @param   y       Y-ová pozice obrázku v rámci
          */
-        inline Splash(SDL_Surface* _screen, SDL_Surface** _image, int* _w, int* _h, Align* _align, int* x, int* y):
-            screen(_screen), image(_image), w(_w), h(_h), image_x(x), image_y(y), align(_align) {}
+        inline Splash(SDL_Surface* _screen, SDL_Surface** _image, int* _x, int* _y, int* _w, int* _h, Align* _align):
+            screen(_screen), image(_image), w(_w), h(_h), x(_x), y(_y), align(_align) {}
 
         /**
          * Vložení textu
          */
-        void addText(TTF_Font** font, SDL_Color* color, int* x, int* y, int* w, int *h, Align* align, std::string* text);
+        void addText(TTF_Font** font, SDL_Color* color, int* _x, int* _y, int* _w, int *_h, Align* align, std::string* text);
 
         /**
          * Zobrazení splashe
@@ -45,14 +45,9 @@ class Splash {
         SDL_Surface *screen, **image;
 
         /**
-         * Šířka a výška ohraničujícího rámce
+         * Posunutí a velikost ohraničujícího rámce
          */
-        int *w, *h;
-
-        /**
-         * Pozice obrázku vůči rámci
-         */
-        int *image_x, *image_y;
+        int *x, *y, *w, *h;
 
         /**
          * Zarování rámce vůči displeji

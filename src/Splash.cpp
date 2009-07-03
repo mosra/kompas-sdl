@@ -5,12 +5,10 @@ using std::vector;      using std::string;      using std::cout;    using std::e
 /* Zobrazení splashe */
 void Splash::view(void){
     /* Plocha pro vykreslování splashe */
-    SDL_Rect area = Effects::align(screen, *align, *w, *h);
+    SDL_Rect area = Effects::align(screen, *align, *w, *h, *x, *y);
 
     /* Zobrazení obrázku */
-    SDL_Rect dst = Effects::align(area, ALIGN_DEFAULT, (**image).w, (**image).h, *image_x, *image_y);
-
-    SDL_BlitSurface(*image, NULL, screen, &dst);
+    SDL_BlitSurface(*image, NULL, screen, &area);
 
     /* Zobrazení textů */
     for(vector<Text>::const_iterator it = texts.begin(); it != texts.end(); ++it) {
@@ -29,14 +27,14 @@ void Splash::view(void){
 }
 
 /* Přidání textu */
-void Splash::addText (TTF_Font** font, SDL_Color* color, int* x, int* y, int* w, int* h, Align* align, std::string* text) {
+void Splash::addText (TTF_Font** font, SDL_Color* color, int* _x, int* _y, int* _w, int* _h, Align* align, std::string* text) {
     Splash::Text _text;
     _text.font = font;
     _text.color = color;
-    _text.x = x;
-    _text.y = y;
-    _text.w = w;
-    _text.h = h;
+    _text.x = _x;
+    _text.y = _y;
+    _text.w = _w;
+    _text.h = _h;
     _text.align = align;
     _text.text = text;
     texts.push_back(_text);
