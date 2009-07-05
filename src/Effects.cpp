@@ -1,6 +1,7 @@
 #include "Effects.h"
 
 /* Zarovnání objektu */
+/** @todo Ořezávat, aby nepřesahovalo rámec */
 SDL_Rect Effects::align (SDL_Rect area, Align _align, int objectW, int objectH, int moveX, int moveY) {
     /* Default je zarovnání vlevo nahoru */
     SDL_Rect ret = {area.x+moveX, area.y+moveY, objectW, objectH};

@@ -5,9 +5,11 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 
+#include "utility.h"
+#include "ConfParser.h"
 #include "Skin.h"
 #include "Splash.h"
-#include "utility.h"
+#include "Menu.h"
 
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
 
@@ -82,10 +84,8 @@ int main(int argc, char **argv) {
     splash.addText(
         skin.set<TTF_Font**>("font", "splashAuthor"),
         skin.set<SDL_Color*>("color", "splashAuthor"),
-        skin.set<int*>("x", "splashAuthor"),
-        skin.set<int*>("y", "splashAuthor"),
-        skin.set<int*>("w", "splashAuthor"),
-        skin.set<int*>("h", "splashAuthor"),
+        skin.set<int*>("x", "splashAuthor"), skin.set<int*>("y", "splashAuthor"),
+        skin.set<int*>("w", "splashAuthor"), skin.set<int*>("h", "splashAuthor"),
         skin.set<Align*>("align", "splashAuthor"),
         &text
     );
@@ -93,13 +93,40 @@ int main(int argc, char **argv) {
     splash.addText(
         skin.set<TTF_Font**>("font", "splashVersion"),
         skin.set<SDL_Color*>("color", "splashVersion"),
-        skin.set<int*>("x", "splashVersion"),
-        skin.set<int*>("y", "splashVersion"),
-        skin.set<int*>("w", "splashVersion"),
-        skin.set<int*>("h", "splashVersion"),
+        skin.set<int*>("x", "splashVersion"), skin.set<int*>("y", "splashVersion"),
+        skin.set<int*>("w", "splashVersion"), skin.set<int*>("h", "splashVersion"),
         skin.set<Align*>("align", "splashVersion"),
         &version
     );
+
+    Menu menu(
+        screen, skin.set<SDL_Surface**>("image", "menu"),
+        skin.set<int*>("x", "menu"), skin.set<int*>("y", "menu"),
+        skin.set<int*>("w", "menu"), skin.set<int*>("h", "menu"), skin.set<Align*>("align", "menu"),
+        skin.set<int*>("itemsX", "menu"), skin.set<int*>("itemsY", "menu"),
+        skin.set<int*>("itemsW", "menu"), skin.set<int*>("itemsH", "menu"),
+        &dummy, &dummy, skin.set<TTF_Font**>("itemFont", "menu"),
+        skin.set<SDL_Color*>("itemColor", "menu"),
+        skin.set<SDL_Color*>("activeItemColor", "menu"),
+        skin.set<SDL_Color*>("disabledItemColor", "menu"),
+        skin.set<SDL_Color*>("activeDisabledItemColor", "menu"),
+        0
+    );
+
+    string caption = "blahblah";
+    menu.configureCaption(
+        skin.set<int*>("captionX", "menu"), skin.set<int*>("captionY", "menu"),
+        skin.set<int*>("captionW", "menu"), skin.set<int*>("captionH", "menu"),
+        skin.set<Align*>("captionAlign", "menu"),
+        skin.set<TTF_Font**>("captionFont", "menu"),
+        skin.set<SDL_Color*>("captionColor", "menu")
+    );
+
+    Menu::sectionId section = menu.addSection(0, &caption, NULL, skin.set<Align*>("itemsAlign", "menu"), 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, Menu::DISABLED);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
 
     TTF_Font** font = skin.set<TTF_Font**>("font", "splashAuthor");
 
@@ -123,20 +150,30 @@ int main(int argc, char **argv) {
                         case SDLK_d:
                             skin.load("skin.conf");
                             break;
+                        case SDLK_UP:
+                            menu.moveUp();
+                            break;
+                        case SDLK_DOWN:
+                            menu.moveDown();
+                            break;
                         default:
                             break;
                     } break;
                 case SDL_VIDEORESIZE:
                     screen = SDL_SetVideoMode(event.resize.w, event.resize.h, 16, SDL_SWSURFACE|SDL_RESIZABLE);
                     break;
+                case SDL_QUIT:
+                    done = 1;
+                    break;
             }
         }
 
         text = "Autor skinu: " + *author;
         splash.view();
+        menu.view();
         SDL_UpdateRect(screen, 0, 0, 0, 0);
 
-       // sleep(1);
+        //sleep(1);
     }
 
     cout << "Ukončuji..." << endl;

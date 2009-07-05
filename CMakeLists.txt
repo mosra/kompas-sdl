@@ -11,6 +11,7 @@ include_directories(${SDL_INCLUDE_DIR} ${SDLIMAGE_INCLUDE_DIR} ${SDLTTF_INCLUDE_
 #Knihovny
 add_library(ConfParser STATIC src/ConfParser.cpp)
 add_library(Effects STATIC src/Effects.cpp)
+add_library(Menu STATIC src/Menu.cpp)
 add_library(Skin STATIC src/Skin.cpp)
 add_library(Splash STATIC src/Splash.cpp)
 add_library(utility STATIC src/utility.cpp)
@@ -18,9 +19,10 @@ add_library(utility STATIC src/utility.cpp)
 #Meziknihovní závislosti
 target_link_libraries(ConfParser utility)
 target_link_libraries(Effects utility)
+target_link_libraries(Menu utility)
 target_link_libraries(Skin ConfParser Effects ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${SDLTTF_LIBRARY})
 target_link_libraries(Splash Effects ${SDL_LIBRARY})
 
 #Hlavní program
 add_executable(map2x src/main.cpp)
-target_link_libraries(map2x ConfParser Skin Splash ${SDL_LIBRARY})
+target_link_libraries(map2x ConfParser Skin Splash Menu ${SDL_LIBRARY})

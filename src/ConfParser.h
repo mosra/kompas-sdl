@@ -13,8 +13,8 @@
 /**
  * Parser konfiguračních souborů
  * @todo Typy hodnot (+ double, align)
- * @todo Jaký sou výhody ukazatelů při vybírání hodnot?
  * @todo Testovat parametry jen na alfanumerické znaky
+ * @todo Ošetřit escape znaky
  */
 class ConfParser {
     private:

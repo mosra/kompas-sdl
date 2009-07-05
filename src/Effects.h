@@ -6,6 +6,7 @@
 
 /**
  * Funkce pro zarovnávání, posouvání textu a další fičurky
+ * @todo Statická proměná pro určení, zda vyhlazovat text
  */
 class Effects {
     public:
