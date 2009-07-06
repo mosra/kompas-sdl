@@ -35,7 +35,7 @@ class Effects {
          * @return  Pozice objektu
          */
         inline static SDL_Rect align(SDL_Rect area, Align _align, SDL_Rect object) {
-            align(area, _align, object.w, object.h, object.x, object.y);
+            return align(area, _align, object.w, object.h, object.x, object.y);
         }
 
 

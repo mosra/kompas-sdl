@@ -49,7 +49,7 @@ class Skin {
          * @param   section     Sekce
          * @return  Ukazatel na vlastnost
          */
-        template<class T> T set(const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
+        template<class T> T get(const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
 
     private:
         /**

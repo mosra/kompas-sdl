@@ -192,16 +192,18 @@ void Menu::view (void) {
 
     /* Pokud je položek více, než se na stránku vejde a aktuální položka není v
        první polovině menu, upravení začátku tak, aby aktuální položka byla v polovině */
-    if(end-begin > itemsPerPage && (*actualSection).actualItem-itemsPerPage/2 > begin) {
-        begin = (*actualSection).actualItem-itemsPerPage/2;
+    if(end-begin > itemsPerPage) {
+        if((*actualSection).actualItem-itemsPerPage/2 > begin) {
+            begin = (*actualSection).actualItem-itemsPerPage/2;
 
-        /* Pokud je položka blízko u konce, upravení začátku, aby bylo vypsáno
-           maximum položek */
-        if(end-begin < itemsPerPage)
-            begin = end-itemsPerPage;
+            /* Pokud je položka blízko u konce, upravení začátku, aby bylo vypsáno
+            maximum položek */
+            if(end-begin < itemsPerPage)
+                begin = end-itemsPerPage;
+        }
+
+        end = begin+itemsPerPage;
     }
-
-    end = begin+itemsPerPage;
 
     /* Plocha pro vykreslení položek. Prvně zarování celé plochy položek, až v ní
        se podle počtu položek na stránku a vertikálního zarovnání (&0xF0) vypočítá

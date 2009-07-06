@@ -10,6 +10,7 @@
 #include "Skin.h"
 #include "Splash.h"
 #include "Menu.h"
+#include "Localize.h"
 #include "configure.h"
 
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
@@ -69,81 +70,70 @@ int main(int argc, char **argv) {
         exit(3);
     }
 
+    /* Nastavení skinu */
     Skin skin(screen, "skin.conf");
-    string* author = skin.set<string*>("author");
-
     int dummy = 0;
 
-    Splash splash(screen,
-        skin.set<SDL_Surface**>("image", "splash"),
-        skin.set<SDL_Rect*>("", "splash"),
-        skin.set<Align*>("align", "splash"));
+    /* Lokalizace */
+    Localize localize("lang/en.conf", "lang/cz.conf");
+    string* skinAuthor = localize.get("skinAuthor", "splash");
+    string* author = skin.get<string*>("author");
 
+    /* Nastavení splashe */
+    Splash splash(screen,
+        skin.get<SDL_Surface**>("image", "splash"),
+        skin.get<SDL_Rect*>("", "splash"),
+        skin.get<Align*>("align", "splash"));
     string text;
     splash.addText(
-        skin.set<TTF_Font**>("font", "splashAuthor"),
-        skin.set<SDL_Color*>("color", "splashAuthor"),
-        skin.set<SDL_Rect*>("", "splashAuthor"),
-        skin.set<Align*>("align", "splashAuthor"),
+        skin.get<TTF_Font**>("font", "splashAuthor"),
+        skin.get<SDL_Color*>("color", "splashAuthor"),
+        skin.get<SDL_Rect*>("", "splashAuthor"),
+        skin.get<Align*>("align", "splashAuthor"),
         &text
     );
     string version = SVN_VERSION;
     splash.addText(
-        skin.set<TTF_Font**>("font", "splashVersion"),
-        skin.set<SDL_Color*>("color", "splashVersion"),
-        skin.set<SDL_Rect*>("", "splashVersion"),
-        skin.set<Align*>("align", "splashVersion"),
+        skin.get<TTF_Font**>("font", "splashVersion"),
+        skin.get<SDL_Color*>("color", "splashVersion"),
+        skin.get<SDL_Rect*>("", "splashVersion"),
+        skin.get<Align*>("align", "splashVersion"),
         &version
     );
 
+    /* Menu */
     Menu menu(
-        screen, skin.set<SDL_Surface**>("image", "menu"),
-        skin.set<SDL_Rect*>("", "menu"),
-        skin.set<Align*>("align", "menu"),
-        skin.set<SDL_Rect*>("items", "menu"),
-        &dummy, &dummy, skin.set<TTF_Font**>("itemFont", "menu"),
-        skin.set<SDL_Color*>("itemColor", "menu"),
-        skin.set<SDL_Color*>("activeItemColor", "menu"),
-        skin.set<SDL_Color*>("disabledItemColor", "menu"),
-        skin.set<SDL_Color*>("activeDisabledItemColor", "menu"),
+        screen, skin.get<SDL_Surface**>("image", "menu"),
+        skin.get<SDL_Rect*>("", "menu"),
+        skin.get<Align*>("align", "menu"),
+        skin.get<SDL_Rect*>("items", "menu"),
+        &dummy, &dummy, skin.get<TTF_Font**>("itemFont", "menu"),
+        skin.get<SDL_Color*>("itemColor", "menu"),
+        skin.get<SDL_Color*>("activeItemColor", "menu"),
+        skin.get<SDL_Color*>("disabledItemColor", "menu"),
+        skin.get<SDL_Color*>("activeDisabledItemColor", "menu"),
         0
     );
-
-    string caption = "blahblahblahblahblahblahblahblahblahblahblahblah";
     menu.configureCaption(
-        skin.set<SDL_Rect*>("caption", "menu"),
-        skin.set<Align*>("captionAlign", "menu"),
-        skin.set<TTF_Font**>("captionFont", "menu"),
-        skin.set<SDL_Color*>("captionColor", "menu")
+        skin.get<SDL_Rect*>("caption", "menu"),
+        skin.get<Align*>("captionAlign", "menu"),
+        skin.get<TTF_Font**>("captionFont", "menu"),
+        skin.get<SDL_Color*>("captionColor", "menu")
     );
     menu.configureScrollbar(
-        skin.set<SDL_Rect*>("scrollbar", "menu"),
-        skin.set<Align*>("scrollbarAlign", "menu"),
-        skin.set<int*>("scrollbarArrowHeight", "menu"),
-        skin.set<SDL_Surface**>("scrollbarArrowUp", "menu"),
-        skin.set<SDL_Surface**>("scrollbarArrowDown", "menu"),
-        skin.set<SDL_Surface**>("scrollbarSlider", "menu")
+        skin.get<SDL_Rect*>("scrollbar", "menu"),
+        skin.get<Align*>("scrollbarAlign", "menu"),
+        skin.get<int*>("scrollbarArrowHeight", "menu"),
+        skin.get<SDL_Surface**>("scrollbarArrowUp", "menu"),
+        skin.get<SDL_Surface**>("scrollbarArrowDown", "menu"),
+        skin.get<SDL_Surface**>("scrollbarSlider", "menu")
     );
-
-    Menu::sectionId section = menu.addSection(0, &caption, NULL, skin.set<Align*>("itemsAlign", "menu"), 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, Menu::DISABLED);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &version, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-    menu.addItem(section, 0, &caption, NULL, 0);
-
-    TTF_Font** font = skin.set<TTF_Font**>("font", "splashAuthor");
-
-    cout << "Načtení skinu, autor: " << *author << endl;
+    Menu::sectionId section = menu.addSection(0, localize.get("caption", "menu"), NULL, skin.get<Align*>("itemsAlign", "menu"), 0);
+    menu.addItem(section, 0, localize.get("openPackage", "menu"), NULL, Menu::DISABLED);
+    menu.addItem(section, 0, localize.get("playGame", "menu"));
+    menu.addItem(section, 0, localize.get("options", "menu"));
+    menu.addItem(section, 0, localize.get("about", "menu"));
+    menu.addItem(section, 0, localize.get("quit", "menu"));
 
     /* Hlavní smyčka programu */
     int done = 0;
@@ -187,15 +177,13 @@ int main(int argc, char **argv) {
             }
         }
 
-        text = "Autor skinu: " + *author;
+        text = *skinAuthor + *author;
         splash.view();
         menu.view();
         SDL_UpdateRect(screen, 0, 0, 0, 0);
 
         //sleep(1);
     }
-
-    cout << "Ukončuji..." << endl;
 
     return 0;
 }

@@ -100,7 +100,7 @@ class Menu {
          * @param   flags       Flags (viz Menu::SectionFlags)
          * @return  ID sekce, použitelné při přidávání a mazání položek menu v této sekci
          */
-        sectionId addSection(sectionId parent, std::string* caption, Align* iconAlign, Align* itemsAlign, int flags);
+        sectionId addSection(sectionId parent, std::string* caption, Align* iconAlign, Align* itemsAlign, int flags = 0);
 
         /**
          * @brief Přidání položky do menu
@@ -112,7 +112,7 @@ class Menu {
          * @param   flags       Flags (viz Menu::ItemFlags)
          * @return  ID položky, použitelné při jejím mazání
          */
-        itemId addItem(sectionId section, int action, std::string* caption, SDL_Surface** icon, int flags);
+        itemId addItem(sectionId section, int action, std::string* caption, SDL_Surface** icon = NULL, int flags = 0);
 
         /**
          * @brief Odstranění položky menu
@@ -195,9 +195,6 @@ class Menu {
         void view(void);
 
     private:
-        /** Flags pro celé menu */
-        int flags;
-
         /** Displejová surface */
         SDL_Surface* screen;
 
@@ -251,6 +248,9 @@ class Menu {
          * @todo Jiné barvy pro každou sekci menu?
          */
         SDL_Color *itemColor, *activeItemColor, *disabledItemColor, *activeDisabledItemColor;
+
+        /** Flags pro celé menu */
+        int flags;
 
         /** Struktura položky menu */
         struct Item {

@@ -100,7 +100,7 @@ void Skin::load (const string& file) {
 }
 
 /* Inicializace a získání ukazatele na surface */
-template<> SDL_Surface** Skin::set(const string& parameter, string section) {
+template<> SDL_Surface** Skin::get(const string& parameter, string section) {
     string file;
     conf.value(parameter, file, conf.section(section));
 
@@ -127,7 +127,7 @@ template<> SDL_Surface** Skin::set(const string& parameter, string section) {
 }
 
 /* Inicializace a získání ukazatele na font */
-template<> TTF_Font** Skin::set(const string& parameter, string section) {
+template<> TTF_Font** Skin::get(const string& parameter, string section) {
     string file;
     conf.value(parameter, file, conf.section(section));
 
@@ -151,7 +151,7 @@ template<> TTF_Font** Skin::set(const string& parameter, string section) {
 }
 
 /* Inicalizace a získání ukazatele na string */
-template<> string* Skin::set(const string& parameter, string section) {
+template<> string* Skin::get(const string& parameter, string section) {
     string *text = new string;
     conf.value(parameter, *text, conf.section(section));
 
@@ -166,7 +166,7 @@ template<> string* Skin::set(const string& parameter, string section) {
 }
 
 /* Inicializace a získání ukazatele na barvu */
-template<> SDL_Color* Skin::set(const string& parameter, string section) {
+template<> SDL_Color* Skin::get(const string& parameter, string section) {
     int col = 0;
     conf.value(parameter, col, conf.section(section), ConfParser::COLOR);
 
@@ -186,7 +186,7 @@ template<> SDL_Color* Skin::set(const string& parameter, string section) {
 }
 
 /* Inicializace a získání ukazatele na SDL_Rect */
-template<> SDL_Rect* Skin::set(const string& parameter, string section) {
+template<> SDL_Rect* Skin::get(const string& parameter, string section) {
     SDL_Rect* position = new SDL_Rect;
     int x = 0;  int y = 0; int w = 0; int h = 0;
     if(parameter == "") {
@@ -216,7 +216,7 @@ template<> SDL_Rect* Skin::set(const string& parameter, string section) {
 }
 
 /* Inicializace a získání ukazatele na číslo */
-template<> int* Skin::set(const string& parameter, string section) {
+template<> int* Skin::get(const string& parameter, string section) {
     int *i = new int; *i = 0;
     conf.value(parameter, *i, conf.section(section));
 
@@ -231,7 +231,7 @@ template<> int* Skin::set(const string& parameter, string section) {
 }
 
 /* Inicializace a získání ukazatele na zarovnání */
-template<> Align* Skin::set(const string& parameter, string section) {
+template<> Align* Skin::get(const string& parameter, string section) {
     Align *i = new Align; *i = (Align) 0;
     conf.value(parameter, *i, conf.section(section));
 

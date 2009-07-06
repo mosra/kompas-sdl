@@ -91,13 +91,18 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
             file.ignore(1);
             file.get(buffer, ConfParser::MAX_LINE_LENGTH-1, delimiter);
             file.ignore(ConfParser::MAX_LINE_LENGTH, '\n');
+
+            /* U parametru v uvozovkách se mezery neosekávají */
+            parameter.value = buffer;
         }
 
         /* Hodnota bez uvozovek */
-        else file.getline(buffer, ConfParser::MAX_LINE_LENGTH-1);
+        else {
+            file.getline(buffer, ConfParser::MAX_LINE_LENGTH-1);
+            parameter.value = trim(buffer);
+        }
 
         /* Doplnění hodnoty do parametru */
-        parameter.value = trim(buffer);
         parameters.push_back(parameter);
 
     }
