@@ -110,6 +110,9 @@ template<> SDL_Surface** Skin::set(const string& parameter, string section) {
 
     /* Konverze do formátu displeje */
     SDL_Surface* temp = IMG_Load(file.c_str());
+    if(temp == NULL)
+        cerr << "Nepodařilo se načíst obrázek \"" << file << "\"." << endl;
+
     *surface = SDL_DisplayFormatAlpha(temp);
     SDL_FreeSurface(temp);
 
@@ -133,6 +136,9 @@ template<> TTF_Font** Skin::set(const string& parameter, string section) {
 
     TTF_Font** font = new TTF_Font*;
     *font = TTF_OpenFont(file.c_str(), fontSize);
+
+    if(*font == NULL)
+        cerr << "Nepodařilo se načíst font \"" << file << "\"." << endl;
 
     Skin::Property<TTF_Font**> property;
     property.parameter = parameter;

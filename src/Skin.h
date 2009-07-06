@@ -20,7 +20,6 @@
  * @todo Přepsat z ukazatelů na reference (asi nepude?)
  * @todo SDL_Rect* místo *x,*y,*w,*h (zautomatizovat)
  * @todo Skiny podle velikosti displeje (větší menu pro větší atd.)
- * @todo Error při nenačtení fontu / surface (int a další jsou ošetřeny v ConfParser)
  */
 class Skin {
     public:
