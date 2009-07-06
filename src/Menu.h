@@ -16,8 +16,8 @@
  * Více sekcí s různým obsahem a možnost přepínání mezi nimi, rolování při velkém
  * počtu položek. Plná podpora Skin.
  * @todo Zvýraznění položek změnou pozadí
- * @todo Definice scrollbaru
  * @todo Vícesloupcové menu + názvy sloupců (např. souborový manažer)
+ * @todo Flags pro vypnutí nekonečného procházení
  */
 class Menu {
     public:
@@ -42,33 +42,25 @@ class Menu {
         /**
          * @brief Konstruktor
          *
-         * @param   _screen     Displejová surface
-         * @param   _image      Pozadí menu
-         * @param   _x          X-ové posunutí menu
-         * @param   _y          Y-ové posunutí menu
-         * @param   _w          Šířka menu
-         * @param   _h          Výška menu
-         * @param   _menuAlign  Zarovnání menu vůči stránce
-         * @param   _itemsX     X-ová pozice položek v menu
-         * @param   _itemsY     Y-ová pozice položek v menu
-         * @param   _itemsW     Šířka položek
-         * @param   _itemsH     Výška (všech) položek
-         * @param   _itemHeight Výška položky (0 pro autodetekci z výšky textu)
-         * @param   _iconWidth  Šířka ikony (může být NULL, pokud se ikony nebudou používat)
-         * @param   _itemFont   Font položek
-         * @param   _itemColor  Barva položky
+         * @param   _screen             Displejová surface
+         * @param   _image              Pozadí menu
+         * @param   _position           Pozice menu
+         * @param   _menuAlign          Zarovnání menu vůči stránce
+         * @param   _itemsPosition      Pozice položek
+         * @param   _itemHeight         Výška položky (0 pro autodetekci z výšky textu)
+         * @param   _iconWidth          Šířka ikony (může být NULL, pokud se ikony nebudou používat)
+         * @param   _itemFont           Font položek
+         * @param   _itemColor          Barva položky
          * @param   _activeItemColor    Barva aktivní položky
          * @param   _disabledItemColor  Barva zakázané položky (může být NULL,
          *  pokud nebudou nikde zakázané položky)
          * @param   _activeDisabledItemColor  Barva aktivní zakázané položky
          *  (může být NULL, pokud nebudou nikde zakázané položky)
-         * @param   _flags      Flags
-         * @todo No to je příšernost! -- převést na SDL_Rect
+         * @param   _flags              Flags
          */
-        Menu(SDL_Surface* _screen, SDL_Surface** _image, int* _x, int* _y, int* _w, int* _h, Align* _menuAign, int* _itemsX, int* _itemsY, int* _itemsW, int* _itemsH, int* _itemHeight, int* _iconWidth, TTF_Font** _itemFont, SDL_Color* _itemColor, SDL_Color* _activeItemColor, SDL_Color* _disabledItemColor, SDL_Color* _activeDisabledItemColor, int _flags):
-            screen(_screen), image(_image), x(_x), y(_y), w(_w), h(_h),
-            menuAlign(_menuAign), itemsX(_itemsX), itemsY(_itemsY), itemsW(_itemsW),
-            itemsH(_itemsH), itemHeight(_itemHeight), iconWidth(_iconWidth),
+        Menu(SDL_Surface* _screen, SDL_Surface** _image, SDL_Rect* _position, Align* _menuAign, SDL_Rect* _itemsPosition, int* _itemHeight, int* _iconWidth, TTF_Font** _itemFont, SDL_Color* _itemColor, SDL_Color* _activeItemColor, SDL_Color* _disabledItemColor, SDL_Color* _activeDisabledItemColor, int _flags):
+            screen(_screen), image(_image), position(_position), menuAlign(_menuAign),
+            itemsPosition(_itemsPosition), itemHeight(_itemHeight), iconWidth(_iconWidth),
             itemFont(_itemFont), itemColor(_itemColor), activeItemColor(_activeItemColor),
             disabledItemColor(_disabledItemColor),
             activeDisabledItemColor(_activeDisabledItemColor), flags(_flags) {}
@@ -77,32 +69,26 @@ class Menu {
          * @brief Nastavení nadpisku
          *
          * Nastaví a povolí vykreslování nadpisku sekce menu
-         * @param   _x      X-ová pozice
-         * @param   _y      Y-ová pozice
-         * @param   _w      Šířka
-         * @param   _h      Výška
-         * @param   align   Zarovnání
-         * @param   font    Font
-         * @param   color   Barva
+         * @param   _position   Pozice
+         * @param   align       Zarovnání
+         * @param   font        Font
+         * @param   color       Barva
          */
-        void configureCaption(int* _x, int* _y, int* _w, int* _h, Align* align, TTF_Font** font, SDL_Color* color);
+        void configureCaption(SDL_Rect* _position, Align* align, TTF_Font** font, SDL_Color* color);
 
         /**
          * @brief Nastavení scrollbaru
          *
          * Nastaví a povolí scrollbar. Šipky se umístí do vrchu a spodku oblasti
          * dle vodorovného zarovnání, mezi nimi se bude pohybovat slider
-         * @param   _x          X-ová pozice
-         * @param   _y          Y-ová pozice
-         * @param   _w          Šířka
-         * @param   _h          Výška
+         * @param   _position   Pozice
          * @param   align       Vodorovné zarovnání položek (vertikální ignorováno)
          * @param   topArrow    Surface s vrchní šipkou
          * @param   bottomArrow Surface se spodní šipkou
          * @param   arrowHeight Výška šipky (pro odsazení slideru od šipek)
          * @param   slider      Slider
          */
-        void configureScrollbar(int* _x, int* _y, int* _w, int* _h, Align* align, int* arrowHeight, SDL_Surface** topArrow, SDL_Surface** bottomArrow, SDL_Surface** slider);
+        void configureScrollbar(SDL_Rect* _position, Align* align, int* arrowHeight, SDL_Surface** topArrow, SDL_Surface** bottomArrow, SDL_Surface** slider);
 
         /**
          * @brief Vytvoření sekce menu
@@ -218,17 +204,17 @@ class Menu {
         /** Pozadí menu */
         SDL_Surface** image;
 
-        /** Posunutí a velikost menu */
-        int *x, *y, *w, *h;
+        /** Pozice menu */
+        SDL_Rect* position;
 
         /** Zarovnání menu */
         Align *menuAlign;
 
         /** Pozice nadpisku */
-        int *captionX, *captionY, *captionW, *captionH;
+        SDL_Rect* captionPosition;
 
         /** Zarovnání nadpisku */
-        Align *captionAlign;
+        Align* captionAlign;
 
         /** Font nadpisku */
         TTF_Font** captionFont;
@@ -237,7 +223,7 @@ class Menu {
         SDL_Color* captionColor;
 
         /** Pozice scrollbaru */
-        int *scrollbarX, *scrollbarY, *scrollbarW, *scrollbarH;
+        SDL_Rect* scrollbarPosition;
 
         /** Zarovnání scrollbaru */
         Align *scrollbarAlign;
@@ -248,8 +234,8 @@ class Menu {
         /** Výška šipek (=> odsazení šipek od posuvníku) */
         int *scrollbarArrowHeight;
 
-        /** Velikost a pozice oblasti položek menu */
-        int *itemsX, *itemsY, *itemsW, *itemsH;
+        /** Pozice oblasti položek menu */
+        SDL_Rect* itemsPosition;
 
         /** Výška položek, šířka ikony */
         int *itemHeight, *iconWidth;

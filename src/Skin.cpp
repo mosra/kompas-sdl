@@ -185,6 +185,36 @@ template<> SDL_Color* Skin::set(const string& parameter, string section) {
     return color;
 }
 
+/* Inicializace a získání ukazatele na SDL_Rect */
+template<> SDL_Rect* Skin::set(const string& parameter, string section) {
+    SDL_Rect* position = new SDL_Rect;
+    int x = 0;  int y = 0; int w = 0; int h = 0;
+    if(parameter == "") {
+        conf.value("x", x, conf.section(section));
+        conf.value("y", y, conf.section(section));
+        conf.value("w", w, conf.section(section));
+        conf.value("h", h, conf.section(section));
+    }
+    else {
+        conf.value(parameter + "X", x, conf.section(section));
+        conf.value(parameter + "Y", y, conf.section(section));
+        conf.value(parameter + "W", w, conf.section(section));
+        conf.value(parameter + "H", h, conf.section(section));
+    }
+
+    (*position).x = x;  (*position).y = y;
+    (*position).w = w;  (*position).h = h;
+
+    Skin::Property<SDL_Rect*> property;
+    property.parameter = parameter;
+    property.section = section;
+    property.property = position;
+
+    positions.push_back(property);
+
+    return position;
+}
+
 /* Inicializace a získání ukazatele na číslo */
 template<> int* Skin::set(const string& parameter, string section) {
     int *i = new int; *i = 0;

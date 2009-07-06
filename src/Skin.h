@@ -18,7 +18,6 @@
  * nutnosti restartu aplikace
  *
  * @todo Přepsat z ukazatelů na reference (asi nepude?)
- * @todo SDL_Rect* místo *x,*y,*w,*h (zautomatizovat)
  * @todo Skiny podle velikosti displeje (větší menu pro větší atd.)
  */
 class Skin {
@@ -42,10 +41,13 @@ class Skin {
         void load(const std::string& file);
 
         /**
-         * Inicializace a získání ukazatele na vlastnost
+         * @brief Inicializace a získání ukazatele na vlastnost
+         *
+         * Pro možné typy vlastností viz Skin::surfaces, Skin::fonts, Skin::colors,
+         * Skin::positions, Skin::numbers, Skin::aligns, Skin::texts
          * @param   parameter   Parametr
          * @param   section     Sekce
-         * @return  ID surface
+         * @return  Ukazatel na vlastnost
          */
         template<class T> T set(const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
 
@@ -76,7 +78,11 @@ class Skin {
         std::vector<Property<SDL_Surface**> > surfaces;
 
         /**
-         * Vektor s fonty
+         * @brief Vektor s fonty
+         *
+         * Font je získáván z conf souboru ze dvou parametrů - názvu souboru
+         * (např. v parametru font) a velikosti písma (v parametru fontSize). Oba
+         * paramtery musí být v conf souboru přítomné!
          */
         std::vector<Property<TTF_Font**> > fonts;
 
@@ -86,12 +92,30 @@ class Skin {
         std::vector<Property<SDL_Color*> > colors;
 
         /**
+         * @brief Vektor s pozicemi
+         *
+         * Pozice je získávána z conf souboru ze čtyř parametrů. Pokud není ve
+         * funkci Skin::set parametr zadán, získávají se parametry x, y, w, h
+         * z příslušné sekce. Pokud je parametr zadán, získávají se parametry
+         * parametrX, parametrY, parametrW, parametrH.
+         */
+        std::vector<Property<SDL_Rect*> > positions;
+
+        /**
          * Vektor s čísly
          */
         std::vector<Property<int*> > numbers;
 
         /**
-         * Vektor se zarovnáními
+         * @brief Vektor se zarovnáními
+         *
+         * Zarovnání je v conf souboru specifikováno dvěma slovy oddělenými
+         * libovolným počtem bílých znaků. Všechna písmena musí být malá. Řetězce
+         * top, middle a bottom platí pro vertikální zarovnání, řetězce left,
+         * center a right pro horizontální. Default hodnota je vlevo nahoře, takže
+         * např. při neuvedení horizontálního směru je tento nastaven na left.
+         * Při uvedení více než dvou slov se postupuje zleva shora, když je tedy
+         * uvedeno zarovnání left right, platí left.
          */
         std::vector<Property<Align*> > aligns;
 

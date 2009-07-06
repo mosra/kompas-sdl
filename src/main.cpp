@@ -76,17 +76,14 @@ int main(int argc, char **argv) {
 
     Splash splash(screen,
         skin.set<SDL_Surface**>("image", "splash"),
-        &dummy, &dummy,
-        skin.set<int*>("width", "splash"),
-        skin.set<int*>("height", "splash"),
+        skin.set<SDL_Rect*>("", "splash"),
         skin.set<Align*>("align", "splash"));
 
     string text;
     splash.addText(
         skin.set<TTF_Font**>("font", "splashAuthor"),
         skin.set<SDL_Color*>("color", "splashAuthor"),
-        skin.set<int*>("x", "splashAuthor"), skin.set<int*>("y", "splashAuthor"),
-        skin.set<int*>("w", "splashAuthor"), skin.set<int*>("h", "splashAuthor"),
+        skin.set<SDL_Rect*>("", "splashAuthor"),
         skin.set<Align*>("align", "splashAuthor"),
         &text
     );
@@ -94,18 +91,16 @@ int main(int argc, char **argv) {
     splash.addText(
         skin.set<TTF_Font**>("font", "splashVersion"),
         skin.set<SDL_Color*>("color", "splashVersion"),
-        skin.set<int*>("x", "splashVersion"), skin.set<int*>("y", "splashVersion"),
-        skin.set<int*>("w", "splashVersion"), skin.set<int*>("h", "splashVersion"),
+        skin.set<SDL_Rect*>("", "splashVersion"),
         skin.set<Align*>("align", "splashVersion"),
         &version
     );
 
     Menu menu(
         screen, skin.set<SDL_Surface**>("image", "menu"),
-        skin.set<int*>("x", "menu"), skin.set<int*>("y", "menu"),
-        skin.set<int*>("w", "menu"), skin.set<int*>("h", "menu"), skin.set<Align*>("align", "menu"),
-        skin.set<int*>("itemsX", "menu"), skin.set<int*>("itemsY", "menu"),
-        skin.set<int*>("itemsW", "menu"), skin.set<int*>("itemsH", "menu"),
+        skin.set<SDL_Rect*>("", "menu"),
+        skin.set<Align*>("align", "menu"),
+        skin.set<SDL_Rect*>("items", "menu"),
         &dummy, &dummy, skin.set<TTF_Font**>("itemFont", "menu"),
         skin.set<SDL_Color*>("itemColor", "menu"),
         skin.set<SDL_Color*>("activeItemColor", "menu"),
@@ -116,15 +111,13 @@ int main(int argc, char **argv) {
 
     string caption = "blahblahblahblahblahblahblahblahblahblahblahblah";
     menu.configureCaption(
-        skin.set<int*>("captionX", "menu"), skin.set<int*>("captionY", "menu"),
-        skin.set<int*>("captionW", "menu"), skin.set<int*>("captionH", "menu"),
+        skin.set<SDL_Rect*>("caption", "menu"),
         skin.set<Align*>("captionAlign", "menu"),
         skin.set<TTF_Font**>("captionFont", "menu"),
         skin.set<SDL_Color*>("captionColor", "menu")
     );
     menu.configureScrollbar(
-        skin.set<int*>("scrollbarX", "menu"), skin.set<int*>("scrollbarY", "menu"),
-        skin.set<int*>("scrollbarW", "menu"), skin.set<int*>("scrollbarH", "menu"),
+        skin.set<SDL_Rect*>("scrollbar", "menu"),
         skin.set<Align*>("scrollbarAlign", "menu"),
         skin.set<int*>("scrollbarArrowHeight", "menu"),
         skin.set<SDL_Surface**>("scrollbarArrowUp", "menu"),

@@ -18,20 +18,17 @@ class Splash {
     public:
         /**
          * Konstruktor
-         * @param   _image  Obrázek
-         * @param   _x      X-ové posunutí rámce
-         * @param   _y      Y-ové posunutí rámce
-         * @param   _w      Šířka ohraničujícího rámce
-         * @param   _h      Výška ohraničujícího rámce
-         * @param   _align  Zarovnání rámce vůči displeji
+         * @param   _image      Obrázek
+         * @param   _position   Pozice
+         * @param   _align      Zarovnání rámce vůči displeji
          */
-        inline Splash(SDL_Surface* _screen, SDL_Surface** _image, int* _x, int* _y, int* _w, int* _h, Align* _align):
-            screen(_screen), image(_image), w(_w), h(_h), x(_x), y(_y), align(_align) {}
+        inline Splash(SDL_Surface* _screen, SDL_Surface** _image, SDL_Rect* _position, Align* _align):
+            screen(_screen), image(_image), position(_position), align(_align) {}
 
         /**
          * Vložení textu
          */
-        void addText(TTF_Font** font, SDL_Color* color, int* _x, int* _y, int* _w, int *_h, Align* align, std::string* text);
+        void addText(TTF_Font** font, SDL_Color* color, SDL_Rect* _position, Align* align, std::string* text);
 
         /**
          * Zobrazení splashe
@@ -45,12 +42,12 @@ class Splash {
         SDL_Surface *screen, **image;
 
         /**
-         * Posunutí a velikost ohraničujícího rámce
+         * Pozice splashe
          */
-        int *x, *y, *w, *h;
+        SDL_Rect* position;
 
         /**
-         * Zarování rámce vůči displeji
+         * Zarování splashe vůči displeji
          */
         Align* align;
 
@@ -60,8 +57,7 @@ class Splash {
         struct Text {
             TTF_Font** font;
             SDL_Color* color;
-            int *x, *y;
-            int *w, *h;
+            SDL_Rect* position;
             Align* align;
             std::string* text;
         };

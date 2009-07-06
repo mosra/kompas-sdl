@@ -3,9 +3,8 @@
 using std::cout;    using std::endl;        using std::vector;
 
 /* Nastavení nadpisku */
-void Menu::configureCaption (int* _x, int* _y, int* _w, int* _h, Align* align, _TTF_Font** font, SDL_Color* color) {
-    captionX = _x;  captionY = _y;
-    captionW = _w;  captionH = _h;
+void Menu::configureCaption (SDL_Rect* _position, Align* align, _TTF_Font** font, SDL_Color* color) {
+    captionPosition = _position;
     captionAlign = align;
     captionFont = font;
     captionColor = color;
@@ -15,9 +14,8 @@ void Menu::configureCaption (int* _x, int* _y, int* _w, int* _h, Align* align, _
 }
 
 /* Nastavení scrollbaru */
-void Menu::configureScrollbar (int* _x, int* _y, int* _w, int* _h, Align* align, int* arrowHeight, SDL_Surface** arrowUp, SDL_Surface** arrowDown, SDL_Surface** slider) {
-    scrollbarX = _x;    scrollbarY = _y;
-    scrollbarW = _w;    scrollbarH = _h;
+void Menu::configureScrollbar (SDL_Rect* _position, Align* align, int* arrowHeight, SDL_Surface** arrowUp, SDL_Surface** arrowDown, SDL_Surface** slider) {
+    scrollbarPosition = _position;
     scrollbarAlign = align;
     scrollbarArrowUp = arrowUp;
     scrollbarArrowDown = arrowDown;
@@ -85,7 +83,7 @@ int Menu::scrollDown (void) {
     int _itemHeight = *itemHeight;
     if(_itemHeight == 0) _itemHeight = TTF_FontLineSkip(*itemFont);
 
-    (*actualSection).actualItem += *itemsH/_itemHeight-1;
+    (*actualSection).actualItem += (*itemsPosition).h/_itemHeight-1;
 
     if((*actualSection).actualItem > (*actualSection).items.end())
         (*actualSection).actualItem = (*actualSection).items.end()-1;
@@ -101,7 +99,7 @@ int Menu::scrollUp (void) {
     int _itemHeight = *itemHeight;
     if(_itemHeight == 0) _itemHeight = TTF_FontLineSkip(*itemFont);
 
-    (*actualSection).actualItem -= *itemsH/_itemHeight-1;
+    (*actualSection).actualItem -= (*itemsPosition).h/_itemHeight-1;
 
     if((*actualSection).actualItem < (*actualSection).items.begin())
         (*actualSection).actualItem = (*actualSection).items.begin();
@@ -129,7 +127,7 @@ void Menu::reloadIterators (int section) {
 /* Zobrazení menu */
 void Menu::view (void) {
     /* Plocha pro vykreslování menu */
-    SDL_Rect area = Effects::align(screen, *menuAlign, *w, *h, *x, *y);
+    SDL_Rect area = Effects::align(screen, *menuAlign, *position);
 
     /* Pozadí */
     SDL_BlitSurface(*image, NULL, screen, &area);
@@ -137,19 +135,20 @@ void Menu::view (void) {
     /* Nadpisek menu */
     if(flags & CAPTION) {
         /* Prostor pro napisek */
-        SDL_Rect captionPosition = Effects::align(area, ALIGN_DEFAULT, *captionW, *captionH, *captionX, *captionY);
+        SDL_Rect _captionPosition = Effects::align(area, ALIGN_DEFAULT, *captionPosition);
         SDL_Surface* text = (*Effects::textRenderFunction())(*captionFont, (*(*actualSection).caption).c_str(), *captionColor);
 
         /* Přesná pozice nadpisku, ořezání a vykreslení */
-        captionPosition = Effects::align(captionPosition, *captionAlign, (*text).w, (*text).h);
-        SDL_Rect captionCrop = {0, 0, captionPosition.w, captionPosition.h};
-        SDL_BlitSurface(text, &captionCrop, screen, &captionPosition);
+        _captionPosition = Effects::align(_captionPosition, *captionAlign, (*text).w, (*text).h);
+        SDL_Rect captionCrop = {0, 0, _captionPosition.w, _captionPosition.h};
+        SDL_BlitSurface(text, &captionCrop, screen, &_captionPosition);
         SDL_FreeSurface(text);
     }
 
     /* Mezera mezi položkami, pokud není striktně definovaná. */
     int _itemHeight = *itemHeight;
     if(_itemHeight == 0) _itemHeight = TTF_FontLineSkip(*itemFont);
+    int itemsPerPage = (*itemsPosition).h/_itemHeight;
 
     /* První a poslední zobrazená položka */
     vector<Item>::const_iterator begin = (*actualSection).items.begin();
@@ -158,18 +157,18 @@ void Menu::view (void) {
     /* Scrollbar */
     if(flags & SCROLLBAR) {
         /* Prostor pro scrollbar */
-        SDL_Rect scrollbarPosition = Effects::align(area, ALIGN_DEFAULT, *scrollbarW, *scrollbarH, *scrollbarX, *scrollbarY);
+        SDL_Rect _scrollbarPosition = Effects::align(area, ALIGN_DEFAULT, *scrollbarPosition);
 
         /* Vrchní šipka, pokud je kam posouvat */
         if((*actualSection).actualItem != (*actualSection).items.begin()) {
-            SDL_Rect arrowPosition = Effects::align(scrollbarPosition, (Align) ((*scrollbarAlign & 0x0F) | ALIGN_TOP), (**scrollbarArrowUp).w, (**scrollbarArrowUp).h);
+            SDL_Rect arrowPosition = Effects::align(_scrollbarPosition, (Align) ((*scrollbarAlign & 0x0F) | ALIGN_TOP), (**scrollbarArrowUp).w, (**scrollbarArrowUp).h);
             SDL_Rect arrowCrop = {0, 0, arrowPosition.w, arrowPosition.h};
             SDL_BlitSurface(*scrollbarArrowUp, &arrowCrop, screen, &arrowPosition);
         }
 
         /* Spodní šipka, pokud je kam posouvat */
         if((*actualSection).actualItem != (*actualSection).items.end()-1) {
-            SDL_Rect arrowPosition = Effects::align(scrollbarPosition, (Align) ((*scrollbarAlign & 0x0F) | ALIGN_BOTTOM), (**scrollbarArrowDown).w, (**scrollbarArrowDown).h);
+            SDL_Rect arrowPosition = Effects::align(_scrollbarPosition, (Align) ((*scrollbarAlign & 0x0F) | ALIGN_BOTTOM), (**scrollbarArrowDown).w, (**scrollbarArrowDown).h);
             SDL_Rect arrowCrop = {0, 0, arrowPosition.w, arrowPosition.h};
             SDL_BlitSurface(*scrollbarArrowDown, &arrowCrop, screen, &arrowPosition);
         }
@@ -177,10 +176,10 @@ void Menu::view (void) {
         /* Slider (jen při počtu položek > 1, aby se zabránilo dělení nulou) */
         if(end-begin > 1) {
             /* Pozice slideru v nejvyšším bodě */
-            SDL_Rect sliderPosition = Effects::align(scrollbarPosition, (Align) ((*scrollbarAlign & 0x0F) | ALIGN_TOP), (**scrollbarSlider).w, (**scrollbarSlider).h, 0, *scrollbarArrowHeight);
+            SDL_Rect sliderPosition = Effects::align(_scrollbarPosition, (Align) ((*scrollbarAlign & 0x0F) | ALIGN_TOP), (**scrollbarSlider).w, (**scrollbarSlider).h, 0, *scrollbarArrowHeight);
 
             /* Dráha, po které může slider jet */
-            int height = *scrollbarH-2*(*scrollbarArrowHeight)-(**scrollbarSlider).h;
+            int height = (*scrollbarPosition).h-2*(*scrollbarArrowHeight)-(**scrollbarSlider).h;
 
             /* Pozice */
             sliderPosition.y += height*((*actualSection).actualItem-begin)/(end-begin-1);
@@ -193,23 +192,23 @@ void Menu::view (void) {
 
     /* Pokud je položek více, než se na stránku vejde a aktuální položka není v
        první polovině menu, upravení začátku tak, aby aktuální položka byla v polovině */
-    if(end-begin > *itemsH/_itemHeight && (*actualSection).actualItem-(*itemsH/(_itemHeight*2)) > begin) {
-        begin = (*actualSection).actualItem-(*itemsH/(_itemHeight*2));
+    if(end-begin > itemsPerPage && (*actualSection).actualItem-itemsPerPage/2 > begin) {
+        begin = (*actualSection).actualItem-itemsPerPage/2;
 
         /* Pokud je položka blízko u konce, upravení začátku, aby bylo vypsáno
            maximum položek */
-        if(end-begin < *itemsH/_itemHeight)
-            begin = end-*itemsH/(_itemHeight);
+        if(end-begin < itemsPerPage)
+            begin = end-itemsPerPage;
     }
 
-    end = begin+*itemsH/_itemHeight;
+    end = begin+itemsPerPage;
 
     /* Plocha pro vykreslení položek. Prvně zarování celé plochy položek, až v ní
        se podle počtu položek na stránku a vertikálního zarovnání (&0xF0) vypočítá
        konečná plocha položek */
     SDL_Rect itemArea = Effects::align(
-        Effects::align(area, ALIGN_DEFAULT, *itemsW, *itemsH, *itemsX, *itemsY),
-        (Align) (*(*actualSection).itemsAlign & 0xF0), *itemsW, _itemHeight*(end-begin)
+        Effects::align(area, ALIGN_DEFAULT, *itemsPosition),
+        (Align) (*(*actualSection).itemsAlign & 0xF0), (*itemsPosition).w, _itemHeight*(end-begin)
     );
     itemArea.h = _itemHeight;
 
