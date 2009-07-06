@@ -2,6 +2,7 @@
 #define EFFECTS_H
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include "utility.h"
 
 /**
@@ -11,7 +12,10 @@
 class Effects {
     public:
         /**
-         * Zarovnání objektu do dané oblasti
+         * @brief Zarovnání objektu do dané oblasti
+         *
+         * Zarovná objekt do oblasti a ořízne jej, aby nepřesahoval hranice
+         * oblasti. Z výsledku se šířka a výška dá poté použít k ořezu.
          * @param   area        Oblast
          * @param   _align      Zarovnání objektu
          * @param   objectW     Šířka objektu
@@ -36,6 +40,25 @@ class Effects {
             SDL_Rect area = {0, 0, (*screen).w, (*screen).h};
             return align(area, _align, objectW, objectH, moveX, moveY);
         }
+
+        /**
+         * @brief Zda se má vyhlazovat text
+         *
+         * Zde lze nastavit, zda se má vyhlazovat text. Třídy vypisující text
+         * potom volají funkci Effects::textRenderFunction. Default hodnota je true
+         */
+        static bool smoothText;
+
+        /**
+         * @brief Ukazatel na funkci na vypsání textu
+         *
+         * Vysvětlivka: po dereferencování výsledku funkce dostaneme funkci s
+         * parametry (...) vracející SDL_Surface
+         * @return Podle hodnoty Effects::smoothText funkce vrací ukazatel na fci TTF_RenderUTF8_Solid nebo TTF_RenderUTF8_Blended.
+         */
+         inline static SDL_Surface* (*textRenderFunction(void))(TTF_Font*, const char*, SDL_Color) {
+            return Effects::smoothText ? TTF_RenderUTF8_Blended : TTF_RenderUTF8_Solid;
+         }
 };
 
 #endif

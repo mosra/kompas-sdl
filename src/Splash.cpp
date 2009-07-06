@@ -16,13 +16,11 @@ void Splash::view(void){
         SDL_Rect textArea = Effects::align(area, ALIGN_DEFAULT, *(*it).w, *(*it).h, *(*it).x, *(*it).y);
 
         /** @todo Přepínač vyhlazeného textu */
-        SDL_Surface* text = TTF_RenderUTF8_Blended(*(*it).font, (*(*it).text).c_str(), *(*it).color);
+        SDL_Surface* text = (*Effects::textRenderFunction())(*(*it).font, (*(*it).text).c_str(), *(*it).color);
 
-        SDL_Rect src = {0, 0,
-            (*text).w > *(*it).w ? *(*it).w : (*text).w,
-            (*text).h > *(*it).h ? *(*it).h : (*text).h};
-        SDL_Rect dst = Effects::align(textArea, *(*it).align, src.w, src.h);
-        SDL_BlitSurface(text, NULL, screen, &dst);
+        SDL_Rect dst = Effects::align(textArea, *(*it).align, (*text).w, (*text).h);
+        SDL_Rect textCrop = {0, 0, dst.w, dst.h};
+        SDL_BlitSurface(text, &textCrop, screen, &dst);
     }
 }
 

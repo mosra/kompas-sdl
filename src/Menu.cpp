@@ -71,10 +71,14 @@ void Menu::view (void) {
 
     /* Nadpisek menu */
     if(flags & CAPTION) {
+        /* Prostor pro napisek */
         SDL_Rect captionPosition = Effects::align(area, ALIGN_DEFAULT, *captionW, *captionH, *captionX, *captionY);
-        SDL_Surface* text = TTF_RenderUTF8_Blended(*captionFont, (*(*actualSection).caption).c_str(), *captionColor);
+        SDL_Surface* text = (*Effects::textRenderFunction())(*captionFont, (*(*actualSection).caption).c_str(), *captionColor);
+
+        /* Přesná pozice nadpisku, ořezání a vykreslení */
         captionPosition = Effects::align(captionPosition, *captionAlign, (*text).w, (*text).h);
-        SDL_BlitSurface(text, NULL, screen, &captionPosition);
+        SDL_Rect captionCrop = {0, 0, captionPosition.w, captionPosition.h};
+        SDL_BlitSurface(text, &captionCrop, screen, &captionPosition);
     }
 
     /** @todo Posuvníky */
@@ -105,12 +109,16 @@ void Menu::view (void) {
 
         /* Ikona */
         if((*actualSection).flags & (ICONS_LEFT | ICONS_RIGHT)) {
+            /* Prostor pro ikonu */
             SDL_Rect iconPosition = {itemArea.x, itemArea.y, *iconWidth, _itemHeight};
             if((*actualSection).flags & ICONS_RIGHT) iconPosition.x = itemArea.x+itemArea.w-*iconWidth;
 
+            /* Přesná pozice ikony, ořezání a vykreslení */
             iconPosition = Effects::align(iconPosition, *(*actualSection).iconAlign, (**(*it).icon).w, (**(*it).icon).h);
-            SDL_BlitSurface(*(*it).icon, NULL, screen, &iconPosition);
+            SDL_Rect iconCrop = {0, 0, iconPosition.w, iconPosition.h};
+            SDL_BlitSurface(*(*it).icon, &iconCrop, screen, &iconPosition);
 
+            /* Odečtení prostoru zabraného ikonou od prostoru textu */
             textPosition.x += *iconWidth; textPosition.y -= *iconWidth;
             if((*actualSection).flags & ICONS_RIGHT) textPosition.x = itemArea.x;
         }
@@ -123,11 +131,11 @@ void Menu::view (void) {
         }
         else if((*it).flags == DISABLED) color = disabledItemColor;
 
-        /* Text */
-        SDL_Surface* text = TTF_RenderUTF8_Blended(*itemFont, (*(*it).caption).c_str(), *color);
+        /* Vykreslení oříznutého textu */
+        SDL_Surface* text = (*Effects::textRenderFunction())(*itemFont, (*(*it).caption).c_str(), *color);
         textPosition = Effects::align(textPosition, (Align) ((*(*actualSection).itemsAlign & 0x0F) | ALIGN_MIDDLE), (*text).w, (*text).h);
-        /** @todo Ořezávat (stačí jen u dest?) -- vyřešit v Effects */
-        SDL_BlitSurface(text, NULL, screen, &textPosition);
+        SDL_Rect textCrop = {0, 0, textPosition.w, textPosition.h};
+        SDL_BlitSurface(text, &textCrop, screen, &textPosition);
 
         /** @todo flags EMPTY, SEPARATOR */
 

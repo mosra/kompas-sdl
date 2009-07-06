@@ -10,6 +10,7 @@
 #include "Skin.h"
 #include "Splash.h"
 #include "Menu.h"
+#include "configure.h"
 
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
 
@@ -89,7 +90,7 @@ int main(int argc, char **argv) {
         skin.set<Align*>("align", "splashAuthor"),
         &text
     );
-    string version = "SVN r1865773";
+    string version = SVN_VERSION;
     splash.addText(
         skin.set<TTF_Font**>("font", "splashVersion"),
         skin.set<SDL_Color*>("color", "splashVersion"),
@@ -113,7 +114,7 @@ int main(int argc, char **argv) {
         0
     );
 
-    string caption = "blahblah";
+    string caption = "blahblahblahblahblahblahblahblahblahblahblahblah";
     menu.configureCaption(
         skin.set<int*>("captionX", "menu"), skin.set<int*>("captionY", "menu"),
         skin.set<int*>("captionW", "menu"), skin.set<int*>("captionH", "menu"),
