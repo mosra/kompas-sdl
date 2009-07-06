@@ -23,8 +23,8 @@ class Localize {
          * @param   fallback    Fallback soubor (použije se, pokud některé
          *  parametry v hlavním souboru chybí)
          */
-        Localize(const std::string& file, const std::string& fallback):
-            lang(file), fallback(fallback) { load(file, fallback); }
+        Localize(const std::string& file, const std::string& fallback = "")
+            { load(file, fallback); }
 
         /**
          * @brief Destruktor
@@ -38,7 +38,7 @@ class Localize {
          * @param   fallback    Fallback soubor (použije se, pokud některé
          *  parametry v hlavním souboru chybí)
          */
-        void load(const std::string& file, const std::string& fallback);
+        void load(const std::string& file, const std::string& fallback = "");
 
         /**
          * @brief Získání lokalizovaného textu

@@ -32,6 +32,7 @@ class Splash {
 
         /**
          * Zobrazení splashe
+         * @todo Vyplnit pozadí černou barvou, aby nebyly artefakty
          */
         void view(void);
     private:

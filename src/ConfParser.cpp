@@ -118,7 +118,7 @@ ConfParser& ConfParser::operator= (const ConfParser& conf) {
         if(&conf != this) {
             destroy();
             filename = conf.filename;
-            file.open(filename.c_str());
+            if(filename != "") file.open(filename.c_str());
             parameters = conf.parameters;
             reloadSections();
         }

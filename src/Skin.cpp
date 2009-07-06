@@ -36,12 +36,9 @@ Skin::~Skin(void) {
 
 /* Načtení skinu */
 void Skin::load (const string& file) {
-    /* Pokud načítáme jiný skin, než ten, který už je načten */
-    if(conf.getFilename() != file) {
-        conf = ConfParser(file);
-    }
+    conf = ConfParser(file);
 
-    /* Vypnění černou barvou, aby nezůstávaly artefakty */
+    /* Vyplnění černou barvou, aby nezůstávaly artefakty */
     SDL_FillRect(screen, NULL, SDL_MapRGB((*screen).format, 0, 0, 0));
 
     /* Načtení surfaců z nového skinu */

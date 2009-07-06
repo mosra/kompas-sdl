@@ -15,6 +15,7 @@
  * @todo Typy hodnot (+ double, align)
  * @todo Testovat parametry jen na alfanumerické znaky
  * @todo Ošetřit escape znaky
+ * @todo Zahodit lamerskou koncovou default prázdnou sekci
  */
 class ConfParser {
     private:
@@ -73,6 +74,11 @@ class ConfParser {
          * Žádná sekce nenalezena
          */
         inline sectionPointer sectionNotFound() const { return sections.end(); }
+
+        /**
+         * Implicitní konstruktor
+         */
+        ConfParser(void) {}
 
         /**
          * Konstruktor

@@ -27,7 +27,7 @@ class Skin {
          * Konstruktor
          * @param   skinFile    Soubor se skinem
          */
-        inline Skin(SDL_Surface* _screen, const std::string& file): screen(_screen), conf(file) { load(file); }
+        inline Skin(SDL_Surface* _screen, const std::string& file): screen(_screen) { load(file); }
 
         /**
          * Destruktor

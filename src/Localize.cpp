@@ -12,10 +12,10 @@ Localize::~Localize (void) {
 /* Načtení lokalizace */
 void Localize::load (const string& file, const string& _fallback) {
     /* Pokud načítáme jinou lokalizaci než tu, která už je načtena */
-    if(lang.getFilename() != file || fallback.getFilename() != file) {
-        if(lang.getFilename() != file) lang = ConfParser(file);
-        if(fallback.getFilename() != _fallback) fallback = ConfParser(fallback);
-    }
+    lang = ConfParser(file);
+
+    /* Fallback jen když ho uživatel specifikoval */
+    if(_fallback != "") fallback = ConfParser(_fallback);
 
     /* Načtení lokalizovaných textů z nového souboru */
     for(vector<Localization>::const_iterator it = localizations.begin(); it != localizations.end(); ++it) {
