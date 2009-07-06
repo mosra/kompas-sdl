@@ -122,10 +122,29 @@ int main(int argc, char **argv) {
         skin.set<TTF_Font**>("captionFont", "menu"),
         skin.set<SDL_Color*>("captionColor", "menu")
     );
+    menu.configureScrollbar(
+        skin.set<int*>("scrollbarX", "menu"), skin.set<int*>("scrollbarY", "menu"),
+        skin.set<int*>("scrollbarW", "menu"), skin.set<int*>("scrollbarH", "menu"),
+        skin.set<Align*>("scrollbarAlign", "menu"),
+        skin.set<int*>("scrollbarArrowHeight", "menu"),
+        skin.set<SDL_Surface**>("scrollbarArrowUp", "menu"),
+        skin.set<SDL_Surface**>("scrollbarArrowDown", "menu"),
+        skin.set<SDL_Surface**>("scrollbarSlider", "menu")
+    );
 
     Menu::sectionId section = menu.addSection(0, &caption, NULL, skin.set<Align*>("itemsAlign", "menu"), 0);
     menu.addItem(section, 0, &caption, NULL, 0);
     menu.addItem(section, 0, &caption, NULL, Menu::DISABLED);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &version, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
+    menu.addItem(section, 0, &caption, NULL, 0);
     menu.addItem(section, 0, &caption, NULL, 0);
     menu.addItem(section, 0, &caption, NULL, 0);
 
@@ -156,6 +175,12 @@ int main(int argc, char **argv) {
                             break;
                         case SDLK_DOWN:
                             menu.moveDown();
+                            break;
+                        case SDLK_PAGEUP:
+                            menu.scrollUp();
+                            break;
+                        case SDLK_PAGEDOWN:
+                            menu.scrollDown();
                             break;
                         default:
                             break;

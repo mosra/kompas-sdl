@@ -14,6 +14,20 @@ void Menu::configureCaption (int* _x, int* _y, int* _w, int* _h, Align* align, _
     flags |= CAPTION;
 }
 
+/* Nastavení scrollbaru */
+void Menu::configureScrollbar (int* _x, int* _y, int* _w, int* _h, Align* align, int* arrowHeight, SDL_Surface** arrowUp, SDL_Surface** arrowDown, SDL_Surface** slider) {
+    scrollbarX = _x;    scrollbarY = _y;
+    scrollbarW = _w;    scrollbarH = _h;
+    scrollbarAlign = align;
+    scrollbarArrowUp = arrowUp;
+    scrollbarArrowDown = arrowDown;
+    scrollbarArrowHeight = arrowHeight;
+    scrollbarSlider = slider;
+
+    /* Povolení ve flags */
+    flags |= SCROLLBAR;
+}
+
 /* Vytvoření sekce menu */
 Menu::sectionId Menu::addSection (Menu::sectionId parent, std::string* caption, Align* iconAlign, Align* itemsAlign, int flags) {
     Menu::Section section;
@@ -43,18 +57,69 @@ Menu::itemId Menu::addItem (Menu::sectionId section, int action, std::string* ca
     return sections[section].items.size()-1;
 }
 
+/* Posun dolů */
+int Menu::moveDown (void) {
+    if((*actualSection).items.size() == 0) return -1;
+
+    if(++(*actualSection).actualItem == (*actualSection).items.end())
+        (*actualSection).actualItem = (*actualSection).items.begin();
+
+    return (*(*actualSection).actualItem).flags & DISABLED ? -1 : (*(*actualSection).actualItem).action;
+}
+
+/* Posun nahoru */
+int Menu::moveUp (void) {
+    if((*actualSection).items.size() == 0) return -1;
+
+    if((*actualSection).actualItem == (*actualSection).items.begin())
+        (*actualSection).actualItem = (*actualSection).items.end();
+
+    return (*--(*actualSection).actualItem).flags & DISABLED ? -1 : (*(*actualSection).actualItem).action;
+}
+
+/* Posun o stránku dolů */
+int Menu::scrollDown (void) {
+    if((*actualSection).items.size() == 0) return -1;
+
+    /* Půjčeno z Map::view() */
+    int _itemHeight = *itemHeight;
+    if(_itemHeight == 0) _itemHeight = TTF_FontLineSkip(*itemFont);
+
+    (*actualSection).actualItem += *itemsH/_itemHeight-1;
+
+    if((*actualSection).actualItem > (*actualSection).items.end())
+        (*actualSection).actualItem = (*actualSection).items.end()-1;
+
+    return (*(*actualSection).actualItem).flags & DISABLED ? -1 : (*(*actualSection).actualItem).action;
+}
+
+/* Posun o stránku nahoru */
+int Menu::scrollUp (void) {
+    if((*actualSection).items.size() == 0) return -1;
+
+    /* Půjčeno z Map::view() */
+    int _itemHeight = *itemHeight;
+    if(_itemHeight == 0) _itemHeight = TTF_FontLineSkip(*itemFont);
+
+    (*actualSection).actualItem -= *itemsH/_itemHeight-1;
+
+    if((*actualSection).actualItem < (*actualSection).items.begin())
+        (*actualSection).actualItem = (*actualSection).items.begin();
+
+    return (*(*actualSection).actualItem).flags & DISABLED ? -1 : (*(*actualSection).actualItem).action;
+}
+
+
 /* Reload iterátorů */
 void Menu::reloadIterators (int section) {
     /* Reloud jen u jedný sekce (při změně počtu položek menu) */
     if(section != -1) {
-        sections[section].first = sections[section].items.begin();
         sections[section].actualItem = sections[section].items.begin();
         return;
     }
 
     /* Reloud u všech sekcí (při přidání sekce) */
     for(vector<Section>::iterator it = sections.begin(); it != sections.end(); ++it) {
-        (*it).first = (*it).items.begin();
         (*it).actualItem = (*it).items.begin();
     }
 
@@ -79,32 +144,77 @@ void Menu::view (void) {
         captionPosition = Effects::align(captionPosition, *captionAlign, (*text).w, (*text).h);
         SDL_Rect captionCrop = {0, 0, captionPosition.w, captionPosition.h};
         SDL_BlitSurface(text, &captionCrop, screen, &captionPosition);
+        SDL_FreeSurface(text);
     }
-
-    /** @todo Posuvníky */
 
     /* Mezera mezi položkami, pokud není striktně definovaná. */
     int _itemHeight = *itemHeight;
     if(_itemHeight == 0) _itemHeight = TTF_FontLineSkip(*itemFont);
 
-    /* Počet položek na stránku (spočítání koncového iterétoru) */
-    vector<Item>::const_iterator end;
-    if((*actualSection).items.end()-(*actualSection).first < *itemsH/_itemHeight)
-        end = (*actualSection).items.end();
-    else
-        end = (*actualSection).first+(*itemsH/_itemHeight)+1;
+    /* První a poslední zobrazená položka */
+    vector<Item>::const_iterator begin = (*actualSection).items.begin();
+    vector<Item>::const_iterator end = (*actualSection).items.end();
+
+    /* Scrollbar */
+    if(flags & SCROLLBAR) {
+        /* Prostor pro scrollbar */
+        SDL_Rect scrollbarPosition = Effects::align(area, ALIGN_DEFAULT, *scrollbarW, *scrollbarH, *scrollbarX, *scrollbarY);
+
+        /* Vrchní šipka, pokud je kam posouvat */
+        if((*actualSection).actualItem != (*actualSection).items.begin()) {
+            SDL_Rect arrowPosition = Effects::align(scrollbarPosition, (Align) ((*scrollbarAlign & 0x0F) | ALIGN_TOP), (**scrollbarArrowUp).w, (**scrollbarArrowUp).h);
+            SDL_Rect arrowCrop = {0, 0, arrowPosition.w, arrowPosition.h};
+            SDL_BlitSurface(*scrollbarArrowUp, &arrowCrop, screen, &arrowPosition);
+        }
+
+        /* Spodní šipka, pokud je kam posouvat */
+        if((*actualSection).actualItem != (*actualSection).items.end()-1) {
+            SDL_Rect arrowPosition = Effects::align(scrollbarPosition, (Align) ((*scrollbarAlign & 0x0F) | ALIGN_BOTTOM), (**scrollbarArrowDown).w, (**scrollbarArrowDown).h);
+            SDL_Rect arrowCrop = {0, 0, arrowPosition.w, arrowPosition.h};
+            SDL_BlitSurface(*scrollbarArrowDown, &arrowCrop, screen, &arrowPosition);
+        }
+
+        /* Slider (jen při počtu položek > 1, aby se zabránilo dělení nulou) */
+        if(end-begin > 1) {
+            /* Pozice slideru v nejvyšším bodě */
+            SDL_Rect sliderPosition = Effects::align(scrollbarPosition, (Align) ((*scrollbarAlign & 0x0F) | ALIGN_TOP), (**scrollbarSlider).w, (**scrollbarSlider).h, 0, *scrollbarArrowHeight);
+
+            /* Dráha, po které může slider jet */
+            int height = *scrollbarH-2*(*scrollbarArrowHeight)-(**scrollbarSlider).h;
+
+            /* Pozice */
+            sliderPosition.y += height*((*actualSection).actualItem-begin)/(end-begin-1);
+
+            SDL_Rect sliderCrop = {0, 0, sliderPosition.w, sliderPosition.h};
+            SDL_BlitSurface(*scrollbarSlider, &sliderCrop, screen, &sliderPosition);
+        }
+
+    }
+
+    /* Pokud je položek více, než se na stránku vejde a aktuální položka není v
+       první polovině menu, upravení začátku tak, aby aktuální položka byla v polovině */
+    if(end-begin > *itemsH/_itemHeight && (*actualSection).actualItem-(*itemsH/(_itemHeight*2)) > begin) {
+        begin = (*actualSection).actualItem-(*itemsH/(_itemHeight*2));
+
+        /* Pokud je položka blízko u konce, upravení začátku, aby bylo vypsáno
+           maximum položek */
+        if(end-begin < *itemsH/_itemHeight)
+            begin = end-*itemsH/(_itemHeight);
+    }
+
+    end = begin+*itemsH/_itemHeight;
 
     /* Plocha pro vykreslení položek. Prvně zarování celé plochy položek, až v ní
        se podle počtu položek na stránku a vertikálního zarovnání (&0xF0) vypočítá
        konečná plocha položek */
     SDL_Rect itemArea = Effects::align(
         Effects::align(area, ALIGN_DEFAULT, *itemsW, *itemsH, *itemsX, *itemsY),
-        (Align) (*(*actualSection).itemsAlign & 0xF0), *itemsW, _itemHeight*(end-(*actualSection).first)
+        (Align) (*(*actualSection).itemsAlign & 0xF0), *itemsW, _itemHeight*(end-begin)
     );
     itemArea.h = _itemHeight;
 
     /* Vykreslování položek */
-    for(vector<Item>::const_iterator it = (*actualSection).first; it != end; ++it) {
+    for(vector<Item>::const_iterator it = begin; it != end; ++it) {
         SDL_Rect textPosition = itemArea;
 
         /* Ikona */
@@ -136,6 +246,7 @@ void Menu::view (void) {
         textPosition = Effects::align(textPosition, (Align) ((*(*actualSection).itemsAlign & 0x0F) | ALIGN_MIDDLE), (*text).w, (*text).h);
         SDL_Rect textCrop = {0, 0, textPosition.w, textPosition.h};
         SDL_BlitSurface(text, &textCrop, screen, &textPosition);
+        SDL_FreeSurface(text);
 
         /** @todo flags EMPTY, SEPARATOR */
 

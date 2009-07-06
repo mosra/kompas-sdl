@@ -21,8 +21,13 @@
  */
 class Menu {
     public:
-        /** @brief Flags pro celé menu */
-        enum Flags { CAPTION = 0x01 };
+        /**
+         * @brief Flags pro celé menu
+         *
+         * Tyto flags by neměly být používány přímo, jsou nastavovány automaticky
+         * při spuštění funkcí Menu::configureCaption a Menu::configureScrollbar
+         */
+        enum Flags { CAPTION = 0x01, SCROLLBAR = 0x02 };
 
         /** @brief Flags pro sekci */
         enum SectionFlags { ICONS_LEFT = 0x01, ICONS_RIGHT = 0x02 };
@@ -81,6 +86,23 @@ class Menu {
          * @param   color   Barva
          */
         void configureCaption(int* _x, int* _y, int* _w, int* _h, Align* align, TTF_Font** font, SDL_Color* color);
+
+        /**
+         * @brief Nastavení scrollbaru
+         *
+         * Nastaví a povolí scrollbar. Šipky se umístí do vrchu a spodku oblasti
+         * dle vodorovného zarovnání, mezi nimi se bude pohybovat slider
+         * @param   _x          X-ová pozice
+         * @param   _y          Y-ová pozice
+         * @param   _w          Šířka
+         * @param   _h          Výška
+         * @param   align       Vodorovné zarovnání položek (vertikální ignorováno)
+         * @param   topArrow    Surface s vrchní šipkou
+         * @param   bottomArrow Surface se spodní šipkou
+         * @param   arrowHeight Výška šipky (pro odsazení slideru od šipek)
+         * @param   slider      Slider
+         */
+        void configureScrollbar(int* _x, int* _y, int* _w, int* _h, Align* align, int* arrowHeight, SDL_Surface** topArrow, SDL_Surface** bottomArrow, SDL_Surface** slider);
 
         /**
          * @brief Vytvoření sekce menu
@@ -159,49 +181,25 @@ class Menu {
 
         /**
          * @brief Posun na další položku
-         *
-         * @return  Akce položky
-         * @todo Vracet akci jen pokud není položka zakázaná
-         * @todo Současný posun dlouhého menu (... => přesunout z H pryč)
+         * @return  Akce aktuální položky, pokud není zakázaná
          */
-        int moveDown(void) {
-            if((*actualSection).items.size() == 0) return -1;
-
-            if(++(*actualSection).actualItem == (*actualSection).items.end())
-                (*actualSection).actualItem = (*actualSection).items.begin();
-
-            return (*(*actualSection).actualItem).action;
-        }
+        int moveDown(void);
 
         /**
          * @brief Posun na předchozí položku
-         *
-         * @return  Akce položky
-         * @todo Vracet akci jen pokud není položka zakázaná
-         * @todo Současný posun dlouhého menu (... => přesunout z H pryč)
+         * @return  Akce aktuální položky, pokud není zakázaná
          */
-        int moveUp(void) {
-            if((*actualSection).items.size() == 0) return -1;
-
-            if((*actualSection).actualItem == (*actualSection).items.begin())
-                (*actualSection).actualItem = (*actualSection).items.end();
-
-            return (*--(*actualSection).actualItem).action;
-        }
+        int moveUp(void);
 
         /**
          * @brief Rolování o stránku dolů
-         *
-         * @return  Akce položky
-         * @todo Implementovat!
+         * @return  Akce aktuální položky, pokud není zakázaná
          */
         int scrollDown(void);
 
         /**
          * @brief Rolování o stránku nahoru
-         *
-         * @return  Akce položky
-         * @todo Implementovat!
+         * @return  Akce aktuální položky, pokud není zakázaná
          */
         int scrollUp(void);
 
@@ -238,6 +236,18 @@ class Menu {
         /** Barva nadpisku */
         SDL_Color* captionColor;
 
+        /** Pozice scrollbaru */
+        int *scrollbarX, *scrollbarY, *scrollbarW, *scrollbarH;
+
+        /** Zarovnání scrollbaru */
+        Align *scrollbarAlign;
+
+        /** Šipky a posuvník */
+        SDL_Surface **scrollbarArrowUp, **scrollbarArrowDown, **scrollbarSlider;
+
+        /** Výška šipek (=> odsazení šipek od posuvníku) */
+        int *scrollbarArrowHeight;
+
         /** Velikost a pozice oblasti položek menu */
         int *itemsX, *itemsY, *itemsW, *itemsH;
 
@@ -273,7 +283,6 @@ class Menu {
             int flags;
 
             std::vector<Item> items;
-            std::vector<Item>::const_iterator first;
             std::vector<Item>::const_iterator actualItem;
         };
 

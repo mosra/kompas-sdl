@@ -21,6 +21,7 @@ void Splash::view(void){
         SDL_Rect dst = Effects::align(textArea, *(*it).align, (*text).w, (*text).h);
         SDL_Rect textCrop = {0, 0, dst.w, dst.h};
         SDL_BlitSurface(text, &textCrop, screen, &dst);
+        SDL_FreeSurface(text);
     }
 }
 
