@@ -1,6 +1,11 @@
 #ifndef EFFECTS_H
 #define EFFECTS_H
 
+/**
+ * @file Effects.h
+ * @brief Třída Effects
+ */
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include "utility.h"
@@ -76,7 +81,7 @@ class Effects {
          * @brief Zda se má vyhlazovat text
          *
          * Zde lze nastavit, zda se má vyhlazovat text. Třídy vypisující text
-         * potom volají funkci Effects::textRenderFunction. Default hodnota je true.
+         * potom volají funkci Effects::textRenderFunction.
          */
         static bool smoothText;
 

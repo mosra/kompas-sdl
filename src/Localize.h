@@ -1,6 +1,11 @@
 #ifndef LOCALIZE_H
 #define LOCALIZE_H
 
+/**
+ * @file Localize.h
+ * @brief Třída Localize
+ */
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,7 +16,9 @@
  * @brief Jazykové lokalizace
  *
  * Umožňuje jazykovou lokalizaci programu z conf souborů, možnost změny jazyka
- * za běhu, fallback jazyk pro dosud nepřeložené části programu.
+ * za běhu, fallback jazyk pro dosud nepřeložené části programu. Funkce, které
+ * používají tyto lokalizace, pracují s ukazateli, takže může být jazyk změněn
+ * bez jejich spoluúčasti.
  */
 class Localize {
     public:
@@ -25,14 +32,14 @@ class Localize {
         Localize(const std::string& file, const std::string& fallback = "")
             { load(file, fallback); }
 
-        /**
-         * @brief Destruktor
-         */
+        /** @brief Destruktor */
         ~Localize(void);
 
         /**
          * @brief Načtení jazyka
          *
+         * Všechny texty získané přetím pomocí Localize::get se naleznou v novém
+         * souboru, případně ve fallbacku.
          * @param   file        Soubor s jazykem
          * @param   _fallback   Fallback soubor (použije se, pokud některé
          *  parametry v hlavním souboru chybí)
@@ -48,21 +55,16 @@ class Localize {
         std::string* get(const std::string& parameter, const std::string& section = ConfParser::DEFAULT_SECTION);
 
     private:
-        /** @brief Konfigurák s jazykem */
-        ConfParser lang;
-
-        /** @brief Fallback jazyk */
-        ConfParser fallback;
-
         /** @brief Lokalizovaný text */
         struct Localization {
-            std::string parameter;
-            std::string section;
-            std::string* text;
+            std::string parameter;  /**< @brief Název parametru z conf souboru */
+            std::string section;    /**< @brief Název sekce z conf souboru */
+            std::string* text;      /**< @brief Ukazatel na lokalizovaný text */
         };
 
-        /** @brief Vektor s lokalizovanými texty */
-        std::vector<Localization> localizations;
+        ConfParser lang;            /**< @brief Konfigurák s jazykem */
+        ConfParser fallback;        /**< @brief Fallback jazyk */
+        std::vector<Localization> localizations;    /**< @brief Vektor s lokalizovanými texty */
 };
 
 #endif

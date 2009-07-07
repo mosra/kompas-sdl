@@ -1,6 +1,11 @@
 #ifndef MENU_H
 #define MENU_H
 
+/**
+ * @file Menu.h
+ * @brief Třída Menu
+ */
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -27,13 +32,23 @@ class Menu {
          * Tyto flags by neměly být používány přímo, jsou nastavovány automaticky
          * při spuštění funkcí Menu::configureCaption a Menu::configureScrollbar.
          */
-        enum Flags { CAPTION = 0x01, SCROLLBAR = 0x02 };
+        enum Flags {
+            CAPTION = 0x01,     /**< @brief Povolení zobrazení nadpisku sekce */
+            SCROLLBAR = 0x02    /**< @brief Povolení zobrazení scrollbaru */
+        };
 
         /** @brief Flags pro sekci */
-        enum SectionFlags { ICONS_LEFT = 0x01, ICONS_RIGHT = 0x02 };
+        enum SectionFlags {
+            ICONS_LEFT = 0x01,  /**< @brief Zobrazení ikon položek vpravo */
+            ICONS_RIGHT = 0x02  /**< @brief Zobrazení ikon položek vlevo */
+        };
 
         /** @brief Flags pro položku menu */
-        enum ItemFlags { EMPTY = 0x01, SEPARATOR = 0x02, DISABLED = 0x04 };
+        enum ItemFlags {
+            EMPTY = 0x01,       /**< @brief Položka je prázdná (mezera) */
+            SEPARATOR = 0x02,   /**< @brief Položka je oddělovač (čára) */
+            DISABLED = 0x04     /**< @brief Položka je zakázaná */
+        };
 
         /** @brief Typ pro ID sekce */
         typedef unsigned int sectionId;
@@ -101,6 +116,7 @@ class Menu {
          * @param   itemsAlign  Zarovnání položek
          * @param   flags       Flags (viz Menu::SectionFlags)
          * @return  ID sekce, použitelné při přidávání a mazání položek menu v této sekci
+         * @todo Jiné barvy a font pro každou sekci menu?
          */
         sectionId addSection(sectionId parent, std::string* caption, Align* iconAlign, Align* itemsAlign, int flags = 0);
 
@@ -168,25 +184,38 @@ class Menu {
         }
 
         /**
+         * @brief Přepnutí na nadřazenou sekci
+         *
+         * @todo Vrátit akci vybrané položky
+         */
+        inline void parentSection(void) {
+            actualSection = sections.begin()+(*actualSection).parent;
+        }
+
+        /**
          * @brief Posun na další položku
+         *
          * @return  Akce aktuální položky, pokud není zakázaná
          */
         int moveDown(void);
 
         /**
          * @brief Posun na předchozí položku
+         *
          * @return  Akce aktuální položky, pokud není zakázaná
          */
         int moveUp(void);
 
         /**
          * @brief Rolování o stránku dolů
+         *
          * @return  Akce aktuální položky, pokud není zakázaná
          */
         int scrollDown(void);
 
         /**
          * @brief Rolování o stránku nahoru
+         *
          * @return  Akce aktuální položky, pokud není zakázaná
          */
         int scrollUp(void);
@@ -195,88 +224,56 @@ class Menu {
         void view(void);
 
     private:
-        /** @brief Displejová surface */
-        SDL_Surface* screen;
-
-        /** @brief Pozadí menu */
-        SDL_Surface** image;
-
-        /** @brief Pozice menu */
-        SDL_Rect* position;
-
-        /** @brief Zarovnání menu */
-        Align *menuAlign;
-
-        /** @brief Pozice nadpisku */
-        SDL_Rect* captionPosition;
-
-        /** @brief Zarovnání nadpisku */
-        Align* captionAlign;
-
-        /** @brief Font nadpisku */
-        TTF_Font** captionFont;
-
-        /** @brief Barva nadpisku */
-        SDL_Color* captionColor;
-
-        /** @brief Pozice scrollbaru */
-        SDL_Rect* scrollbarPosition;
-
-        /** @brief Zarovnání scrollbaru */
-        Align *scrollbarAlign;
-
-        /** @brief Šipky a posuvník */
-        SDL_Surface **scrollbarArrowUp, **scrollbarArrowDown, **scrollbarSlider;
-
-        /** @brief Výška šipek (=> odsazení šipek od posuvníku) */
-        int *scrollbarArrowHeight;
-
-        /** @brief Pozice oblasti položek menu */
-        SDL_Rect* itemsPosition;
-
-        /** @brief Výška položek, šířka ikony */
-        int *itemHeight, *iconWidth;
-
-        /**
-         * @brief Font položek menu
-         * @todo Jiný font, barvu pro každou sekci menu?
-         */
-        TTF_Font** itemFont;
-
-        /**
-         * @brief Barvy položek
-         * @todo Jiné barvy pro každou sekci menu?
-         */
-        SDL_Color *itemColor, *activeItemColor, *disabledItemColor, *activeDisabledItemColor;
-
-        /** @brief Flags pro celé menu */
-        int flags;
-
         /** @brief Struktura položky menu */
         struct Item {
-            std::string* caption;
-            SDL_Surface** icon;
-            int action;
-            int flags;
+            std::string* caption;   /**< @brief Text položky */
+            SDL_Surface** icon;     /**< @brief Ikona položky (může být NULL) */
+            int action;             /**< @brief Číselná specifikace akce položky */
+            int flags;              /**< @brief Flags (viz Menu::ItemFlags) */
         };
 
         /** @brief Sekce menu */
         struct Section {
-            sectionId parent;
-            std::string* caption;
-            Align* iconAlign;
-            Align* itemsAlign;
-            int flags;
+            sectionId parent;       /**< @brief ID nadřazené sekce */
+            std::string* caption;   /**< @brief Nadpisek sekce (může být NULL) */
+            Align* iconAlign;       /**< @brief Zarovnání ikon (může být NULL) */
+            Align* itemsAlign;      /**< @brief Zarovnání položek */
+            int flags;              /**< @brief Flags (viz Menu::SectionFlags) */
 
-            std::vector<Item> items;
-            std::vector<Item>::const_iterator actualItem;
+            std::vector<Item> items;    /**< @brief Vektor s jednotlivými položkami */
+            std::vector<Item>::const_iterator actualItem;   /**< @brief Aktuální položka */
         };
 
-        /** @brief Jednotlivé sekce */
-        std::vector<Section> sections;
+        SDL_Surface* screen;        /**< @brief Displejová surface */
+        SDL_Surface** image;        /**< @brief Pozadí menu */
+        SDL_Rect* position;         /**< @brief Pozice menu */
+        Align *menuAlign;           /**< @brief Zarovnání menu */
 
-        /** @brief Aktuální sekce */
-        std::vector<Section>::iterator actualSection;
+        SDL_Rect* captionPosition;  /**< @brief Pozice nadpisku */
+        Align* captionAlign;        /**< @brief Zarovnání nadpisku */
+        TTF_Font** captionFont;     /**< @brief Font nadpisku */
+        SDL_Color* captionColor;    /**< @brief Barva nadpisku */
+
+        SDL_Rect* scrollbarPosition;    /**< @brief Pozice scrollbaru */
+        Align *scrollbarAlign;          /**< @brief Zarovnání scrollbaru */
+        SDL_Surface **scrollbarArrowUp, /**< @brief Horní šipka scrollbaru */
+            **scrollbarArrowDown,       /**< @brief Spodní šipka scrollbaru */
+            **scrollbarSlider;          /**< @brief Posuvník scrollbaru */
+        int *scrollbarArrowHeight;      /**< @brief Výška šipek scrollbaru
+                                             @brief (=> odsazení šipek od posuvníku) */
+
+        SDL_Rect* itemsPosition;    /**< @brief Pozice oblasti položek menu */
+        int *itemHeight,            /**< @brief Výška položky menu (0 pro autodetekci) */
+            *iconWidth;             /**< @brief Šířka ikony menu */
+        TTF_Font** itemFont;        /**< @brief Font položek menu */
+        SDL_Color *itemColor,       /**< @brief Barva normální položky */
+            *activeItemColor,       /**< @brief Barva aktivní (právě vybrané) položky */
+            *disabledItemColor,     /**< @brief Barva zakázané položky */
+            *activeDisabledItemColor;   /**< @brief Barva právě vybrané zakázané položky */
+
+        int flags;                  /**< @brief Flags pro celé menu (viz Menu::Flags) */
+        std::vector<Section> sections;                  /**< @brief Jednotlivé sekce */
+        std::vector<Section>::iterator actualSection;   /**< @brief Aktuální sekce */
 
         /**
          * @brief Obnovení iterátorů ukazujících na položky

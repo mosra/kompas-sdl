@@ -3,7 +3,7 @@
 using std::cout;    using std::endl;        using std::vector;
 
 /* Nastavení nadpisku */
-void Menu::configureCaption (SDL_Rect* _position, Align* align, _TTF_Font** font, SDL_Color* color) {
+void Menu::configureCaption (SDL_Rect* _position, Align* align, TTF_Font** font, SDL_Color* color) {
     captionPosition = _position;
     captionAlign = align;
     captionFont = font;

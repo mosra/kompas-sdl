@@ -233,10 +233,12 @@ template<class Value> ConfParser::parameterPointer ConfParser::value(const strin
     return position;
 }
 
+#ifndef GENERATING_DOXYGEN_OUTPUT
 /* Předdefinování určitě používaných template, aby linker neházel chyby o tom,
     že v knihovně taková template nejsou instancovaná */
 template ConfParser::parameterPointer ConfParser::value<int>(const string&, int&, ConfParser::sectionPointer, ConfParser::parameterPointer, int);
 template ConfParser::parameterPointer ConfParser::value<double>(const string&, double&, ConfParser::sectionPointer, ConfParser::parameterPointer, int);
+#endif
 
 /* Nalezení bool hodnoty parametru */
 template<> ConfParser::parameterPointer ConfParser::value(const string& parameter, bool& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) {
