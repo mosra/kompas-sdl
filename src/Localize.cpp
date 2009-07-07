@@ -23,7 +23,7 @@ void Localize::load (const string& file, const string& _fallback) {
 
         /* Pokus o načtení z primární lokalizace, pak fallback */
         if(lang.value((*it).parameter, *(*it).text, lang.section((*it).section)) == lang.parameterNotFound())
-            if(fallback.value((*it).parameter, *(*it).text, fallback.section((*it).section)) == fallback.parameterNotFound())
+            if(!fallback || fallback.value((*it).parameter, *(*it).text, fallback.section((*it).section)) == fallback.parameterNotFound())
                 *(*it).text = "localizeMe{ [" + (*it).section + "] " + (*it).parameter + " }";
     }
 }
@@ -32,7 +32,7 @@ void Localize::load (const string& file, const string& _fallback) {
 string* Localize::get (const string& parameter, const string& section) {
     string* text = new string;
     if(lang.value(parameter, *text, lang.section(section)) == lang.parameterNotFound())
-        if(fallback.value(parameter, *text, fallback.section(section)) == fallback.parameterNotFound())
+        if(!fallback || fallback.value(parameter, *text, fallback.section(section)) == fallback.parameterNotFound())
             *text = "localizeMe{ [" + section + "] " + parameter + " }";
 
     Localization loc;

@@ -145,11 +145,6 @@ void ConfParser::reloadSections(void) {
             sections.push_back(section);
         }
     }
-
-    /* Koncová sekce */
-    section.section = ConfParser::DEFAULT_SECTION;
-    section.begin = parameters.end();
-    sections.push_back(section);
 }
 
 /* Nalezení sekce */
@@ -157,6 +152,10 @@ ConfParser::sectionPointer ConfParser::section(const string& name, ConfParser::s
     for(ConfParser::sectionPointer it = begin; it != sections.end(); ++it) {
         if((*it).section == name) return it;
     }
+
+    /* Nic nenalezeno, pokud hledáme poprvé, chybové hlášení */
+    if(begin == sections.begin())
+        cerr << "Sekce '" << name << "' nebyla v souboru '" << filename << "' nalezena." << endl;
 
     return sections.end();
 }
@@ -167,7 +166,7 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
     if(section == sections.end()) return parameters.end();
 
     /* Spočtení konce sekce */
-    ConfParser::parameterPointer end = (*(section+1)).begin;
+    ConfParser::parameterPointer end = (section == sections.end()-1) ? parameters.end() : (*(section+1)).begin;
 
     /* Procházení sekce */
     for(ConfParser::parameterPointer it = begin; it != end; ++it) {
@@ -179,7 +178,7 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
 
     /* Nic nenalezeno, pokud hledáme poprvé, vyhození hlášky */
     if(begin == (*section).begin)
-        cerr << "Hodnota parametru '" << parameter << "' nebyla v sekci [" << (*section).section << "] nalezena." << endl;
+        cerr << "Hodnota parametru '" << parameter << "' nebyla v sekci [" << (*section).section << "] souboru '" << filename << "' nalezena." << endl;
 
     return parameters.end();
 }

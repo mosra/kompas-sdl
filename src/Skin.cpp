@@ -50,6 +50,9 @@ void Skin::load (const string& file) {
         conf.value((*it).parameter, file, conf.section((*it).section));
 
         SDL_Surface* temp = IMG_Load(file.c_str());
+        if(temp == NULL)
+            cerr << "Nepodařilo se načíst obrázek '" << file << "'." << endl;
+
         (*(*it).property) = SDL_DisplayFormatAlpha(temp);
         SDL_FreeSurface(temp);
     }
@@ -65,6 +68,8 @@ void Skin::load (const string& file) {
         conf.value((*it).parameter + "Size", fontSize, conf.section((*it).section));
 
         (*(*it).property) = TTF_OpenFont(file.c_str(), fontSize);
+        if(*(*it).property == NULL)
+            cerr << "Nepodařilo se načíst font '" << file << "'." << endl;
     }
 
     /* Načtení textů z nového skinu */
@@ -108,7 +113,7 @@ template<> SDL_Surface** Skin::get(const string& parameter, string section) {
     /* Konverze do formátu displeje */
     SDL_Surface* temp = IMG_Load(file.c_str());
     if(temp == NULL)
-        cerr << "Nepodařilo se načíst obrázek \"" << file << "\"." << endl;
+        cerr << "Nepodařilo se načíst obrázek '" << file << "'." << endl;
 
     *surface = SDL_DisplayFormatAlpha(temp);
     SDL_FreeSurface(temp);
@@ -133,9 +138,8 @@ template<> TTF_Font** Skin::get(const string& parameter, string section) {
 
     TTF_Font** font = new TTF_Font*;
     *font = TTF_OpenFont(file.c_str(), fontSize);
-
     if(*font == NULL)
-        cerr << "Nepodařilo se načíst font \"" << file << "\"." << endl;
+        cerr << "Nepodařilo se načíst font '" << file << "'." << endl;
 
     Skin::Property<TTF_Font**> property;
     property.parameter = parameter;
