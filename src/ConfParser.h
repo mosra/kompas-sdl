@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <sstream>      /* std::istringstream */
-#include <cstring>      /** @todo zbavit se toho strcmp() */
+#include <cstring>      /* strcmp() */
 
 #include "utility.h"
 
@@ -14,43 +14,46 @@
  * @brief Parser konfiguračních souborů
  *
  * Konfigurační soubory jsou v tomto formátu:
- * [názevSekce]
- * #Komentář
- * ;Komentář
- * parametr=hodnota
- * jinýParametr="hodnota"
- * dalšíParametr='hodnota'
+ * <pre>[názevSekce]
+ *# Komentář
+ *;Komentář
+ *parametr=hodnota
  *
- * Komentář musí vždy začínat na novém řádku, v souboru může být libovolný počet
- * prázdných řádků, mezery na začátku a konci řádku nehrají roli. Pokud není před
- * prvním parametrem v souboru uveden název sekce, její název je zvolen podle
- * ConfParser::DEFAULT_SECTION. Sekce a parametry se stejným názvem se mohou
- * libovolně opakovat, jejich výběr také není omezen. UTF8 signatura na začátku
- * souboru (EF BB BF) je automaticky detekována a přeskočena. Maximální délka
- * komentáře, názvu sekce, parametru nebo hodnoty parametru je nastavena na
- * ConfParser::MAX_LINE_LENGTH. Pokud není hodnota v uvozovkách (apostrofech),
- * jsou u ní osekány počáteční a koncové mezery.
+ *[jináSekce]
+ *jinýParametr="hodnota"
+ *dalšíParametr='hodnota'
+ * </pre>
+ *
+ * Komentář musí vždy začínat znakem # nebo ; na novém řádku, v souboru může být
+ * libovolný počet prázdných řádků, mezery na začátku a konci řádku nehrají roli.
+ * Pokud není před prvním parametrem v souboru uveden název sekce, její název je
+ * zvolen podle ConfParser::DEFAULT_SECTION. Sekce a parametry se stejným názvem
+ * se mohou libovolně opakovat, jejich výběr také není omezen. UTF8 signatura na
+ * začátku souboru (<tt>EF BB BF</tt>) je automaticky detekována a přeskočena.
+ * Maximální délka komentáře, názvu sekce, parametru nebo hodnoty parametru je
+ * nastavena na ConfParser::MAX_LINE_LENGTH. Pokud není hodnota v uvozovkách
+ * (apostrofech), jsou u ní osekány počáteční a koncové mezery.
  * @todo Testovat parametry jen na alfanumerické znaky
  * @todo Ošetřit escape znaky
  * @todo Default sekce jen když obsahuje nějaké parametry
  */
 class ConfParser {
     private:
-        /** Parametr konfiguračního souboru */
+        /** @brief Parametr konfiguračního souboru */
         struct Parameter {
             std::string parameter, value;
         };
 
-        /** Sekce konfiguračního souboru */
+        /** @brief Sekce konfiguračního souboru */
         struct Section {
             std::string section;
             std::vector<Parameter>::const_iterator begin;
         };
     public:
-        /** Maximální délka komentáře, názvu sekce, parametru nebo hodnoty parametru */
+        /** @brief Maximální délka komentáře, názvu sekce, parametru nebo hodnoty parametru */
         static const int MAX_LINE_LENGTH;
 
-        /** Název první sekce v konfiguráku */
+        /** @brief Název první sekce v konfiguráku */
         static const std::string DEFAULT_SECTION;
 
         /** Flags při výběru hodnoty int */
@@ -71,7 +74,7 @@ class ConfParser {
         /**
          * @brief Žádný parametr nenalezen
          *
-         * Použitelné pro porovnávání s návratovou hodnotou ConfParser::value
+         * Použitelné pro porovnávání s návratovou hodnotou ConfParser::value.
          * @return Iterátor parameters.end()
          */
         inline parameterPointer parameterNotFound() const { return parameters.end(); }
@@ -79,7 +82,7 @@ class ConfParser {
         /**
          * @brief Žádná sekce nenalezena
          *
-         * Použitelné pro porovnávání s návratovou hodnotou ConfParser::section
+         * Použitelné pro porovnávání s návratovou hodnotou ConfParser::section.
          * @return Iterátor sections.end()
          */
         inline sectionPointer sectionNotFound() const { return sections.end(); }
@@ -103,7 +106,7 @@ class ConfParser {
         /**
          * @brief Přeypování na bool
          *
-         * Vrací true, pokud byl načten alespoň jeden parametr z konfiguračního souboru
+         * Vrací true, pokud byl načten alespoň jeden parametr z konfiguračního souboru.
          */
         inline operator bool(void) { return !(parameters.size() == 0); }
 
@@ -111,7 +114,8 @@ class ConfParser {
          * @brief Kopírovací konstruktor
          *
          * Při kopírování do čistého objektu se musí reloadovat iterátory
-         * ukazující na sekce, aby při zrušení původce dat nedošlo k segfault
+         * ukazující na sekce, aby při zrušení původce dat nedošlo k segfault.
+         * @param   conf    Kopírovaný objekt
          */
         inline ConfParser(const ConfParser& conf): filename(conf.filename), parameters(conf.parameters) {
             file.open(filename.c_str());
@@ -122,7 +126,9 @@ class ConfParser {
          * @brief Operátor přiřazení
          *
          * Při přepisování stávajícího objektu se musí korektně zničit předek
-         * a reloadovat iterátory původce nových dat
+         * a reloadovat iterátory původce nových dat.
+         * @param   conf        Přiřazovaný objekt
+         * @return  Přiřazený objekt
          */
         ConfParser& operator= (const ConfParser& conf);
 
@@ -130,7 +136,7 @@ class ConfParser {
          * @brief Nalezení hodnoty parametru
          *
          * @param   parameter   Název parametru
-         * @param   value       Reference na proměnnou pro uložení hodnoty
+         * @param   _value      Reference na proměnnou pro uložení hodnoty
          * @param   section     Sekce, ve které se bude hledat
          * @param   begin       Počáteční parametr, od kterého se bude hledat
          *  (použitelné v souborech s více stejně nazvanými parametry v jedné sekci)
@@ -143,9 +149,9 @@ class ConfParser {
         /**
          * @brief Nalezení hodnoty parametru
          *
-         * Počátek hledávní nastaven na počátek dané sekce
+         * Počátek hledávní nastaven na počátek dané sekce.
          * @param   parameter   Název parametru
-         * @param   value       Reference na proměnnou pro uložení hodnoty
+         * @param   _value      Reference na proměnnou pro uložení hodnoty
          * @param   section     Sekce, ve které se bude hledat
          * @param   flags       Viz ConfParser::flags, použitelné při získávání int
          * @return  Ukazatel na nalezený parametr, pokud nebyl nalezen, vrací to
@@ -159,9 +165,9 @@ class ConfParser {
         /**
          * @brief Nalezení hodnoty parametru
          *
-         * Hledá se v implicitní sekci (použitelné v conf souborech bez sekcí)
+         * Hledá se v implicitní sekci (použitelné v conf souborech bez sekcí).
          * @param   parameter   Název parametru
-         * @param   value       Reference na proměnnou pro uložení hodnoty
+         * @param   _value      Reference na proměnnou pro uložení hodnoty
          * @param   begin       Počáteční parametr, od kterého se bude hledat
          *  (použitelné v souborech s více stejně nazvanými parametry v jedné sekci)
          * @param   flags       Viz ConfParser::flags, použitelné při získávání int
@@ -175,9 +181,9 @@ class ConfParser {
         /**
          * @brief Nalezení hodnoty parametru
          *
-         * Hledá se od počátku se v implicitní sekci (použitelné v conf souborech bez sekcí)
+         * Hledá se od počátku v implicitní sekci (použitelné v conf souborech bez sekcí).
          * @param   parameter   Název parametru
-         * @param   value       Reference na proměnnou pro uložení hodnoty
+         * @param   _value      Reference na proměnnou pro uložení hodnoty
          * @param   flags       Viz ConfParser::flags, použitelné při získávání int
          * @return  Ukazatel na nalezený parametr, pokud nebyl nalezen, vrací to
          *  samé jako ConfParser::parameterNotFound
@@ -189,7 +195,7 @@ class ConfParser {
         /**
          * @brief Nalezení sekce
          *
-         * @param   section     Název sekce
+         * @param   name        Název sekce
          * @param   begin       Počátek hledání (použitelné v souborech s více stejnými sekcemi)
          * @return  Ukazatel na nalezenou sekci použitelný ve funkcích ConfParser::value,
          *  pokud nebyla nalezena, vrací to samé jako ConfParser::sectionNotFound
@@ -199,8 +205,8 @@ class ConfParser {
         /**
          * @brief Nalezení sekce
          *
-         * Hledá se od počátku souboru
-         * @param   section     Název sekce
+         * Hledá se od počátku souboru.
+         * @param   name        Název sekce
          * @return  Ukazatel na nalezenou sekci použitelný ve funkcích ConfParser::value,
          *  pokud nebyla nalezena, vrací to samé jako ConfParser::sectionNotFound
          */
@@ -208,22 +214,22 @@ class ConfParser {
             return section(name, sections.begin());
         }
     private:
-        /** Soubor s konfigurákem */
+        /** @brief Soubor s konfigurákem */
         std::ifstream file;
 
-        /** Jméno souboru s konfigurákem */
+        /** @brief Jméno souboru s konfigurákem */
         std::string filename;
 
-        /** Vektor s parametry a komentáři */
+        /** @brief Vektor s parametry a komentáři */
         std::vector<Parameter> parameters;
 
-        /** Vektor s názvy a pozicemi sekcí */
+        /** @brief Vektor s názvy a pozicemi sekcí */
         std::vector<Section> sections;
 
         /**
          * @brief Zničení objektu
          *
-         * Uvolnění všech dat a uzavření souboru
+         * Uvolnění všech dat a uzavření souboru.
          */
         inline void destroy(void) { file.close(); }
 
@@ -231,7 +237,7 @@ class ConfParser {
          * @brief (Znovu)nalezení sekcí v konfiguráku
          *
          * Interně jsou na pozice sekcí používány iterátory, při změně dat (načtení
-         * souboru) jsou rozházeny a musí se znovu nalézt
+         * souboru) jsou rozházeny a musí se znovu nalézt.
          */
         void reloadSections(void);
 };

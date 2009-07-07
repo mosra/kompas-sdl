@@ -27,6 +27,7 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
         file.get(buffer, 4);
 
         /* Tak to BOM nebyl */
+        /** @todo zbavit se toho strcmp() */
         if(strcmp(buffer, bom) != 0) {
             file.seekg(0, std::ios::beg);
         }

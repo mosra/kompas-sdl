@@ -11,8 +11,11 @@ else(Subversion_FOUND)
     set(SVN_VERSION "SVN unknown")
 endif(Subversion_FOUND)
 
+message(STATUS "Verze: ${SVN_VERSION}")
+
 #Konfigurák (pro zapsání SVN verze)
 configure_file(${CMAKE_SOURCE_DIR}/src/configure.h.cmake ${CMAKE_BINARY_DIR}/configure.h)
+configure_file(${CMAKE_SOURCE_DIR}/Doxyfile.version.cmake ${CMAKE_BINARY_DIR}/Doxyfile.version)
 
 #Přilinkování SDL
 find_package(SDL)
@@ -40,3 +43,39 @@ target_link_libraries(Splash Effects ${SDL_LIBRARY})
 #Hlavní program
 add_executable(map2x src/main.cpp)
 target_link_libraries(map2x Skin Splash Menu Localize ${SDL_LIBRARY})
+
+#Doxygen dokumentace
+find_package(Doxygen)
+if(DOXYGEN_EXECUTABLE AND UNIX)
+
+    # Adresář doc
+    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/doc)
+
+    # Příkaz pro vytvoření dokumentace
+    add_custom_command(
+    OUTPUT ${CMAKE_SOURCE_DIR}/doc/wtf ${CMAKE_SOURCE_DIR}/doc/latex/refman.tex
+    COMMAND rm -rf ${CMAKE_SOURCE_DIR}/doc/*
+    COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile > /dev/null
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
+
+    # Příkaz pro vytvoření PDF dokumentace
+    add_custom_command(
+    OUTPUT ${CMAKE_SOURCE_DIR}/doc/refman.pdf
+    COMMAND make pdf > /dev/null
+    COMMAND mv refman.pdf ../ && rm -r ../latex
+    DEPENDS ${CMAKE_SOURCE_DIR}/doc/latex/refman.tex
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc/latex
+    )
+
+    # Custom target, který se postará o vytvoření dokumentace
+    add_custom_target(
+    documentation ALL
+    DEPENDS ${CMAKE_SOURCE_DIR}/doc/wtf
+    DEPENDS ${CMAKE_SOURCE_DIR}/doc/refman.pdf
+    )
+
+#Doxygen nenalezen
+else(DOXYGEN_EXECUTABLE AND UNIX)
+    message(STATUS "Doxygen není přítomen, žádná dokumentace nebude vytvořena.")
+endif(DOXYGEN_EXECUTABLE AND UNIX)

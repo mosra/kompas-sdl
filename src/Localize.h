@@ -11,8 +11,7 @@
  * @brief Jazykové lokalizace
  *
  * Umožňuje jazykovou lokalizaci programu z conf souborů, možnost změny jazyka
- * za běhu, fallback jazyk pro dosud nepřeložené části programu
- * @todo Fallback jen volitelně!
+ * za běhu, fallback jazyk pro dosud nepřeložené části programu.
  */
 class Localize {
     public:
@@ -35,10 +34,10 @@ class Localize {
          * @brief Načtení jazyka
          *
          * @param   file        Soubor s jazykem
-         * @param   fallback    Fallback soubor (použije se, pokud některé
+         * @param   _fallback   Fallback soubor (použije se, pokud některé
          *  parametry v hlavním souboru chybí)
          */
-        void load(const std::string& file, const std::string& fallback = "");
+        void load(const std::string& file, const std::string& _fallback = "");
 
         /**
          * @brief Získání lokalizovaného textu
@@ -49,20 +48,20 @@ class Localize {
         std::string* get(const std::string& parameter, const std::string& section = ConfParser::DEFAULT_SECTION);
 
     private:
-        /** Konfigurák s jazykem */
+        /** @brief Konfigurák s jazykem */
         ConfParser lang;
 
-        /** Fallback jazyk */
+        /** @brief Fallback jazyk */
         ConfParser fallback;
 
-        /** Lokalizovaný text */
+        /** @brief Lokalizovaný text */
         struct Localization {
             std::string parameter;
             std::string section;
             std::string* text;
         };
 
-        /** Vektor s lokalizovanými texty */
+        /** @brief Vektor s lokalizovanými texty */
         std::vector<Localization> localizations;
 };
 

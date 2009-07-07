@@ -12,11 +12,11 @@
 #include "Effects.h"
 
 /**
- * Skiny
+ * @brief Skiny
  *
  * Umožňuje úplnou konfigurovatelnost skinů v conf souborech a jejich změnu bez
- * nutnosti restartu aplikace
- *
+ * nutnosti restartu aplikace. Založeno na ukazatelích, takže je (téměř) nulová
+ * režie při vykreslování.
  * @todo Přepsat z ukazatelů na reference (asi nepude?)
  * @todo Skiny podle velikosti displeje (větší menu pro větší atd.)
  */
@@ -24,19 +24,20 @@ class Skin {
     public:
 
         /**
-         * Konstruktor
-         * @param   skinFile    Soubor se skinem
+         * @brief Konstruktor
+         *
+         * @param   _screen     Displejová surface
+         * @param   file        Soubor se skinem
          */
         inline Skin(SDL_Surface* _screen, const std::string& file): screen(_screen) { load(file); }
 
-        /**
-         * Destruktor
-         */
+        /** @brief Destruktor */
         ~Skin(void);
 
         /**
-         * Načtení skinu
-         * @param   skinFile    Soubor se skinem
+         * @brief Načtení skinu
+         *
+         * @param   file        Soubor se skinem
          */
         void load(const std::string& file);
 
@@ -44,7 +45,7 @@ class Skin {
          * @brief Inicializace a získání ukazatele na vlastnost
          *
          * Pro možné typy vlastností viz Skin::surfaces, Skin::fonts, Skin::colors,
-         * Skin::positions, Skin::numbers, Skin::aligns, Skin::texts
+         * Skin::positions, Skin::numbers, Skin::aligns, Skin::texts.
          * @param   parameter   Parametr
          * @param   section     Sekce
          * @return  Ukazatel na vlastnost
@@ -53,28 +54,22 @@ class Skin {
 
     private:
         /**
-         * Displejová surface
+         * @brief Displejová surface
          * @todo Možné problémy při resize (ztráta cíle ukazatele) => dvojitý?
          */
         SDL_Surface* screen;
 
-        /**
-         * Konfigurák skinu
-         */
+        /** @brief Konfigurák skinu */
         ConfParser conf;
 
-        /**
-        * Vlastnost skinu
-        */
+        /** @brief Vlastnost skinu */
         template<class T> struct Property {
             std::string parameter;
             std::string section;
             T property;
         };
 
-        /**
-         * Vektor se surfacy
-         */
+        /** @brief Vektor se surfacy */
         std::vector<Property<SDL_Surface**> > surfaces;
 
         /**
@@ -86,9 +81,7 @@ class Skin {
          */
         std::vector<Property<TTF_Font**> > fonts;
 
-        /**
-         * Vektor s barvami
-         */
+        /** @brief Vektor s barvami */
         std::vector<Property<SDL_Color*> > colors;
 
         /**
@@ -98,12 +91,12 @@ class Skin {
          * funkci Skin::set parametr zadán, získávají se parametry x, y, w, h
          * z příslušné sekce. Pokud je parametr zadán, získávají se parametry
          * parametrX, parametrY, parametrW, parametrH.
+         * @todo Získávat jen z jednoho parametru v conf souboru (x y w h oddělené
+         *  jen mezerami)
          */
         std::vector<Property<SDL_Rect*> > positions;
 
-        /**
-         * Vektor s čísly
-         */
+        /** @brief Vektor s čísly */
         std::vector<Property<int*> > numbers;
 
         /**
@@ -119,9 +112,7 @@ class Skin {
          */
         std::vector<Property<Align*> > aligns;
 
-        /**
-         * Vektor s texty
-         */
+        /** @brief Vektor s texty */
         std::vector<Property<std::string*> > texts;
 };
 

@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
     int dummy = 0;
 
     /* Lokalizace */
-    Localize localize("lang/en.conf");
+    Localize localize("lang/en.conf", "lang/cz.conf");
     string* skinAuthor = localize.get("skinAuthor", "splash");
     string* author = skin.get<string*>("author");
 

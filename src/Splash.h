@@ -9,15 +9,16 @@
 #include "Effects.h"
 
 /**
- * Zobrazení splashe
+ * @brief Zobrazení splashe
  *
- * Zobrazí obrázek na pozadí + texty. Spolupracuje se Skin, takže je vše
- * změnitelné v reálném čase.
+ * Zobrazí obrázek na pozadí + texty. Plná podpora Skin a Localize
  */
 class Splash {
     public:
         /**
-         * Konstruktor
+         * @brief Konstruktor
+         *
+         * @param   _screen     Displejová surface
          * @param   _image      Obrázek
          * @param   _position   Pozice
          * @param   _align      Zarovnání rámce vůči displeji
@@ -26,35 +27,36 @@ class Splash {
             screen(_screen), image(_image), position(_position), align(_align) {}
 
         /**
-         * Vložení textu
+         * @brief Vložení textu
+         *
+         * @param   font        Font
+         * @param   color       Barva textu
+         * @param   _position   Pozice textu
+         * @param   _align      Zarovnání textu
+         * @param   text        Text
          */
-        void addText(TTF_Font** font, SDL_Color* color, SDL_Rect* _position, Align* align, std::string* text);
+        void addText(TTF_Font** font, SDL_Color* color, SDL_Rect* _position, Align* _align, std::string* text);
 
         /**
-         * Zobrazení splashe
+         * @brief Zobrazení splashe
+         *
          * @todo Vyplnit pozadí černou barvou, aby nebyly artefakty
          */
         void view(void);
     private:
         /**
-         * Displejová surface, obrázek splashe
+         * @brief Displejová surface, obrázek splashe
          * @todo Možné problémy při resize screen (ztráta cíle ukazatele) => dvojitý?
          */
         SDL_Surface *screen, **image;
 
-        /**
-         * Pozice splashe
-         */
+        /** @brief Pozice splashe */
         SDL_Rect* position;
 
-        /**
-         * Zarování splashe vůči displeji
-         */
+        /** @brief Zarování splashe vůči displeji */
         Align* align;
 
-        /**
-         * Struktura pro text
-         */
+        /** @brief Struktura pro text */
         struct Text {
             TTF_Font** font;
             SDL_Color* color;
@@ -63,9 +65,7 @@ class Splash {
             std::string* text;
         };
 
-        /**
-         * Vektor s texty
-         */
+        /** @brief Vektor s texty */
         std::vector<Text> texts;
 };
 

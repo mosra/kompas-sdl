@@ -14,8 +14,6 @@ void Splash::view(void){
     for(vector<Text>::const_iterator it = texts.begin(); it != texts.end(); ++it) {
         /* Oblast textu */
         SDL_Rect textArea = Effects::align(area, ALIGN_DEFAULT, *(*it).position);
-
-        /** @todo Přepínač vyhlazeného textu */
         SDL_Surface* text = (*Effects::textRenderFunction())(*(*it).font, (*(*it).text).c_str(), *(*it).color);
 
         SDL_Rect dst = Effects::align(textArea, *(*it).align, (*text).w, (*text).h);
@@ -26,12 +24,12 @@ void Splash::view(void){
 }
 
 /* Přidání textu */
-void Splash::addText (TTF_Font** font, SDL_Color* color, SDL_Rect* _position, Align* align, std::string* text) {
+void Splash::addText (TTF_Font** font, SDL_Color* color, SDL_Rect* _position, Align* _align, std::string* text) {
     Splash::Text _text;
     _text.font = font;
     _text.color = color;
     _text.position = _position;
-    _text.align = align;
+    _text.align = _align;
     _text.text = text;
     texts.push_back(_text);
 }

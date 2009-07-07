@@ -6,7 +6,10 @@
 #include "utility.h"
 
 /**
- * Funkce pro zarovnávání, posouvání textu a další fičurky
+ * @brief Funkce pro zarovnávání, posouvání textu a další fičurky
+ *
+ * Funkce a vlastnosti jsou statické, aby byly použitelné globálně bez nutnosti
+ * instantace třídy.
  */
 class Effects {
     public:
@@ -28,7 +31,7 @@ class Effects {
         /**
          * @brief Zarovnání objektu do dané oblasti
          *
-         * SDL_Rect místo jednotlivých souřadnic
+         * Souřadnice objektu ve struktuře SDL_Rect.
          * @param   area        Oblast
          * @param   _align      Zarovnání objektu
          * @param   object      Objekt
@@ -40,7 +43,8 @@ class Effects {
 
 
         /**
-         * Zarovnání objektu vůči displeji
+         * @brief Zarovnání objektu vůči displeji
+         *
          * @param   screen      Displejová surface
          * @param   _align      Zarovnání objektu
          * @param   objectW     Šířka objektu
@@ -55,9 +59,9 @@ class Effects {
         }
 
         /**
-         * Zarovnání objektu vůči displeji
+         * @brief Zarovnání objektu vůči displeji
          *
-         * SDL_Rect místo jednotlivých souřadnic
+         * Souřadnice objektu ve struktuře SDL_Rect.
          * @param   screen      Displejová surface
          * @param   _align      Zarovnání objektu
          * @param   object      Objekt
@@ -72,7 +76,7 @@ class Effects {
          * @brief Zda se má vyhlazovat text
          *
          * Zde lze nastavit, zda se má vyhlazovat text. Třídy vypisující text
-         * potom volají funkci Effects::textRenderFunction. Default hodnota je true
+         * potom volají funkci Effects::textRenderFunction. Default hodnota je true.
          */
         static bool smoothText;
 
@@ -80,8 +84,9 @@ class Effects {
          * @brief Ukazatel na funkci na vypsání textu
          *
          * Vysvětlivka: po dereferencování výsledku funkce dostaneme funkci s
-         * parametry (...) vracející SDL_Surface
-         * @return Podle hodnoty Effects::smoothText funkce vrací ukazatel na fci TTF_RenderUTF8_Solid nebo TTF_RenderUTF8_Blended.
+         * parametry (...) vracející SDL_Surface.
+         * @return Podle hodnoty Effects::smoothText funkce vrací ukazatel na
+         *  funkci TTF_RenderUTF8_Solid nebo TTF_RenderUTF8_Blended
          */
          inline static SDL_Surface* (*textRenderFunction(void))(TTF_Font*, const char*, SDL_Color) {
             return Effects::smoothText ? TTF_RenderUTF8_Blended : TTF_RenderUTF8_Solid;
