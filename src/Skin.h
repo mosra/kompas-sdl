@@ -15,6 +15,7 @@
 
 #include "ConfParser.h"
 #include "Effects.h"
+#include "utility.h"
 
 /**
  * @brief Skiny
