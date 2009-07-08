@@ -5,13 +5,14 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 
-#include "utility.h"
+#include "configure.h"      /* SVN_VERSION */
 #include "ConfParser.h"
+#include "FPS.h"
+#include "Localize.h"
+#include "Menu.h"
 #include "Skin.h"
 #include "Splash.h"
-#include "Menu.h"
-#include "Localize.h"
-#include "configure.h"
+#include "utility.h"
 
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
 
@@ -136,6 +137,7 @@ int main(int argc, char **argv) {
     menu.addItem(section, 0, localize.get("quit", "menu"));
 
     /* Hlavní smyčka programu */
+    FPS();
     int done = 0;
     while (!done) {
         SDL_Event event;
@@ -181,8 +183,7 @@ int main(int argc, char **argv) {
         splash.view();
         menu.view();
         SDL_UpdateRect(screen, 0, 0, 0, 0);
-
-        //sleep(1);
+        FPS::refresh();
     }
 
     return 0;
