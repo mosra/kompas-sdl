@@ -230,7 +230,7 @@ void Menu::view (void) {
             SDL_BlitSurface(*(*it).icon, &iconCrop, screen, &iconPosition);
 
             /* Odečtení prostoru zabraného ikonou od prostoru textu */
-            textPosition.x += *iconWidth; textPosition.y -= *iconWidth;
+            textPosition.x += *iconWidth; textPosition.w -= *iconWidth;
             if((*actualSection).flags & ICONS_RIGHT) textPosition.x = itemArea.x;
         }
 

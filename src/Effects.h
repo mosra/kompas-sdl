@@ -15,6 +15,7 @@
  *
  * Funkce a vlastnosti jsou statické, aby byly použitelné globálně bez nutnosti
  * instantace třídy.
+ * @todo Parametry funkcí převést na cost reference!
  */
 class Effects {
     public:

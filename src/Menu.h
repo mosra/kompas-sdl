@@ -29,15 +29,21 @@ class Menu {
         /**
          * @brief Flags pro celé menu
          *
-         * Tyto flags by neměly být používány přímo, jsou nastavovány automaticky
-         * při spuštění funkcí Menu::configureCaption a Menu::configureScrollbar.
+         * @warning Tyto flags by neměly být používány přímo, jsou nastavovány
+         * automaticky při spuštění funkcí Menu::configureCaption nebo
+         * Menu::configureScrollbar!
          */
         enum Flags {
             CAPTION = 0x01,     /**< @brief Povolení zobrazení nadpisku sekce */
             SCROLLBAR = 0x02    /**< @brief Povolení zobrazení scrollbaru */
         };
 
-        /** @brief Flags pro sekci */
+        /**
+         * @brief Flags pro sekci
+         *
+         * Při uvedení jedné z flags ICON_LEFT nebo ICON_RIGHT se povolí
+         * zobrazování ikon u položek menu.
+         */
         enum SectionFlags {
             ICONS_LEFT = 0x01,  /**< @brief Zobrazení ikon položek vpravo */
             ICONS_RIGHT = 0x02  /**< @brief Zobrazení ikon položek vlevo */

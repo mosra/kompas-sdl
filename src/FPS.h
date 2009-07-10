@@ -15,7 +15,7 @@
  * Slouží k omezování počtu snímků za sekundu a vypočítávání plynulé rychlosti
  * posunu objektů při proměnlivém %FPS.
  *
- * @warning Pro funkci této třídy je nutná inicializace SDL_INIT_TIMER v SDL_Init()!
+ * @attention Pro funkci této třídy je nutná inicializace SDL_INIT_TIMER v SDL_Init()!
  */
 class FPS {
     public:

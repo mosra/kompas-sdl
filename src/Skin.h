@@ -23,7 +23,7 @@
  * Umožňuje úplnou konfigurovatelnost skinů v conf souborech a jejich změnu bez
  * nutnosti restartu aplikace. Založeno na ukazatelích, takže je (téměř) nulová
  * režie při vykreslování.
- * @warning Pro správnou funkci této třídy je nutné zavolat TTF_Init()!
+ * @attention Pro správnou funkci této třídy je nutné zavolat TTF_Init()!
  * @todo Přepsat z ukazatelů na reference (asi nepude?)
  * @todo Skiny podle velikosti displeje (větší menu pro větší atd.)
  */
