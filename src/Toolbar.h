@@ -170,35 +170,34 @@ class Toolbar {
 
         /**
          * @brief Posun nahoru
-         * @return  Akce položky, pokud položka není zakázaná
+         * @return  Akce položky
          */
         int moveUp(void);
 
         /**
          * @brief Posun dolů
-         * @return  Akce položky, pokud položka není zakázaná
+         * @return  Akce položky
          */
         int moveDown(void);
 
         /**
          * @brief Posun vlevo
-         * @return  Akce položky, pokud položka není zakázaná
+         * @return  Akce položky
          */
         int moveLeft(void);
 
         /**
          * @brief Posun vpravo
-         * @return  Akce položky, pokud položka není zakázaná
+         * @return  Akce položky
          */
         int moveRight(void);
 
         /**
          * @brief Vybrání položky
-         * @return  Akce položky, pokud položka není zakázaná
-         * @todo Žádná zakázaná položka nemůže být aktivní!
+         * @return  Akce položky
          */
         inline int select(void) {
-            return (*actualItem).flags & DISABLED ? -1 : (*actualItem).action;
+            return (*actualItem).action;
         }
 
         /**

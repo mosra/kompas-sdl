@@ -114,10 +114,77 @@ param=top
 \# Zarovnání doprostřed nahoru (vynechány parametry více vpravo a dole)
 param="center right top middle bottom"
 </pre>
-@section duplicateNames Sekce a hodnoty s duplicitními názvy
+@section ConfDuplicateNames Sekce a hodnoty s duplicitními názvy
 Conf soubory mohou obsahovat více sekcí nebo parametrů se stejným názvem a jejich
 výběr není omezen.
-@todo Dopsat!
+@subsection ConfDuplicateParameter Příklad pro výběr více stejných parametrů
+Zdrojový soubor <tt>file.conf</tt>:
+<pre>param=První
+param=Druhý
+param=Třetí
+param=Čtvrtý
+</pre>
+Kód v C++:
+@code
+ConfParser conf("file.conf");
+string value;
+ConfParser::parameterPointer position = conf.value("param", value);
+
+while(position != conf.parameterNotFound()) {
+    cout << value << endl;
+    position = conf.value("param", value, position+1);
+}
+@endcode
+Výstup:
+<pre>První
+Druhý
+Třetí
+Čtvrtý
+</pre>
+@note Chybové hlášení o nenalezeném parametru se vypisuje akorát při prvním hledání tohoto parametru.
+@subsection ConfDuplicateSections Příklad pro výběr více stejných sekcí
+Zdrojový soubor <tt>file.conf</tt>:
+<pre>[osoba]
+jméno=František
+příjmení=Dobrota
+věk=133
+komentář="Rodák z blízké vesnice"
+
+[osoba]
+jméno=Jan
+příjmení=Novák
+věk=29
+komentář="Jako každý jiný Novák"
+
+[osoba]
+jméno=Věra
+příjmení=Pohlová
+věk=72
+komentář="Já bych všechny ty internety zakázala"
+</pre>
+Kód v C++:
+@code
+ConfParser conf("file.conf");
+ConfParser::sectionPointer section = conf.section("osoba");
+while(section != conf.sectionNotFound()) {
+    string jmeno, prijmeni, komentar;
+    int vek;
+
+    conf.value("jméno", jmeno, section);
+    conf.value("příjmení", prijmeni, section);
+    conf.value("věk", vek, section);
+    conf.value("komentář", komentar, section);
+
+    cout << jmeno << " " << prijmeni << "(" << vek << ")" << " - " << komentar << endl;
+    section = conf.section("osoba", section+1);
+}
+@endcode
+Výstup:
+<pre>František Dobrota (133) - Rodák z blízké vesnice
+Jan Novák (29) - Jako každý jiný Novák
+Věra Pohlová (72) - Já bych všechny ty internety zakázala
+</pre>
+@note Chybové hlášení o nenalezené sekci se vypisuje akorát při prvním hledání této sekce.
  */
 
 /**
