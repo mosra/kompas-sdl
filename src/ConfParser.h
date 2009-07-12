@@ -128,6 +128,7 @@ výběr není omezen.
  * @todo Testovat parametry jen na alfanumerické znaky
  * @todo Ošetřit escape znaky
  * @todo Default sekce jen když obsahuje nějaké parametry
+ * @todo Parametry "x y w h" (vyžaduje SDL_Rect!)
  */
 class ConfParser {
     private:

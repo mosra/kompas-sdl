@@ -23,6 +23,8 @@
  * @todo Zvýraznění položek změnou pozadí
  * @todo Vícesloupcové menu + názvy sloupců (např. souborový manažer)
  * @todo Flags pro vypnutí nekonečného procházení
+ * @todo Inline funkce jen tam, kde to je potřeba (kde budou často volané), zbytek
+ *   přesunout do Menu.cpp
  */
 class Menu {
     public:
@@ -143,6 +145,7 @@ class Menu {
          *
          * @param   section     ID sekce (viz Menu::addSection)
          * @param   item        ID položky (viz Menu::addItem)
+         * @bug Po smazání položky už nebudou chodit dobře funkce Menu::disableItem a Menu::enableItem
          */
         inline void deleteItem(sectionId section, itemId item) {
             sections[section].items.erase(sections[section].items.begin()+item);

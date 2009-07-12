@@ -12,6 +12,7 @@
 #include "Menu.h"
 #include "Skin.h"
 #include "Splash.h"
+#include "Toolbar.h"
 #include "utility.h"
 
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
@@ -76,8 +77,8 @@ int main(int argc, char **argv) {
     int dummy = 0;
 
     /* Lokalizace */
-    Localize localize("lang/en.conf", "lang/cz.conf");
-    string* skinAuthor = localize.get("skinAuthor", "splash");
+    Localize lang("lang/en.conf", "lang/cz.conf");
+    string* skinAuthor = lang.get("skinAuthor", "splash");
     string* author = skin.get<string*>("author");
 
     /* Nastavení splashe */
@@ -103,8 +104,8 @@ int main(int argc, char **argv) {
     );
 
     /* Menu */
-    Menu menu(
-        screen, skin.get<SDL_Surface**>("image", "menu"),
+    Menu menu(screen,
+        skin.get<SDL_Surface**>("image", "menu"),
         skin.get<SDL_Rect*>("", "menu"),
         skin.get<Align*>("align", "menu"),
         skin.get<SDL_Rect*>("items", "menu"),
@@ -129,12 +130,80 @@ int main(int argc, char **argv) {
         skin.get<SDL_Surface**>("scrollbarArrowDown", "menu"),
         skin.get<SDL_Surface**>("scrollbarSlider", "menu")
     );
-    Menu::sectionId section = menu.addSection(0, localize.get("caption", "menu"), NULL, skin.get<Align*>("itemsAlign", "menu"), 0);
-    menu.addItem(section, 0, localize.get("openPackage", "menu"), NULL, Menu::DISABLED);
-    menu.addItem(section, 0, localize.get("playGame", "menu"));
-    menu.addItem(section, 0, localize.get("options", "menu"));
-    menu.addItem(section, 0, localize.get("about", "menu"));
-    menu.addItem(section, 0, localize.get("quit", "menu"));
+    Menu::sectionId section = menu.addSection(0, lang.get("caption", "menu"), NULL, skin.get<Align*>("itemsAlign", "menu"), 0);
+    menu.addItem(section, 0, lang.get("openPackage", "menu"), NULL, Menu::DISABLED);
+    menu.addItem(section, 0, lang.get("playGame", "menu"));
+    menu.addItem(section, 0, lang.get("options", "menu"));
+    menu.addItem(section, 0, lang.get("about", "menu"));
+    menu.addItem(section, 0, lang.get("quit", "menu"));
+
+    /* Toolbar */
+    Toolbar toolbar(screen,
+        skin.get<SDL_Rect*>("", "toolbar"),
+        skin.get<Align*>("align", "toolbar"),
+        (Align*) &dummy, &dummy,
+        skin.get<TTF_Font**>("captionFont", "toolbar"),
+        skin.get<SDL_Color*>("captionColor", "toolbar"),
+        NULL, NULL, 0
+    );
+    toolbar.configureCaptionPlace(
+        skin.get<SDL_Rect*>("captionPosition", "toolbar"),
+        skin.get<Align*>("captionAlign", "toolbar")
+    );
+    toolbar.addImage(NULL, skin.get<SDL_Surface**>("image", "toolbar"));
+    toolbar.addItem(
+        skin.get<SDL_Rect*>("zoomInPosition", "toolbar"),
+        0, 0, 0,
+        skin.get<SDL_Surface**>("zoomInIcon", "toolbar"),
+        skin.get<SDL_Surface**>("zoomInIconActive", "toolbar"),
+        skin.get<SDL_Surface**>("zoomInIconDisabled", "toolbar"),
+        lang.get("zoomIn", "toolbar"), Toolbar::DISABLED
+    );
+    toolbar.addItem(
+        skin.get<SDL_Rect*>("zoomOutPosition", "toolbar"),
+        1, 0, 0,
+        skin.get<SDL_Surface**>("zoomOutIcon", "toolbar"),
+        skin.get<SDL_Surface**>("zoomOutIconActive", "toolbar"),
+        skin.get<SDL_Surface**>("zoomOutIconDisabled", "toolbar"),
+        lang.get("zoomOut", "toolbar"), Toolbar::DISABLED
+    );
+    toolbar.addItem(
+        skin.get<SDL_Rect*>("openPosition", "toolbar"),
+        2, 0, 0,
+        skin.get<SDL_Surface**>("openIcon", "toolbar"),
+        skin.get<SDL_Surface**>("openIconActive", "toolbar"),
+        NULL, lang.get("open", "toolbar")
+    );
+    toolbar.addItem(
+        skin.get<SDL_Rect*>("savePosition", "toolbar"),
+        3, 0, 0,
+        skin.get<SDL_Surface**>("saveIcon", "toolbar"),
+        skin.get<SDL_Surface**>("saveIconActive", "toolbar"),
+        skin.get<SDL_Surface**>("saveIconDisabled", "toolbar"),
+        lang.get("save", "toolbar"), Toolbar::DISABLED
+    );
+    toolbar.addItem(
+        skin.get<SDL_Rect*>("optionsPosition", "toolbar"),
+        4, 0, 0,
+        skin.get<SDL_Surface**>("optionsIcon", "toolbar"),
+        skin.get<SDL_Surface**>("optionsIconActive", "toolbar"),
+        NULL, lang.get("options", "toolbar")
+    );
+    toolbar.addItem(
+        skin.get<SDL_Rect*>("mapOptionsPosition", "toolbar"),
+        5, 0, 0,
+        skin.get<SDL_Surface**>("mapOptionsIcon", "toolbar"),
+        skin.get<SDL_Surface**>("mapOptionsIconActive", "toolbar"),
+        skin.get<SDL_Surface**>("mapOptionsIconDisabled", "toolbar"),
+        lang.get("mapOptions", "toolbar"), Toolbar::DISABLED
+    );
+    toolbar.addItem(
+        skin.get<SDL_Rect*>("exitPosition", "toolbar"),
+        5, 0, 0,
+        skin.get<SDL_Surface**>("exitIcon", "toolbar"),
+        skin.get<SDL_Surface**>("exitIconActive", "toolbar"),
+        NULL, lang.get("exit", "toolbar")
+    );
 
     /* Hlavní smyčka programu */
     FPS();
@@ -161,6 +230,9 @@ int main(int argc, char **argv) {
                         case SDLK_DOWN:
                             menu.moveDown();
                             break;
+                        case SDLK_RIGHT:
+                            toolbar.moveRight();
+                            break;
                         case SDLK_PAGEUP:
                             menu.scrollUp();
                             break;
@@ -181,6 +253,7 @@ int main(int argc, char **argv) {
 
         text = *skinAuthor + *author;
         splash.view();
+        toolbar.view();
         menu.view();
         SDL_UpdateRect(screen, 0, 0, 0, 0);
         FPS::refresh();

@@ -10,7 +10,6 @@ configure_file(${CMAKE_SOURCE_DIR}/src/configure.h.cmake ${CMAKE_BINARY_DIR}/con
 find_package(SDL)
 find_package(SDL_image)
 find_package(SDL_ttf)
-#find_package(SDL_timer)
 include_directories(${CMAKE_BINARY_DIR} ${SDL_INCLUDE_DIR} ${SDLIMAGE_INCLUDE_DIR}
     ${SDLTTF_INCLUDE_DIR} ${SDLTIMER_INCLUDE_DIR})
 
@@ -22,6 +21,7 @@ add_library(libLocalize STATIC Localize.cpp)
 add_library(libMenu STATIC Menu.cpp)
 add_library(libSkin STATIC Skin.cpp)
 add_library(libSplash STATIC Splash.cpp)
+add_library(libToolbar STATIC Toolbar.cpp)
 add_library(libutility STATIC utility.cpp)
 
 #Meziknihovní závislosti
@@ -32,7 +32,8 @@ target_link_libraries(libLocalize libConfParser)
 target_link_libraries(libMenu libEffects libutility ${SDL_LIBRARY} ${SDLTTF_LIBRARY})
 target_link_libraries(libSkin libConfParser libEffects libutility ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${SDLTTF_LIBRARY})
 target_link_libraries(libSplash libEffects libutility ${SDL_LIBRARY} ${SDLTTF_LIBRARY})
+target_link_libraries(libToolbar libEffects libutility ${SDL_LIBRARY} ${SDLTTF_LIBRARY})
 
 #Hlavní program
 add_executable(map2x main.cpp)
-target_link_libraries(map2x libFPS libLocalize libMenu libSkin libSplash ${SDL_LIBRARY})
+target_link_libraries(map2x libFPS libLocalize libMenu libSkin libSplash libToolbar libutility ${SDL_LIBRARY})
