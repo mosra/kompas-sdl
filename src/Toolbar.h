@@ -256,7 +256,7 @@ class Toolbar {
         std::vector<Item>::const_iterator actualItem;   /** @brief Aktuální (vybraná) položka */
 
         /**
-         * @brief Vertikálně řazené ukazatele na položky
+         * @brief Vertikálně řazené ukazatele na aktivní položky
          *
          * Pro účely horizontálního posunu - rychlé nalezení položky ve sloupci
          * vpravo či vlevo nejblíže od aktuální položky.
@@ -264,7 +264,7 @@ class Toolbar {
         std::vector<std::vector<Item>::const_iterator> sortedVertical;
 
         /**
-         * @brief Horizontálně řazené ukazatele na položky
+         * @brief Horizontálně řazené ukazatele na aktivní položky
          *
          * Pro účely vertikálního posunu - rychlé nalezení položky v řádku nad
          * či pod aktuální položkou.
@@ -296,19 +296,12 @@ class Toolbar {
         /**
          * @brief Reload položek pro účely posunu
          *
-         * Spouštěno při přidání nové položky. Znova seřadí vektory
-         * Toolbar::sortedHorizontal a Toolbar::sortedVertical.
+         * Spouštěno při přidání nové položky či při zakázání nebo povolení
+         * položky. Znova vytvoří seřazené vektory Toolbar::sortedHorizontal a
+         * Toolbar::sortedVertical z aktivních položek a první povolenou položku
+         * označí jako aktuální.
          */
         void reloadItems(void);
-
-        /**
-         * @brief Nalezení aktuální položky
-         *
-         * Spouštěno při přidání nové položky nebo při zakázání /
-         * povolení položky. Nalezne první povolenou položku a
-         * označí ji jako aktuální.
-         */
-        void findActualItem(void);
 };
 
 #endif

@@ -233,6 +233,9 @@ int main(int argc, char **argv) {
                         case SDLK_RIGHT:
                             toolbar.moveRight();
                             break;
+                        case SDLK_LEFT:
+                            toolbar.moveLeft();
+                            break;
                         case SDLK_PAGEUP:
                             menu.scrollUp();
                             break;
