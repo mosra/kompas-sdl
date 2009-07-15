@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
     int dummy = 0;
 
     /* Lokalizace */
-    Localize lang("lang/en.conf", "lang/cz.conf");
+    Localize lang("lang/cz.conf", "lang/en.conf");
     string* skinAuthor = lang.get("skinAuthor", "splash");
     string* author = skin.get<string*>("author");
 
@@ -88,18 +88,18 @@ int main(int argc, char **argv) {
         skin.get<Align*>("align", "splash"));
     string text;
     splash.addText(
-        skin.get<TTF_Font**>("font", "splashAuthor"),
-        skin.get<SDL_Color*>("color", "splashAuthor"),
-        skin.get<SDL_Rect*>("", "splashAuthor"),
-        skin.get<Align*>("align", "splashAuthor"),
+        skin.get<TTF_Font**>("authorFont", "splash"),
+        skin.get<SDL_Color*>("authorColor", "splash"),
+        skin.get<SDL_Rect*>("author", "splash"),
+        skin.get<Align*>("authorAlign", "splash"),
         &text
     );
     string version = SVN_VERSION;
     splash.addText(
-        skin.get<TTF_Font**>("font", "splashVersion"),
-        skin.get<SDL_Color*>("color", "splashVersion"),
-        skin.get<SDL_Rect*>("", "splashVersion"),
-        skin.get<Align*>("align", "splashVersion"),
+        skin.get<TTF_Font**>("versionFont", "splash"),
+        skin.get<SDL_Color*>("versionColor", "splash"),
+        skin.get<SDL_Rect*>("version", "splash"),
+        skin.get<Align*>("versionAlign", "splash"),
         &version
     );
 
@@ -131,11 +131,8 @@ int main(int argc, char **argv) {
         skin.get<SDL_Surface**>("scrollbarSlider", "menu")
     );
     Menu::sectionId section = menu.addSection(0, lang.get("caption", "menu"), NULL, skin.get<Align*>("itemsAlign", "menu"), 0);
-    menu.addItem(section, 0, lang.get("openPackage", "menu"), NULL, Menu::DISABLED);
-    menu.addItem(section, 0, lang.get("playGame", "menu"));
-    menu.addItem(section, 0, lang.get("options", "menu"));
+    menu.addItem(section, 0, lang.get("playGame", "menu"), NULL, Menu::DISABLED);
     menu.addItem(section, 0, lang.get("about", "menu"));
-    menu.addItem(section, 0, lang.get("quit", "menu"));
 
     /* Toolbar */
     Toolbar toolbar(screen,
