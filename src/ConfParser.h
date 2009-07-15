@@ -62,39 +62,29 @@ V conf souboru můžou být parametry typu @ref ConfTypeInt, @ref ConfTypeDouble
 typ extrahovat jako text pomocí <tt>ConfParser::value(string, string&)</tt>
 například pro účely přímého výpisu.
 @subsection ConfTypeInt Integer
-Normální číselná hodnota. Extrahovatelné pomocí
-<tt>ConfParser::value(string, int&)</tt>. Příklad:
-<pre>param=3475</pre>
-U hexadecimálních hodnot nezáleží na velikosti písmen, jsou extrahovatelné pomocí
+Normální číselná hodnota je extrahovatelná pomocí
+<tt>ConfParser::value(string, int&)</tt>. Příklad: <tt>param=3475</tt>. U
+<strong>hexadecimálních hodnot</strong> nezáleží na velikosti písmen, hodnoty
+jsou extrahovatelné pomocí
 <tt>ConfParser::value(string, int&, ConfParser::HEX)</tt>. Příklad:
-<pre>param=8FC680
-param=c368ab</pre>
-Hexadecimální barevné reprezentace ve formátu RGB mohou, ale nemusí mít na
-začátku znak <tt>\#</tt>. Extrahovatelné pomocí
+<tt>param=8FC680</tt> nebo <tt>param=c368ab</tt>. <strong>Hexadecimální barevné
+reprezentace</strong> ve formátu RGB mohou, ale nemusí mít na začátku znak
+<tt>\#</tt>. Extrahovatelné pomocí
 <tt>ConfParser::value(string, int&, ConfParser::COLOR)</tt>. Výsledkem je číslo,
 z kterého lze pomocí binárního AND a bitových posunů extrahovat jednotlivé
-barevné složky. Příklad:
-<pre>
-param=\#ff3366
-param=00CC3F
-</pre>
+barevné složky. Příklad: <tt>param=\#ff3366</tt> nebo <tt>param=00CC3F</tt>
 @subsection ConfTypeDouble Double
 Desetinná čísla. Je nutné uvést tečku, ne čárku. Extrahovatelné pomocí
-<tt>ConfParser::value(string, double&)</tt>. Příklad:
-<pre>param=3.1415</pre>
+<tt>ConfParser::value(string, double&)</tt>. Příklad: <tt>param=3.1415</tt>
 @subsection ConfTypeBool Boolean
 Pokud je jako hodnota parametru uvedeno <tt>true</tt>, <tt>t</tt>, <tt>yes</tt>,
 <tt>y</tt> nebo <tt>1</tt>, je to bráno jako pravda, ostatní hodnoty jsou brány
 jako nepravda. Extrahovatelné pomocí <tt>ConfParser::value(string, bool&)</tt>.
-Příklad:
-<pre>param=true</pre>
+Příklad: <tt>param=true</tt>
 @subsection ConfTypeString String
 Pokud je uvedený v uvozovkách nebo apostrofech, nebudou mu osekány počáteční a
 koncové mezery. Extrahovatelný pomocí <tt>ConfParser::value(string, string&)</tt>.
-Příklad:
-<pre>param="text blah blah blah blah"
-param=Jedno slovo
-</pre>
+Příklad: <tt>param="text blah blah blah blah"</tt> nebo <tt>param=Jedno slovo</tt>
 @subsection ConfTypeAlign Align
 Zarovnání je v conf souboru specifikováno dvěma slovy oddělenými libovolným
 počtem bílých znaků. Všechna písmena musí být malá. Řetězce <tt>top</tt>,

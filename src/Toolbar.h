@@ -9,12 +9,31 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>    /* sort() */
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
 #include "utility.h"
 #include "Effects.h"
+#include "Matrix.h"
+
+/**
+ * @brief Struktura položky toolbaru
+ *
+ * Normálně by byla schovaná v private části jako Toolbar::Item, jenže kvůli
+ * dědění ze šablonové třídy Matrix to tak nejde (nemůžu zavést template třídy
+ * předtím, než jsem tu třídu deklaroval).
+ */
+struct ToolbarItem {
+    SDL_Rect* position;     /**< @brief Pozice položky */
+    int x,                  /**< @brief X-ová pozice položky ve virtuální mřížce (viz Toolbar::addItem) */
+        y,                  /**< @brief Y-ová pozice položky ve virtuální mřížce (viz Toolbar::addItem) */
+        action;             /**< @brief Akce (vrácena při vybrání položky) */
+    SDL_Surface **icon,     /**< @brief Ikona položky (může být NULL) */
+        **activeIcon,       /**< @brief Ikona vybrané položky (může být NULL) */
+        **disabledIcon;     /**< @brief Ikona zakázané položky (může být NULL) */
+    std::string* caption;   /**< @brief Nadpisek ikony (může být NULL) */
+    int flags;              /**< @brief Flags (Viz Toolbar::ItemFlags) */
+};
 
 /**
  * @brief Nástrojová lišta
@@ -33,7 +52,7 @@
  * nejsou, hledá se v dalším sloupci. Analogický postup je ve vertikálním směru.
  * @todo Vypnutí "nekonečného procházení" ve flags
  */
-class Toolbar {
+class Toolbar: public Matrix<ToolbarItem> {
     public:
         /**
          * @brief Flags pro toolbar
@@ -43,7 +62,7 @@ class Toolbar {
          * zobrazování popisku ikony. Při uvedení Toolbar::NO_ICON je popisek
          * povinný a flagy CAPTION_* ztrácejí smysl.
          */
-        enum Flags {
+        enum ToolbarFlags {
             NO_ICON = 0x01,             /**< @brief Vypnutí ikon */
             CAPTION_UNDER_ICON = 0x02,  /**< @brief Popisek ikony bude pod ní */
             CAPTION_BESIDE_ICON = 0x04, /**< @brief Popisek ikony bude vedle ní vpravo */
@@ -62,9 +81,6 @@ class Toolbar {
         enum ItemFlags {
             DISABLED = 0x01             /**< @brief Položka je zakázaná */
         };
-
-        /** @brief Typ pro ID položky */
-        typedef int itemId;
 
         /**
          * @brief Konstruktor
@@ -92,7 +108,7 @@ class Toolbar {
          *  NULL, pokud nebudou nadpisky u ikon)
          * @param   _captionDisabledColor Barva popisku zakázané položky (může být
          *  NULL, pokud nebudou nadpisky u ikon)
-         * @param   _flags          Flags (viz Toolbar::Flags)
+         * @param   _flags          Flags (viz Toolbar::ToolbarFlags)
          */
         Toolbar(SDL_Surface* _screen, SDL_Rect* _position, Align* _align, Align* _itemAlign, int* _iconSize, TTF_Font** _captionFont, SDL_Color* _captionColor, SDL_Color* _captionActiveColor, SDL_Color* _captionDisabledColor, int _flags):
             screen(_screen), position(_position), align(_align), itemAlign(_itemAlign),
@@ -152,23 +168,6 @@ class Toolbar {
         void addText(SDL_Rect* _position, Align* _align, TTF_Font** font, SDL_Color* color, std::string* _text);
 
         /**
-         * @brief Zakázání položky
-         *
-         * @param   item            ID položky (viz Toolbar::addItem)
-         * @todo Posunout aktuální položku, pokud se nyní stala zakázanou
-         */
-        inline void disableItem(itemId item);
-
-        /**
-         * @brief Povolení položky
-         *
-         * @param   item            ID položky (viz Toolbar::addItem)
-         * @todo Posunout aktuální položku na tuto, pokud předtím neexistovala
-         *  žádná povolená položka
-         */
-        inline void enableItem(itemId item);
-
-        /**
          * @brief Posun nahoru
          * @return  Akce položky
          */
@@ -195,6 +194,7 @@ class Toolbar {
         /**
          * @brief Vybrání položky
          * @return  Akce položky
+         * @bug Segfault při nulovém počtu aktivních položek
          */
         inline int select(void) {
             return (*actualItem).action;
@@ -208,18 +208,6 @@ class Toolbar {
          */
         void view(void);
     private:
-        /** @brief Struktura položky toolbaru */
-        struct Item {
-            SDL_Rect* position;     /**< @brief Pozice položky */
-            int x,                  /**< @brief X-ová pozice položky ve virtuální mřížce (viz Toolbar::addItem) */
-                y,                  /**< @brief Y-ová pozice položky ve virtuální mřížce (viz Toolbar::addItem) */
-                action;             /**< @brief Akce (vrácena při vybrání položky) */
-            SDL_Surface **icon,     /**< @brief Ikona položky (může být NULL) */
-                **activeIcon,       /**< @brief Ikona vybrané položky (může být NULL) */
-                **disabledIcon;     /**< @brief Ikona zakázané položky (může být NULL) */
-            std::string* caption;   /**< @brief Nadpisek ikony (může být NULL) */
-            int flags;              /**< @brief Flags (Viz Toolbar::ItemFlags) */
-        };
 
         /** @brief Struktura obrázku */
         struct Image {
@@ -247,60 +235,10 @@ class Toolbar {
         SDL_Color *captionColor,    /**< @brief Barva popisků položek (může být NULL) */
             *captionActiveColor,    /**< @brief Barva popisku aktivní položky (může být NULL) */
             *captionDisabledColor;  /**< @brief Barva popisku zakázané položky (může být NULL) */
-        int flags;                  /**< @brief Flags (viz Toolbar::Flags) */
+        int flags;                  /**< @brief Flags (viz Toolbar::ToolbarFlags) */
 
         std::vector<Image> images;  /**< @brief Vektor s obrázky */
         std::vector<Text> texts;    /**< @brief Vektor s texty */
-        std::vector<Item> items;    /**< @brief Vektor s položkami toolbaru */
-        std::vector<Item>::const_iterator actualItem;   /** @brief Aktuální (vybraná) položka */
-
-        /**
-         * @brief Vertikálně řazené ukazatele na aktivní položky
-         *
-         * Pro účely horizontálního posunu - rychlé nalezení položky ve sloupci
-         * vpravo či vlevo nejblíže od aktuální položky.
-         */
-        std::vector<std::vector<Item>::const_iterator> sortedVertical;
-
-        /**
-         * @brief Horizontálně řazené ukazatele na aktivní položky
-         *
-         * Pro účely vertikálního posunu - rychlé nalezení položky v řádku nad
-         * či pod aktuální položkou.
-         */
-        std::vector<std::vector<Item>::const_iterator> sortedHorizontal;
-
-        /**
-         * @brief Predikát pro vertikální řazení položek
-         *
-         * @param   a       První položka k porovnání
-         * @param   b       Druhá položka k porovnání
-         * @return  Jestli a patří před b
-         */
-        static bool verticalCompare(std::vector<Item>::const_iterator a, std::vector<Item>::const_iterator b) {
-            return (*a).x == (*b).x ? (*a).y < (*b).y : (*a).x < (*b).x;
-        }
-
-        /**
-         * @brief Predikát pro horizontální řazení položek
-         *
-         * @param   a       První položka k porovnání
-         * @param   b       Druhá položka k porovnání
-         * @return  Jestli a patří před b
-         */
-        static bool horizontalCompare(std::vector<Item>::const_iterator a, std::vector<Item>::const_iterator b) {
-            return (*a).y == (*b).y ? (*a).x < (*b).x : (*a).y < (*b).y;
-        }
-
-        /**
-         * @brief Reload položek pro účely posunu
-         *
-         * Spouštěno při přidání nové položky či při zakázání nebo povolení
-         * položky. Znova vytvoří seřazené vektory Toolbar::sortedHorizontal a
-         * Toolbar::sortedVertical z aktivních položek a první povolenou položku
-         * označí jako aktuální.
-         */
-        void reloadItems(void);
 };
 
 #endif

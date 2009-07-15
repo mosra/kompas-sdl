@@ -1,6 +1,13 @@
 #include "Toolbar.h"
 
-using std::vector;      using std::sort;    using std::cout;    using std::endl;
+using std::vector;      using std::cout;    using std::endl;
+
+#ifndef GENERATING_DOXYGEN_OUTPUT
+/* Předdefinování určitě používaných template, aby linker neházel chyby o tom,
+    že v knihovně taková template nejsou instancovaná */
+#include "Matrix.cpp"
+template class Matrix<ToolbarItem>;
+#endif
 
 /* Nastavení pozice nadpisku */
 void Toolbar::configureCaptionPlace (SDL_Rect* _position, Align* _align) {
@@ -21,7 +28,7 @@ void Toolbar::addImage (SDL_Rect* _position, SDL_Surface** _image) {
 
 /* Přidání položky do toolbaru */
 Toolbar::itemId Toolbar::addItem (SDL_Rect* _position, int x, int y, int action, SDL_Surface** icon, SDL_Surface** activeIcon, SDL_Surface** disabledIcon, std::string* caption, int flags) {
-    Item item;
+    ToolbarItem item;
     item.position = _position;
     item.x = x;
     item.y = y;
@@ -48,172 +55,28 @@ void Toolbar::addText(SDL_Rect* _position, Align* _align, TTF_Font** font, SDL_C
     texts.push_back(text);
 }
 
-/* Zakázání položky */
-void Toolbar::disableItem(Toolbar::itemId item) {
-    items[item].flags |= DISABLED;
-    reloadItems();
-}
-
-/* Povolení položky */
-void Toolbar::enableItem(Toolbar::itemId item) {
-    items[item].flags &= !DISABLED;
-    reloadItems();
-}
-
-/* Reload položek */
-void Toolbar::reloadItems (void) {
-    sortedHorizontal.clear();   sortedHorizontal.reserve(items.size());
-    sortedVertical.clear();     sortedVertical.reserve(items.size());
-
-    /* Naplnění tříděných jen aktivními položkami */
-    for(vector<Item>::const_iterator it = items.begin(); it != items.end(); ++it) {
-        if(!((*it).flags & DISABLED)) {
-            sortedHorizontal.push_back(it);
-            sortedVertical.push_back(it);
-        }
-    }
-
-    sort(sortedHorizontal.begin(), sortedHorizontal.end(), horizontalCompare);
-    sort(sortedVertical.begin(), sortedVertical.end(), verticalCompare);
-
-    if(sortedVertical.size() != 0) actualItem = sortedVertical.front();
-    else actualItem = items.end();
+/* Posun nahoru */
+int Toolbar::moveUp(void) {
+    if(Matrix<ToolbarItem>::moveUp()) return (*actualItem).action;
+    else return -1;
 }
 
 /* Posun dolů */
 int Toolbar::moveDown(void) {
-    if(sortedHorizontal.size() == 0) return -1;
-
-    /* Nalezení aktuální položky */
-    vector<vector<Item>::const_iterator>::const_iterator it = sortedHorizontal.begin();
-    for( ; it != sortedHorizontal.end(); ++it) {
-        if(*it == actualItem) break;
-    }
-
-    /* Hledání jiného řádku (nekonečné procházení, dokud se nevrátíme zpět na počáteční položku) */
-    do {
-        if(++it == sortedHorizontal.end()) it = sortedHorizontal.begin();
-    } while(*it != actualItem && (**it).y == (*actualItem).y);
-
-    /* Žádný jiný řádek neexistuje, jsme zpět na aktuální položce */
-    if(*it == actualItem) return (*actualItem).action;
-
-    /* Hledání lepšího kandidáta v daném řádku (y) - blíže k x než předešlý */
-    int y = (**it).y;   int x = (*actualItem).x;    actualItem = *it;
-    while(++it != sortedHorizontal.end() && (**it).y == y) {
-
-        /* Pokud je položka blíže aktuální než předešlý kandidát, přiřazení */
-        if( ((**it).x < x && (*actualItem).x < (**it).x) || /* vlevo od aktuální */
-            ((**it).x > x && (*actualItem).x > (**it).x)    /* vpravo od aktuální */
-        ) actualItem = *it;
-
-        /* Položka je dále než předešlý kandidát, konec */
-        else break;
-    }
-
-    return (*actualItem).action;
-}
-
-/* Posun nahoru */
-int Toolbar::moveUp(void) {
-    if(sortedHorizontal.size() == 0) return -1;
-
-    /* Nalezení aktuální položky */
-    vector<vector<Item>::const_iterator>::const_iterator it = sortedHorizontal.begin();
-    for( ; it != sortedHorizontal.end(); ++it) {
-        if(*it == actualItem) break;
-    }
-
-    /* Hledání jiného řádku (nekonečné procházení, dokud se nevrátíme zpět na počáteční položku) */
-    do {
-        if(it-- == sortedHorizontal.begin()) it = sortedHorizontal.end()-1;
-    } while(*it != actualItem && (**it).y == (*actualItem).y);
-
-    /* Žádný jiný řádek neexistuje, jsme zpět na aktuální položce */
-    if(*it == actualItem) return (*actualItem).action;
-
-    /* Hledání lepšího kandidáta v daném řádku (y) - blíže k x než předešlý */
-    int y = (**it).y;   int x = (*actualItem).x;    actualItem = *it;
-    while(it-- != sortedHorizontal.begin() && (**it).y == y) {
-
-        /* Pokud je položka blíže aktuální než předešlý kandidát, přiřazení */
-        if( ((**it).x < x && (*actualItem).x < (**it).x) || /* vlevo od aktuální */
-            ((**it).x > x && (*actualItem).x > (**it).x)    /* vpravo od aktuální */
-        ) actualItem = *it;
-
-        /* Položka je dále než předešlý kandidát, konec */
-        else break;
-    }
-
-    return (*actualItem).action;
+    if(Matrix<ToolbarItem>::moveDown()) return (*actualItem).action;
+    else return -1;
 }
 
 /* Posun doleva */
 int Toolbar::moveLeft(void) {
-    if(sortedVertical.size() == 0) return -1;
-
-    /* Nalezení aktuální položky */
-    vector<vector<Item>::const_iterator>::const_iterator it = sortedVertical.begin();
-    for( ; it != sortedVertical.end(); ++it) {
-        if(*it == actualItem) break;
-    }
-
-    /* Hledání jiného sloupce (nekonečné procházení, dokud se nevrátíme zpět na počáteční položku) */
-    do {
-        if(it-- == sortedVertical.begin()) it = sortedVertical.end()-1;
-    } while(*it != actualItem && (**it).x == (*actualItem).x);
-
-    /* Žádný jiný sloupec neexistuje, jsme zpět na aktuální položce */
-    if(*it == actualItem) return (*actualItem).action;
-
-    /* Hledání lepšího kandidáta v daném sloupci (x) - blíže k y než předešlý */
-    int x = (**it).x;   int y = (*actualItem).y;    actualItem = *it;
-    while(it-- != sortedVertical.begin() && (**it).x == x) {
-
-        /* Pokud je položka blíže aktuální než předešlý kandidát, přiřazení */
-        if( ((**it).y < y && (*actualItem).y < (**it).y) || /* výše než aktuální */
-            ((**it).y > y && (*actualItem).y > (**it).y)    /* níže než aktuální */
-        ) actualItem = *it;
-
-        /* Položka je dále než předešlý kandidát, konec */
-        else break;
-    }
-
-    return (*actualItem).action;
+    if(Matrix<ToolbarItem>::moveLeft()) return (*actualItem).action;
+    else return -1;
 }
 
 /* Posun doprava */
 int Toolbar::moveRight(void) {
-    if(sortedVertical.size() == 0) return -1;
-
-    /* Nalezení aktuální položky */
-    vector<vector<Item>::const_iterator>::const_iterator it = sortedVertical.begin();
-    for( ; it != sortedVertical.end(); ++it) {
-        if(*it == actualItem) break;
-    }
-
-    /* Hledání jiného sloupce (nekonečné procházení, dokud se nevrátíme zpět na počáteční položku) */
-    do {
-        if(++it == sortedVertical.end()) it = sortedVertical.begin();
-    } while(*it != actualItem && (**it).x == (*actualItem).x);
-
-    /* Žádný jiný sloupec neexistuje, jsme zpět na aktuální položce */
-    if(*it == actualItem) return (*actualItem).action;
-
-    /* Hledání lepšího kandidáta v daném sloupci (x) - blíže k y než předešlý */
-    int x = (**it).x;   int y = (*actualItem).y;    actualItem = *it;
-    while(++it != sortedVertical.end() && (**it).x == x) {
-
-        /* Pokud je položka blíže aktuální než předešlý kandidát, přiřazení */
-        if( ((**it).y < y && (*actualItem).y < (**it).y) || /* výše než aktuální */
-            ((**it).y > y && (*actualItem).y > (**it).y)    /* níže než aktuální */
-        ) actualItem = *it;
-
-        /* Položka je dále než předešlý kandidát (už lepší nenajdeme), konec */
-        else break;
-    }
-
-    return (*actualItem).action;
+    if(Matrix<ToolbarItem>::moveRight()) return (*actualItem).action;
+    else return -1;
 }
 
 /* Zobrazení toolbaru */
@@ -229,7 +92,7 @@ void Toolbar::view (void) {
     }
 
     /* Položky toolbaru */
-    for(vector<Item>::const_iterator it = items.begin(); it != items.end(); ++it) {
+    for(vector<ToolbarItem>::const_iterator it = items.begin(); it != items.end(); ++it) {
         SDL_Rect itemPosition = Effects::align(area, ALIGN_DEFAULT, *(*it).position);
 
         /* Ukazatel na správnou ikonu */
