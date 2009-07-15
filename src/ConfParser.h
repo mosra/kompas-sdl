@@ -181,7 +181,6 @@ Věra Pohlová (72) - Já bych všechny ty internety zakázala
  * @brief Parser konfiguračních souborů
  *
  * @ref ConfParser
- * @todo Specifikace conf souborů do nějaké spec. stránky
  * @todo Testovat parametry jen na alfanumerické znaky
  * @todo Ošetřit escape znaky
  * @todo Default sekce jen když obsahuje nějaké parametry

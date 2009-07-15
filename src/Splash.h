@@ -43,11 +43,7 @@ class Splash {
          */
         void addText(TTF_Font** font, SDL_Color* color, SDL_Rect* _position, Align* _align, std::string* text);
 
-        /**
-         * @brief Zobrazení splashe
-         *
-         * @todo Vyplnit pozadí černou barvou, aby nebyly artefakty
-         */
+        /** @brief Zobrazení splashe */
         void view(void);
     private:
         /** @brief Struktura pro text */

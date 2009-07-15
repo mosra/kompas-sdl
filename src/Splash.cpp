@@ -4,6 +4,9 @@ using std::vector;      using std::string;      using std::cout;    using std::e
 
 /* Zobrazení splashe */
 void Splash::view(void){
+    /* Vyplnění pozadí černou barvou */
+    SDL_FillRect(screen, NULL, SDL_MapRGB((*screen).format, 0, 0, 0));
+
     /* Plocha pro vykreslování splashe */
     SDL_Rect area = Effects::align(screen, *align, *position);
 

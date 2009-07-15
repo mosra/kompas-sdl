@@ -4,7 +4,7 @@
 bool Effects::smoothText = true;
 
 /* Zarovnání objektu */
-SDL_Rect Effects::align (SDL_Rect area, Align _align, int objectW, int objectH, int moveX, int moveY) {
+SDL_Rect Effects::align (const SDL_Rect& area, Align _align, int objectW, int objectH, int moveX, int moveY) {
     /* Ořez objektu do velikosti rámce */
     if(area.w < objectW) objectW = area.w;
     if(area.h < objectH) objectH = area.h;
