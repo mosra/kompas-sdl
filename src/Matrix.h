@@ -34,6 +34,7 @@ template <class Item> class Matrix {
             DISABLED = 0x01         /**< @brief Položka je zakázaná (nelze se na ni přesunout) */
         };
 
+        /** @brief Typ pro ID položky */
         typedef typename std::vector<Item>::size_type itemId;
 
         /**
@@ -66,12 +67,14 @@ template <class Item> class Matrix {
 
         /**
          * @brief Zakázání položky
+         * @param   item    ID položky
          * @todo Např. u klávesnice je tohle k ničemu => protected?
          */
         void disableItem(itemId item);
 
         /**
          * @brief Povolení položky
+         * @param   item    ID položky
          * @todo Např. u klávesnice je tohle k ničemu => protected?
          */
         void enableItem(itemId item);
