@@ -112,11 +112,14 @@ template<> SDL_Surface** Skin::get(const string& parameter, string section) {
 
     /* Konverze do formátu displeje */
     SDL_Surface* temp = IMG_Load(file.c_str());
-    if(temp == NULL)
+    if(temp == NULL) {
         cerr << "Nepodařilo se načíst obrázek '" << file << "'." << endl;
-
-    *surface = SDL_DisplayFormatAlpha(temp);
-    SDL_FreeSurface(temp);
+        *surface = NULL;
+    }
+    else {
+        *surface = SDL_DisplayFormatAlpha(temp);
+        SDL_FreeSurface(temp);
+    }
 
     Skin::Property<SDL_Surface**> property;
     property.parameter = parameter;

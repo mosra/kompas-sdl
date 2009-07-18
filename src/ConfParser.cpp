@@ -91,10 +91,18 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
             char delimiter = file.peek();
             file.ignore(1);
             file.get(buffer, ConfParser::MAX_LINE_LENGTH-1, delimiter);
-            file.ignore(ConfParser::MAX_LINE_LENGTH, '\n');
 
-            /* U parametru v uvozovkách se mezery neosekávají */
-            parameter.value = buffer;
+            /* Chybějící koncové uvozovky! */
+            if(file.peek() != delimiter) {
+                cerr << "Neukončené uvozovky v souboru " << filename << " u parametru "
+                     << parameter.parameter << " (pozice " << file.tellg() << ")." << endl;
+                return;
+            } else {
+                file.ignore(ConfParser::MAX_LINE_LENGTH, '\n');
+
+                /* U parametru v uvozovkách se mezery neosekávají */
+                parameter.value = buffer;
+            }
         }
 
         /* Hodnota bez uvozovek */
@@ -237,6 +245,8 @@ template<class Value> ConfParser::parameterPointer ConfParser::value(const strin
 /* Předdefinování určitě používaných template, aby linker neházel chyby o tom,
     že v knihovně taková template nejsou instancovaná */
 template ConfParser::parameterPointer ConfParser::value<int>(const string&, int&, ConfParser::sectionPointer, ConfParser::parameterPointer, int) const;
+template ConfParser::parameterPointer ConfParser::value<short>(const string&, short&, ConfParser::sectionPointer, ConfParser::parameterPointer, int) const;
+template ConfParser::parameterPointer ConfParser::value<unsigned short>(const string&, unsigned short&, ConfParser::sectionPointer, ConfParser::parameterPointer, int) const;
 template ConfParser::parameterPointer ConfParser::value<double>(const string&, double&, ConfParser::sectionPointer, ConfParser::parameterPointer, int) const;
 #endif
 
