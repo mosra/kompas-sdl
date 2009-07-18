@@ -16,8 +16,8 @@
 #include "utility.h"
 
 /**
-@page ConfParser Formát conf souborů
-Konfigurační soubory mají jendoduchou sytaxi, která je pohodlná pro uživatele i
+@page ConfParser API pro práci s conf soubory
+Konfigurační soubory mají jednoduchou sytaxi, která je pohodlná pro uživatele i
 pro parser. Konfigurační soubor je možné dělit do sekcí a libovolně opatřovat
 komentáři.
 @section ConfSyntax Syntaxe conf souboru
@@ -259,7 +259,7 @@ class ConfParser {
          *
          * Vrací true, pokud byl načten alespoň jeden parametr z konfiguračního souboru.
          */
-        inline operator bool(void) { return !(parameters.size() == 0); }
+        inline operator bool(void) const { return !(parameters.size() == 0); }
 
         /**
          * @brief Kopírovací konstruktor
@@ -297,26 +297,26 @@ class ConfParser {
          * @return  Ukazatel na nalezený parametr, pokud nebyl nalezen, vrací to
          *  samé jako ConfParser::parameterNotFound
          */
-        template<class Value> parameterPointer value(const std::string& parameter, Value& _value, sectionPointer section, parameterPointer begin, int flags = 0);
+        template<class Value> parameterPointer value(const std::string& parameter, Value& _value, sectionPointer section, parameterPointer begin, int flags = 0) const;
 
         /** @overload */
-        template<class Value> inline parameterPointer value(const std::string& parameter, Value& _value, sectionPointer section, int flags = 0) {
+        template<class Value> inline parameterPointer value(const std::string& parameter, Value& _value, sectionPointer section, int flags = 0) const {
             if(section == sections.end()) return parameters.end();
             return value(parameter, _value, section, (*section).begin, flags);
         }
 
         /** @overload */
-        template<class Value> inline parameterPointer value(const std::string& parameter, Value& _value, parameterPointer begin, int flags = 0) {
+        template<class Value> inline parameterPointer value(const std::string& parameter, Value& _value, parameterPointer begin, int flags = 0) const {
             return value(parameter, _value, sections.begin(), begin, flags);
         }
 
         /** @overload */
-        template<class Value> inline parameterPointer value(const std::string& parameter, Value& _value, int flags = 0) {
+        template<class Value> inline parameterPointer value(const std::string& parameter, Value& _value, int flags = 0) const {
             return value(parameter, _value, sections.begin(), parameters.begin(), flags);
         }
 
         /**
-         * @fn template<> ConfParser::parameterPointer ConfParser::value(const std::string& parameter, std::string& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags)
+         * @fn template<> ConfParser::parameterPointer ConfParser::value(const std::string& parameter, std::string& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) const
          * @brief Nalezení textové hodnoty parametru
          *
          * Pro informace o textové hodnotě viz @ref ConfTypeString.
@@ -331,7 +331,7 @@ class ConfParser {
          */
 
         /**
-         * @fn template<> ConfParser::parameterPointer ConfParser::value(const std::string& parameter, Align& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags)
+         * @fn template<> ConfParser::parameterPointer ConfParser::value(const std::string& parameter, Align& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) const
          * @brief Nalezení zarovnání
          *
          * Pro informace o zarovnání viz @ref ConfTypeAlign.
@@ -346,7 +346,7 @@ class ConfParser {
          */
 
         /**
-         * @fn template<> ConfParser::parameterPointer ConfParser::value(const std::string& parameter, bool& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags)
+         * @fn template<> ConfParser::parameterPointer ConfParser::value(const std::string& parameter, bool& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) const
          * @brief Nalezení bool hodnoty
          *
          * Pro informace o bool viz @ref ConfTypeBool.
@@ -368,10 +368,10 @@ class ConfParser {
          * @return  Ukazatel na nalezenou sekci použitelný ve funkcích ConfParser::value,
          *  pokud nebyla nalezena, vrací to samé jako ConfParser::sectionNotFound
          */
-        sectionPointer section(const std::string& name, sectionPointer begin);
+        sectionPointer section(const std::string& name, sectionPointer begin) const;
 
         /** @overload */
-        inline sectionPointer section(const std::string& name) {
+        inline sectionPointer section(const std::string& name) const {
             return section(name, sections.begin());
         }
     private:

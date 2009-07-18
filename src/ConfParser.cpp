@@ -149,7 +149,7 @@ void ConfParser::reloadSections(void) {
 }
 
 /* Nalezení sekce */
-ConfParser::sectionPointer ConfParser::section(const string& name, ConfParser::sectionPointer begin) {
+ConfParser::sectionPointer ConfParser::section(const string& name, ConfParser::sectionPointer begin) const {
     for(ConfParser::sectionPointer it = begin; it != sections.end(); ++it) {
         if((*it).section == name) return it;
     }
@@ -162,7 +162,7 @@ ConfParser::sectionPointer ConfParser::section(const string& name, ConfParser::s
 }
 
 /* Nalezení textové hodnoty parametru */
-template<> ConfParser::parameterPointer ConfParser::value(const string& parameter, string& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) {
+template<> ConfParser::parameterPointer ConfParser::value(const string& parameter, string& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) const {
     /* Nenalezená sekce */
     if(section == sections.end()) return parameters.end();
 
@@ -185,7 +185,7 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
 }
 
 /* Nalezení zarovnání */
-template<> ConfParser::parameterPointer ConfParser::value(const string& parameter, Align& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) {
+template<> ConfParser::parameterPointer ConfParser::value(const string& parameter, Align& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) const {
     string __value;
     ConfParser::parameterPointer position = value(parameter, __value, section, begin);
 
@@ -208,7 +208,7 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
 }
 
 /* Nalezení int / double hodnoty parametru */
-template<class Value> ConfParser::parameterPointer ConfParser::value(const string& parameter, Value& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) {
+template<class Value> ConfParser::parameterPointer ConfParser::value(const string& parameter, Value& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) const {
     string __value;
     ConfParser::parameterPointer position = value(parameter, __value, section, begin);
 
@@ -236,12 +236,12 @@ template<class Value> ConfParser::parameterPointer ConfParser::value(const strin
 #ifndef GENERATING_DOXYGEN_OUTPUT
 /* Předdefinování určitě používaných template, aby linker neházel chyby o tom,
     že v knihovně taková template nejsou instancovaná */
-template ConfParser::parameterPointer ConfParser::value<int>(const string&, int&, ConfParser::sectionPointer, ConfParser::parameterPointer, int);
-template ConfParser::parameterPointer ConfParser::value<double>(const string&, double&, ConfParser::sectionPointer, ConfParser::parameterPointer, int);
+template ConfParser::parameterPointer ConfParser::value<int>(const string&, int&, ConfParser::sectionPointer, ConfParser::parameterPointer, int) const;
+template ConfParser::parameterPointer ConfParser::value<double>(const string&, double&, ConfParser::sectionPointer, ConfParser::parameterPointer, int) const;
 #endif
 
 /* Nalezení bool hodnoty parametru */
-template<> ConfParser::parameterPointer ConfParser::value(const string& parameter, bool& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) {
+template<> ConfParser::parameterPointer ConfParser::value(const string& parameter, bool& _value, ConfParser::sectionPointer section, ConfParser::parameterPointer begin, int flags) const {
     string __value;
     ConfParser::parameterPointer position = value(parameter, __value, section, begin);
 
