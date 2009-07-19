@@ -292,13 +292,6 @@ class ConfParser {
         ConfParser& operator= (const ConfParser& conf);
 
         /**
-         * @brief Zničení objektu
-         *
-         * Uvolnění všech dat.
-         */
-        void destroy(void);
-
-        /**
          * @brief Nalezení hodnoty parametru
          *
          * Pro informace o číselných hodnotách viz @ref ConfTypeInt a
@@ -403,6 +396,13 @@ class ConfParser {
          * souboru) jsou rozházeny a musí se znovu nalézt.
          */
         void reloadSections(void);
+
+        /**
+         * @brief Zničení objektu
+         *
+         * Uvolnění všech dat.
+         */
+        void destroy(void);
 };
 
 }

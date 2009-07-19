@@ -195,8 +195,7 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
     specialPushed = items.end();
     specialShiftPushed = items.end();
 
-    /* Reload položek a uvolnění conf souboru */
-    keyboard.destroy();
+    /* Reload položek */
     reloadItems();
 }
 
