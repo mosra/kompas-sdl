@@ -92,14 +92,19 @@ keyColor=\#000000
 keyActiveColor=\#0000ff
 keySpecialActiveColor=\#ff0000
 
-\# Pozadí běžné a speciální klávesy
+\# Pozadí běžné klávesy a vybrané běžné klávesy
 keyImage=gfx/key.png
+keyActiveImage=gfx/keyActive.png
 keySpecialImage=gfx/keySpecial.png
+keySpecialActiveImage=gfx/keySpecialActive.png
 
-\# Pozadí mezerníku, enteru a shiftu
+\# Pozadí mezerníku, enteru, shiftu a jejich pozadí, když jsou vybrané
 spaceImage=gfx/keySpace.png
-enterImage=gfx/key2x1.png
-shiftImage=gfx/key2x1.png
+spaceActiveImage=gfx/keySpaceActive.png
+enterImage=gfx/keyEnter.png
+enterActiveImage=gfx/keyEnterActive.png
+shiftImage=gfx/keyEnter.png
+shiftActiveImage=gfx/keyEnterActive.png
 </pre>
  * @subsection KeyboardConfGlobal Globální nastavení klávesnice
  * Na začátku conf souboru klávesnice se nastavují globální parametry společné
@@ -293,6 +298,7 @@ struct KeyboardKey {
     int flags;              /**< @brief Flags (viz Keyboard::Flags) */
     SDL_Rect position;      /**< @brief Pozice klávesy */
     SDL_Surface** image;    /**< @brief Pozadí klávesy */
+    SDL_Surface** activeImage;  /**<  @brief Pozadí stisknuté klávesy */
     std::string name;       /**< @brief Popisek klávesy */
 
     /**
@@ -308,7 +314,6 @@ struct KeyboardKey {
      * Pozice 6 - hodnota klávesy v kombinaci s 2. spec. klávesou<br>
      * Pozice 7 - hodnota klávesy v kombinaci s 2. spec. klávesou a Shiftem<br>
      * ...
-     * @todo Ale fuj... (předělat asi na map nebo tak)
      */
     std::vector<std::string> values;
 };

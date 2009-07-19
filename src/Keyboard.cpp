@@ -44,7 +44,9 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
     keyActiveColor = skin.get<SDL_Color*>("keyActiveColor", skinSection);
     keySpecialActiveColor = skin.get<SDL_Color*>("keySpecialActiveColor", skinSection);
     SDL_Surface** keyImage = skin.get<SDL_Surface**>("keyImage", skinSection);
+    SDL_Surface** keyActiveImage = skin.get<SDL_Surface**>("keyActiveImage", skinSection);
     SDL_Surface** keySpecialImage = skin.get<SDL_Surface**>("keySpecialImage", skinSection);
+    SDL_Surface** keySpecialActiveImage = skin.get<SDL_Surface**>("keySpecialActiveImage", skinSection);
 
     /* Načtení globálních věcí z konfiguráku klávesnice */
     keyboard.value("w", keyboardW);
@@ -84,6 +86,7 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
             cerr << "U speciální klávesy na pozici [" << key.x << ";" << key.y << "] chybí popisek i hodnota!" << endl;
 
         key.image = keySpecialImage;
+        key.activeImage = keySpecialActiveImage;
         key.flags = SPECIAL;
 
         items.push_back(key);
@@ -104,6 +107,7 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
     keyboard.value("posY", space.y, section);
     keyboard.value("name", space.name, section, ConfParser::SUPPRESS_ERRORS);
     space.image = skin.get<SDL_Surface**>("spaceImage", skinSection);
+    space.activeImage = skin.get<SDL_Surface**>("spaceActiveImage", skinSection);
     for(vector<KeyboardKey>::size_type i = 0; i != specialKeyCount*4; ++i)
         space.values.push_back(" ");
     space.flags = 0;
@@ -120,6 +124,7 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
     keyboard.value("posY", enter.y, section);
     keyboard.value("name", enter.name, section, ConfParser::SUPPRESS_ERRORS);
     enter.image = skin.get<SDL_Surface**>("enterImage", skinSection);
+    enter.activeImage = skin.get<SDL_Surface**>("enterActiveImage", skinSection);
     enter.flags = ENTER;
     items.push_back(enter);
 
@@ -134,6 +139,7 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
     keyboard.value("posY", shift.y, section);
     keyboard.value("name", shift.name, section, ConfParser::SUPPRESS_ERRORS);
     shift.image = skin.get<SDL_Surface**>("shiftImage", skinSection);
+    shift.activeImage = skin.get<SDL_Surface**>("shiftActiveImage", skinSection);
     shift.flags = SHIFT;
     items.push_back(shift);
 
@@ -185,6 +191,7 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
         }
 
         key.image = keyImage;
+        key.activeImage = keyActiveImage;
         key.flags = 0;
 
         items.push_back(key);
@@ -278,7 +285,9 @@ void Keyboard::view(void) {
         SDL_Rect keyArea = Effects::align(area, ALIGN_DEFAULT, (*it).position);
 
         /* Pozadí */
-        SDL_BlitSurface(*(*it).image, NULL, screen, &keyArea);
+        SDL_Surface* image = *(*it).image;
+        if(it == actualItem) image = *(*it).activeImage;
+        SDL_BlitSurface(image, NULL, screen, &keyArea);
 
         /* Popisek - Pokud je nastaveno jméno klávesy, bude vypsáno vždy */
         string label;

@@ -25,6 +25,7 @@ namespace MInterface {
  * @attention Pro správnou funkci této třídy je nutné zavolat TTF_Init()!
  * @todo Přepsat z ukazatelů na reference (asi nepude?)
  * @todo Skiny podle velikosti displeje (větší menu pro větší atd.)
+ * @todo Vynechávat načítání stejných věcí vícekrát
  */
 class Skin {
     public:
@@ -98,7 +99,7 @@ class Skin {
         std::vector<Property<TTF_Font**> > fonts;
 
         /**
-         * @brief Vektor s pozciemi
+         * @brief Vektor s pozicemi
          *
          * Pozice je získávána z conf souboru ze čtyř parametrů. Pokud není ve
          * funkci Skin::set parametr zadán, získávají se parametry x, y, w, h
