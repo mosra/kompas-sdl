@@ -206,6 +206,26 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
     reloadItems();
 }
 
+/* Kliknutí myší */
+bool Keyboard::click(int x, int y, int& action) {
+    /* Oblast klávesnice */
+    SDL_Rect area = Effects::align(screen, *align, keyboardW, keyboardH, *keyboardX, *keyboardY);
+
+    if(!inArea(x, y, area)) return false;
+
+    /* Procházení jednotlivých kláves */
+    for(vector<KeyboardKey>::const_iterator it = items.begin(); it != items.end(); it++) {
+        /* Nalezeno */
+        if(inArea(x, y, Effects::align(area, ALIGN_DEFAULT, (*it).position))) {
+            actualItem = it;
+            select();
+            return true;
+        }
+    }
+
+    return true;
+}
+
 /* Vybrání znaku */
 void Keyboard::select(void) {
     /* Shift */

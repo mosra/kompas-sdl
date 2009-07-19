@@ -18,9 +18,9 @@ include_directories(${CMAKE_BINARY_DIR} ${SDL_INCLUDE_DIR} ${SDLIMAGE_INCLUDE_DI
 add_library(MToolkit STATIC ConfParser.cpp Localize.cpp Matrix.cpp utility.cpp)
 
 # MInterface
-add_library(MInterface STATIC Effects.cpp FPS.cpp Keyboard.cpp Menu.cpp Skin.cpp Splash.cpp Toolbar.cpp)
+add_library(MInterface STATIC Effects.cpp FPS.cpp Keyboard.cpp Menu.cpp Mouse.cpp Skin.cpp Splash.cpp Toolbar.cpp)
 target_link_libraries(MInterface MToolkit ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${SDLTTF_LIBRARY})
 
 #Hlavní program
 add_executable(map2x main.cpp)
-target_link_libraries(map2x MInterface)
+target_link_libraries(map2x MToolkit MInterface)

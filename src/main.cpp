@@ -213,6 +213,9 @@ int main(int argc, char **argv) {
         SDL_Event event;
         while (SDL_PollEvent (&event)) {
             switch(event.type) {
+                case SDL_MOUSEBUTTONDOWN:
+                    keyboard.click(event.button.x, event.button.y, dummy);
+                    break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
                         case SDLK_c:

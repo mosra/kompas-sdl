@@ -12,6 +12,7 @@
 #include <SDL/SDL_ttf.h>
 
 #include "Matrix.h"
+#include "Mouse.h"
 #include "utility.h"
 
 namespace MInterface {
@@ -320,12 +321,15 @@ struct KeyboardKey {
 
 /**
  * @brief Psaní textu pomocí klávesnice
+ *
+ * Plná konfigurovatelnost pomocí conf osuborů, podpora UTF-8 a skinů, dotykové
+ * ovládání.
  * @todo Přepínání jiné klávesnice a dalšího textu ke zpracování
  * @todo Nadpisek klávesnice
  * @todo Propojení klávesnice a skinu!
  * @todo Duplicitní ConfParser <=> Skin
  */
-class Keyboard: public MToolkit::Matrix<KeyboardKey> {
+class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
     public:
         /**
          * @brief Konstruktor
@@ -344,6 +348,18 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey> {
          * Zapíše znak klávesy do proměnné
          */
         void select(void);
+
+        /**
+         * @brief Kliknutí
+         *
+         * Vyvolá akci způsobenou kliknutím myši na příslušné souřadnice
+         * @param   x       X-ová souřadnice
+         * @param   y       Y-ová souřadnice
+         * @param   action  Pokud kliknutí spustilo nějakou akci, do této
+         *  proměnné se uloží její číslo (-1 pokud se žádná akce nespustila)
+         * @return  Zda bylo klinutí v oblasti objektu
+         */
+        bool click(int x, int y, int& action);
 
         /** @brief Zobrazení klávesnice */
         void view(void);
@@ -380,7 +396,6 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey> {
         SDL_Color *keyColor,    /**< @brief Barva popisků kláves (ze skinu) */
             *keyActiveColor,    /**< @brief Barva popisku aktivní klávesy (ze skinu) */
             *keySpecialActiveColor; /**< @brief Barva popisku stlačené spec. klávesy (ze skinu) */
-
 
         /**
          * @brief Ukazatel na stlačenou speciální klávesu
