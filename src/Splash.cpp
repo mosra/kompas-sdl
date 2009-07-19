@@ -1,6 +1,9 @@
 #include "Splash.h"
 
 using std::vector;      using std::string;      using std::cout;    using std::endl;
+using namespace MToolkit;
+
+namespace MInterface {
 
 /* Zobrazení splashe */
 void Splash::view(void){
@@ -35,4 +38,6 @@ void Splash::addText (TTF_Font** font, SDL_Color* color, SDL_Rect* _position, Al
     _text.align = _align;
     _text.text = text;
     texts.push_back(_text);
+}
+
 }

@@ -2,6 +2,8 @@
 
 using std::string;      using std::vector;      using std::cout;    using std::endl;
 
+namespace MToolkit {
+
 /* Destruktor */
 Localize::~Localize (void) {
     for(vector<Localization>::const_iterator it = localizations.begin(); it != localizations.end(); ++it) {
@@ -44,3 +46,4 @@ string* Localize::get (const string& parameter, const string& section) {
     return text;
 }
 
+}

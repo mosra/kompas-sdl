@@ -17,6 +17,8 @@
 #include "Effects.h"
 #include "utility.h"
 
+namespace MInterface {
+
 /**
  * @brief Skiny
  *
@@ -56,7 +58,7 @@ class Skin {
          * @param   section     Sekce
          * @return  Ukazatel na vlastnost
          */
-        template<class T> T get(const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
+        template<class T> T get(const std::string& parameter, std::string section = MToolkit::ConfParser::DEFAULT_SECTION);
 
         /**
          * @fn template<> SDL_Surface** Skin::get(const std::string& parameter, std::string section)
@@ -87,7 +89,7 @@ class Skin {
         };
 
         SDL_Surface* screen;    /**< @brief Displejová surface */
-        ConfParser conf;        /**< @brief Konfigurák skinu */
+        MToolkit::ConfParser conf;        /**< @brief Konfigurák skinu */
 
         /**
          * @brief Vektor s fonty
@@ -113,8 +115,10 @@ class Skin {
         std::vector<Property<SDL_Surface**> > surfaces; /**< @brief Vektor se surfacy */
         std::vector<Property<SDL_Color*> > colors;      /**< @brief Vektor s barvami */
         std::vector<Property<int*> > numbers;           /**< @brief Vektor s čísly */
-        std::vector<Property<Align*> > aligns;          /**< @brief Vektor se zarovnáními */
+        std::vector<Property<MToolkit::Align*> > aligns;          /**< @brief Vektor se zarovnáními */
         std::vector<Property<std::string*> > texts;     /**< @brief Vektor s texty */
 };
+
+}
 
 #endif

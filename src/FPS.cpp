@@ -1,5 +1,7 @@
 #include "FPS.h"
 
+namespace MInterface {
+
 /* Default limit FPS */
 unsigned int FPS::limit = 100;
 unsigned int FPS::lastFrameTime = 10;
@@ -38,4 +40,6 @@ int FPS::move (unsigned int pps, FPS::Data* object) {
     }
 
     return move;
+}
+
 }

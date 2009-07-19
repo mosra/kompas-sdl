@@ -1,12 +1,14 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <string>
-
 /**
  * @file utility.h
  * @brief Utility nezávislé na SDL sloužící k triviálním operacím nad C++ knihovnami
  */
+
+#include <string>
+
+namespace MToolkit {
 
 /**
  * @brief Zarovnání
@@ -31,5 +33,7 @@ enum Align {
  * @return  Oseknutý string
  */
 std::string trim (const std::string& str);
+
+}
 
 #endif

@@ -12,6 +12,8 @@
 
 #include "ConfParser.h"
 
+namespace MToolkit {
+
 /**
  * @brief Jazykové lokalizace
  *
@@ -66,5 +68,7 @@ class Localize {
         ConfParser fallback;        /**< @brief Fallback jazyk */
         std::vector<Localization> localizations;    /**< @brief Vektor s lokalizovanými texty */
 };
+
+}
 
 #endif

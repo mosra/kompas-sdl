@@ -9,6 +9,8 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_timer.h>
 
+namespace MInterface {
+
 /**
  * @brief Omezování %FPS a vypočítávání rychlosti
  *
@@ -96,5 +98,7 @@ class FPS {
         static unsigned int timer;          /**< @brief Čas při konci posledního snímku */
         static unsigned int lastFrameTime;  /**< @brief Čas zpracování posledního snímku */
 };
+
+}
 
 #endif

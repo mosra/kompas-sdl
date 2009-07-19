@@ -2,6 +2,8 @@
 
 using std::vector;  using std::sort;
 
+namespace MToolkit {
+
 /* Zakázání položky */
 template<class Item> void Matrix<Item>::disableItem(itemId item) {
     items[item].flags |= DISABLED;
@@ -168,4 +170,6 @@ template<class Item> bool Matrix<Item>::moveRight(void) {
     }
 
     return true;
+}
+
 }

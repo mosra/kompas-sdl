@@ -2,6 +2,9 @@
 
 using std::string;  using std::cout;    using std::endl;    using std::cerr;
 using std::vector;
+using namespace MToolkit;
+
+namespace MInterface {
 
 /* Destruktor */
 Skin::~Skin(void) {
@@ -247,4 +250,6 @@ template<> Align* Skin::get(const string& parameter, string section) {
     aligns.push_back(property);
 
     return i;
+}
+
 }

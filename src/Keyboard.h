@@ -13,8 +13,11 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
+#include "Effects.h"
 #include "Matrix.h"
 #include "Skin.h"
+
+namespace MInterface {
 
 /**
  * @page Keyboard Klávesnice na obrazovce
@@ -318,7 +321,7 @@ struct KeyboardKey {
  * @todo Propojení klávesnice a skinu!
  * @todo Duplicitní ConfParser <=> Skin
  */
-class Keyboard: public Matrix<KeyboardKey> {
+class Keyboard: public MToolkit::Matrix<KeyboardKey> {
     public:
         /**
          * @brief Konstruktor
@@ -358,17 +361,17 @@ class Keyboard: public Matrix<KeyboardKey> {
         int keyboardW,          /**< @brief Šířka klávesnice (z konfiguráku) */
             keyboardH;          /**< @brief Výška klávesnice (z konfiguráku) */
         SDL_Rect textPosition;  /**< @brief Pozice zpracovávaného textu (z konfiguráku) */
-        Align textAlign;        /**< @brief Zarovnání textu (z konfiguráku) */
+        MToolkit::Align textAlign;  /**< @brief Zarovnání textu (z konfiguráku) */
 
         int *keyboardX,         /**< @brief X-ová pozice klávesnice (ze skinu) */
             *keyboardY;         /**< @brief Y-ová pozice klávesnice (ze skinu) */
-        Align *align;           /**< @brief Zarovnání klávesnice (ze skinu) */
+        MToolkit::Align *align; /**< @brief Zarovnání klávesnice (ze skinu) */
         SDL_Surface **image;    /**< @brief Pozadí klávesnice (ze skinu) */
 
         TTF_Font **textFont;    /**< @brief Barva textu (ze skinu) */
         SDL_Color *textColor;   /**< @brief Barva textu (ze skinu) */
 
-        Align *keyAlign;        /**< @brief Zarovnání popisku klávesy (ze skinu) */
+        MToolkit::Align *keyAlign;  /**< @brief Zarovnání popisku klávesy (ze skinu) */
         TTF_Font **keyFont;     /**< @brief Font popisků kláves (ze skinu) */
         SDL_Color *keyColor,    /**< @brief Barva popisků kláves (ze skinu) */
             *keyActiveColor,    /**< @brief Barva popisku aktivní klávesy (ze skinu) */
@@ -393,5 +396,7 @@ class Keyboard: public Matrix<KeyboardKey> {
         /** @brief Zda byl stlačen Shift */
         bool shiftPushed;
 };
+
+}
 
 #endif

@@ -1,13 +1,16 @@
 #include "Toolbar.h"
 
 using std::vector;      using std::cout;    using std::endl;
+using namespace MToolkit;
 
 #ifndef GENERATING_DOXYGEN_OUTPUT
 /* Předdefinování určitě používaných template, aby linker neházel chyby o tom,
     že v knihovně taková template nejsou instancovaná */
 #include "Matrix.cpp"
-template class Matrix<ToolbarItem>;
+template class Matrix<MInterface::ToolbarItem>;
 #endif
+
+namespace MInterface {
 
 /* Nastavení pozice nadpisku */
 void Toolbar::configureCaptionPlace (SDL_Rect* _position, Align* _align) {
@@ -159,4 +162,6 @@ void Toolbar::view (void) {
         SDL_BlitSurface(text, &textCrop, screen, &textPosition);
         SDL_FreeSurface(text);
     }
+}
+
 }

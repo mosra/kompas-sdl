@@ -2,11 +2,9 @@
 #include <string>
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 
 #include "configure.h"      /* SVN_VERSION */
-#include "ConfParser.h"
 #include "FPS.h"
 #include "Keyboard.h"
 #include "Localize.h"
@@ -14,9 +12,10 @@
 #include "Skin.h"
 #include "Splash.h"
 #include "Toolbar.h"
-#include "utility.h"
 
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
+using namespace MToolkit;
+using namespace MInterface;
 
 /* GP2X button mapping */
 enum MAP_KEY {

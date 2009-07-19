@@ -9,6 +9,8 @@
 #include <vector>
 #include <algorithm>    /* sort() */
 
+namespace MToolkit {
+
 /**
  * @brief Matice položek s možností efektivního pohybu mezi nimi
  *
@@ -134,5 +136,7 @@ template <class Item> class Matrix {
             return (*a).y == (*b).y ? (*a).x < (*b).x : (*a).y < (*b).y;
         }
 };
+
+}
 
 #endif

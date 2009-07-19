@@ -1,14 +1,17 @@
 #include "Keyboard.h"
 
+using std::string;  using std::vector;  using std::cout;    using std::endl;
+using std::cerr;
+using namespace MToolkit;
+
 #ifndef GENERATING_DOXYGEN_OUTPUT
 /* Předdefinování určitě používaných template, aby linker neházel chyby o tom,
     že v knihovně taková template nejsou instancovaná */
 #include "Matrix.cpp"
-template class Matrix<KeyboardKey>;
+template class Matrix<MInterface::KeyboardKey>;
 #endif
 
-using std::string;  using std::vector;  using std::cout;    using std::endl;
-using std::cerr;
+namespace MInterface {
 
 /* Konstruktor */
 Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::string& _text): screen(_screen), skin(_skin), text(_text), shiftPushed(false) {
@@ -315,4 +318,6 @@ void Keyboard::view(void) {
             SDL_FreeSurface(_text);
         }
     }
+}
+
 }

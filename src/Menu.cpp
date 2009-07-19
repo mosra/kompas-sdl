@@ -1,6 +1,9 @@
 #include "Menu.h"
 
 using std::cout;    using std::endl;        using std::vector;
+using namespace MToolkit;
+
+namespace MInterface {
 
 /* Nastavení nadpisku */
 void Menu::configureCaption (SDL_Rect* _position, Align* align, TTF_Font** font, SDL_Color* color) {
@@ -253,4 +256,6 @@ void Menu::view (void) {
 
         itemArea.y += _itemHeight; /* Posunutí oblasti další položky */
     }
+}
+
 }

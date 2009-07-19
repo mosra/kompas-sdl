@@ -1,5 +1,9 @@
 #include "Effects.h"
 
+using namespace MToolkit;
+
+namespace MInterface {
+
 /* Vyhlazení textu je defaultně zapnuto */
 bool Effects::smoothText = true;
 
@@ -18,4 +22,6 @@ SDL_Rect Effects::align (const SDL_Rect& area, Align _align, int objectW, int ob
     if(_align & ALIGN_BOTTOM)    ret.y += area.h-objectH;
 
     return ret;
+}
+
 }

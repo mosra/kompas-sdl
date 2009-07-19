@@ -2,6 +2,8 @@
 
 using std::string;
 
+namespace MToolkit {
+
 /* Oseknutí mezer */
 string trim(const string& str) {
     size_t begin = str.find_first_not_of(" \t");
@@ -11,4 +13,6 @@ string trim(const string& str) {
     if((begin == string::npos) || (end == string::npos)) return "";
 
     return str.substr(begin, end-begin+1);
+}
+
 }

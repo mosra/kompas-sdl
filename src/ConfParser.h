@@ -15,6 +15,8 @@
 
 #include "utility.h"
 
+namespace MToolkit {
+
 /**
 @page ConfParser API pro práci s conf soubory
 Konfigurační soubory mají jednoduchou sytaxi, která je pohodlná pro uživatele i
@@ -406,5 +408,7 @@ class ConfParser {
          */
         void reloadSections(void);
 };
+
+}
 
 #endif
