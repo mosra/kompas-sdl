@@ -1,17 +1,13 @@
-#ifndef CONFPARSER_H
-#define CONFPARSER_H
+#ifndef MTOOLKIT_CONFPARSER_H
+#define MTOOLKIT_CONFPARSER_H
 
 /**
  * @file ConfParser.h
  * @brief Třída ConfParser
  */
 
-#include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
-#include <sstream>      /* std::istringstream */
-#include <cstring>      /* strcmp() */
 
 #include "utility.h"
 

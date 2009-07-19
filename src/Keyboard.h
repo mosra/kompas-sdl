@@ -1,23 +1,22 @@
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#ifndef MINTERFACE_KEYBOARD_H
+#define MINTERFACE_KEYBOARD_H
 
 /**
  * @file Keyboard.h
  * @brief Třída Keyboard
  */
 
-#include <iostream>
 #include <vector>
 #include <string>
-#include <sstream>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
-#include "Effects.h"
 #include "Matrix.h"
-#include "Skin.h"
+#include "utility.h"
 
 namespace MInterface {
+
+class Skin;
 
 /**
  * @page Keyboard Klávesnice na obrazovce

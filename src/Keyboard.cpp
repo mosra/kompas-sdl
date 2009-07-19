@@ -1,5 +1,12 @@
 #include "Keyboard.h"
 
+#include <iostream>
+#include <sstream>
+
+#include "ConfParser.h"
+#include "Effects.h"
+#include "Skin.h"
+
 using std::string;  using std::vector;  using std::cout;    using std::endl;
 using std::cerr;
 using namespace MToolkit;

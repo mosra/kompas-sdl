@@ -1,5 +1,5 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#ifndef MTOOLKIT_MATRIX_H
+#define MTOOLKIT_MATRIX_H
 
 /**
  * @file Matrix.h
@@ -7,7 +7,6 @@
  */
 
 #include <vector>
-#include <algorithm>    /* sort() */
 
 namespace MToolkit {
 

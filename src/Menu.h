@@ -1,18 +1,16 @@
-#ifndef MENU_H
-#define MENU_H
+#ifndef MINTERFACE_MENU_H
+#define MINTERFACE_MENU_H
 
 /**
  * @file Menu.h
  * @brief Třída Menu
  */
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
-#include "Effects.h"
 #include "utility.h"
 
 namespace MInterface {

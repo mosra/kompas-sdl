@@ -1,5 +1,5 @@
-#ifndef FPS_H
-#define FPS_H
+#ifndef MINTERFACE_FPS_H
+#define MINTERFACE_FPS_H
 
 /**
  * @file FPS.h

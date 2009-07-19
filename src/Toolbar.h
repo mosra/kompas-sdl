@@ -1,20 +1,18 @@
-#ifndef TOOLBAR_H
-#define TOOLBAR_H
+#ifndef MINTERFACE_TOOLBAR_H
+#define MINTERFACE_TOOLBAR_H
 
 /**
  * @file Toolbar.h
  * @brief Třída Toolbar
  */
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
-#include "utility.h"
-#include "Effects.h"
 #include "Matrix.h"
+#include "utility.h"
 
 namespace MInterface {
 

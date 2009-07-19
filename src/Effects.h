@@ -1,5 +1,5 @@
-#ifndef EFFECTS_H
-#define EFFECTS_H
+#ifndef MINTERFACE_EFFECTS_H
+#define MINTERFACE_EFFECTS_H
 
 /**
  * @file Effects.h
@@ -11,6 +11,12 @@
 
 #include "utility.h"
 
+/**
+ * @brief Uživatelské rozhraní
+ *
+ * Třídy tvořící uživatelské rozhraní programu (menu, toolbary, klávesnice...)
+ * závislé na SDL.
+ */
 namespace MInterface {
 
 /**

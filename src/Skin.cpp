@@ -1,5 +1,10 @@
 #include "Skin.h"
 
+#include <iostream>
+#include <SDL/SDL_image.h>
+
+#include "Effects.h"
+
 using std::string;  using std::cout;    using std::endl;    using std::cerr;
 using std::vector;
 using namespace MToolkit;

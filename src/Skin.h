@@ -1,20 +1,17 @@
-#ifndef SKIN_H
-#define SKIN_H
+#ifndef MINTERFACE_SKIN_H
+#define MINTERFACE_SKIN_H
 
 /**
  * @file Skin.h
  * @brief Třída Skin
  */
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 
 #include "ConfParser.h"
-#include "Effects.h"
 #include "utility.h"
 
 namespace MInterface {

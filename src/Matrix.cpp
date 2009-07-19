@@ -1,5 +1,7 @@
 #include "Matrix.h"
 
+#include <algorithm>    /* sort() */
+
 using std::vector;  using std::sort;
 
 namespace MToolkit {

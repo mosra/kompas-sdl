@@ -1,17 +1,17 @@
-#ifndef SPLASH_H
-#define SPLASH_H
+#ifndef MINTERFACE_SPLASH_H
+#define MINTERFACE_SPLASH_H
 
 /**
  * @file Splash.h
  * @brief Třída Splash
  */
 
-#include <iostream>
 #include <vector>
 #include <string>
 #include <SDL/SDL.h>
-#include "Skin.h"
-#include "Effects.h"
+#include <SDL/SDL_ttf.h>
+
+#include "utility.h"
 
 namespace MInterface {
 

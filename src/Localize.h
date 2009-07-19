@@ -1,12 +1,11 @@
-#ifndef LOCALIZE_H
-#define LOCALIZE_H
+#ifndef MTOOLKIT_LOCALIZE_H
+#define MTOOLKIT_LOCALIZE_H
 
 /**
  * @file Localize.h
  * @brief Třída Localize
  */
 
-#include <iostream>
 #include <string>
 #include <vector>
 

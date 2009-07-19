@@ -1,5 +1,5 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef MTOOLKIT_UTILITY_H
+#define MTOOLKIT_UTILITY_H
 
 /**
  * @file utility.h
@@ -8,6 +8,12 @@
 
 #include <string>
 
+/**
+ * @brief Nízkoúrovňové věci
+ *
+ * Funkce a třídy nezávislé na žádné externí knihovně, pro správu konfigurace,
+ * lokalizace atd.
+ */
 namespace MToolkit {
 
 /**

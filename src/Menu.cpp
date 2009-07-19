@@ -1,5 +1,9 @@
 #include "Menu.h"
 
+#include <iostream>
+
+#include "Effects.h"
+
 using std::cout;    using std::endl;        using std::vector;
 using namespace MToolkit;
 
