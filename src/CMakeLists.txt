@@ -17,6 +17,7 @@ include_directories(${CMAKE_BINARY_DIR} ${SDL_INCLUDE_DIR} ${SDLIMAGE_INCLUDE_DI
 add_library(libConfParser STATIC ConfParser.cpp)
 add_library(libEffects STATIC Effects.cpp)
 add_library(libFPS STATIC FPS.cpp)
+add_library(libKeyboard STATIC Keyboard.cpp)
 add_library(libLocalize STATIC Localize.cpp)
 add_library(libMatrix STATIC Matrix.cpp)
 add_library(libMenu STATIC Menu.cpp)
@@ -29,6 +30,7 @@ add_library(libutility STATIC utility.cpp)
 target_link_libraries(libConfParser libutility)
 target_link_libraries(libEffects libutility ${SDL_LIBRARY})
 target_link_libraries(libFPS ${SDL_LIBRARY} ${SDLTIMER_LIBRARY})
+target_link_libraries(libKeyboard libMatrix libSkin ${SDL_LIBRARY} ${SDLTTF_LIBRARY})
 target_link_libraries(libLocalize libConfParser)
 target_link_libraries(libMenu libEffects libutility ${SDL_LIBRARY} ${SDLTTF_LIBRARY})
 target_link_libraries(libSkin libConfParser libEffects libutility ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${SDLTTF_LIBRARY})
@@ -37,4 +39,4 @@ target_link_libraries(libToolbar libEffects libMatrix libutility ${SDL_LIBRARY} 
 
 #Hlavní program
 add_executable(map2x main.cpp)
-target_link_libraries(map2x libFPS libLocalize libMenu libSkin libSplash libToolbar libutility ${SDL_LIBRARY})
+target_link_libraries(map2x libFPS libKeyboard libLocalize libMenu libSkin libSplash libToolbar libutility ${SDL_LIBRARY})

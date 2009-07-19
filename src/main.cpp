@@ -8,6 +8,7 @@
 #include "configure.h"      /* SVN_VERSION */
 #include "ConfParser.h"
 #include "FPS.h"
+#include "Keyboard.h"
 #include "Localize.h"
 #include "Menu.h"
 #include "Skin.h"
@@ -86,13 +87,13 @@ int main(int argc, char **argv) {
         skin.get<SDL_Surface**>("image", "splash"),
         skin.get<SDL_Rect*>("", "splash"),
         skin.get<Align*>("align", "splash"));
-    string text;
+    string skinText;
     splash.addText(
         skin.get<TTF_Font**>("authorFont", "splash"),
         skin.get<SDL_Color*>("authorColor", "splash"),
         skin.get<SDL_Rect*>("author", "splash"),
         skin.get<Align*>("authorAlign", "splash"),
-        &text
+        &skinText
     );
     string version = SVN_VERSION;
     splash.addText(
@@ -202,6 +203,10 @@ int main(int argc, char **argv) {
         NULL, lang.get("exit", "toolbar")
     );
 
+    /* Klávesnice */
+    string text = "Tex t";
+    Keyboard keyboard(screen, skin, "keyboard/cz.conf", text);
+
     /* Hlavní smyčka programu */
     FPS();
     int done = 0;
@@ -222,16 +227,19 @@ int main(int argc, char **argv) {
                             skin.load("skin.conf");
                             break;
                         case SDLK_UP:
-                            menu.moveUp();
+                            keyboard.moveUp();
                             break;
                         case SDLK_DOWN:
-                            menu.moveDown();
+                            keyboard.moveDown();
                             break;
                         case SDLK_RIGHT:
-                            toolbar.moveRight();
+                            keyboard.moveRight();
                             break;
                         case SDLK_LEFT:
-                            toolbar.moveLeft();
+                            keyboard.moveLeft();
+                            break;
+                        case SDLK_RETURN:
+                            keyboard.select();
                             break;
                         case SDLK_PAGEUP:
                             menu.scrollUp();
@@ -251,10 +259,11 @@ int main(int argc, char **argv) {
             }
         }
 
-        text = *skinAuthor + *author;
+        skinText = *skinAuthor + *author;
         splash.view();
         toolbar.view();
         menu.view();
+        keyboard.view();
         SDL_UpdateRect(screen, 0, 0, 0, 0);
         FPS::refresh();
     }
