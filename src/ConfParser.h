@@ -131,7 +131,6 @@ Druhý
 Třetí
 Čtvrtý
 </pre>
-@note Chybové hlášení o nenalezeném parametru se vypisuje akorát při prvním hledání tohoto parametru.
 @subsection ConfDuplicateSections Příklad pro výběr více stejných sekcí
 Zdrojový soubor <tt>file.conf</tt>:
 <pre>[osoba]
@@ -174,7 +173,18 @@ Výstup:
 Jan Novák (29) - Jako každý jiný Novák
 Věra Pohlová (72) - Já bych všechny ty internety zakázala
 </pre>
-@note Chybové hlášení o nenalezené sekci se vypisuje akorát při prvním hledání této sekce.
+@section ConfErrors Zpracování conf souboru a chybová hlášení
+Pokud se při zpracování conf souboru narazí na chybu (prázdný parametr bez znaku
+<tt>=</tt> na konci, název sekce neukončený <tt>]</tt>, neukončené uvozovky u
+hodnoty nebo nadlimitní délka názvu sekce, parametru nebo hodnoty), zpracování
+se ukončí s chybovým hlášením, takže jsou zpracovány jen parametry a sekce, které
+předcházejí této chybě.
+
+Při vyhledávání sekce nebo parametru lze předat flag ConfParser::SUPPRESS_ERRORS,
+čímž se potlačí chybová hlášení při nenalezení. Při hledání druhé a další sekce
+(či druhého a dalšího parametru) se chybová hlášení o nenalezení již logicky
+nevypisují, aby na konci každého @ref ConfDuplicateParameter "vyhledávacího cyklu"
+(kdy už žádný další parametr / sekce neexistuje) nevypadlo chybové hlášení.
  */
 
 /**
@@ -202,10 +212,11 @@ class ConfParser {
             std::vector<Parameter>::const_iterator begin;
         };
     public:
-        /** @brief Flags při výběru hodnoty int */
+        /** @brief Flags */
         enum flags {
-            HEX = 0x01,     /**< @brief Číslo je v hexadecimálním formátu (např. ffa806, na velikosti písem nezáleží). */
-            COLOR = 0x02    /**< @brief Číslo reprezentuje barvu (ff3366 i s # na začátku, na velikosti písem nezáleží). */
+            SUPPRESS_ERRORS = 0x01, /**< @brief Potlačit chybová hlášení (defaultně jsou povoleny) */
+            HEX = 0x02,     /**< @brief Vybírat číslo v hexa formátu (např. ffa806, na velikosti písem nezáleží). */
+            COLOR = 0x04    /**< @brief Vybírat číslo reprezentující barvu (ff3366 i s # na začátku, na velikosti písem nezáleží). */
         };
 
         /** @brief Maximální délka komentáře, názvu sekce, parametru nebo hodnoty parametru */
@@ -269,7 +280,6 @@ class ConfParser {
          * @param   conf    Kopírovaný objekt
          */
         inline ConfParser(const ConfParser& conf): filename(conf.filename), parameters(conf.parameters) {
-            file.open(filename.c_str());
             reloadSections();
         }
 
@@ -284,6 +294,13 @@ class ConfParser {
         ConfParser& operator= (const ConfParser& conf);
 
         /**
+         * @brief Zničení objektu
+         *
+         * Uvolnění všech dat.
+         */
+        void destroy(void);
+
+        /**
          * @brief Nalezení hodnoty parametru
          *
          * Pro informace o číselných hodnotách viz @ref ConfTypeInt a
@@ -293,7 +310,7 @@ class ConfParser {
          * @param   section     Sekce, ve které se bude hledat
          * @param   begin       Počáteční parametr, od kterého se bude hledat
          *  (použitelné v souborech s více stejně nazvanými parametry v jedné sekci)
-         * @param   flags       Viz ConfParser::flags, použitelné při získávání int
+         * @param   flags       Viz ConfParser::flags
          * @return  Ukazatel na nalezený parametr, pokud nebyl nalezen, vrací to
          *  samé jako ConfParser::parameterNotFound
          */
@@ -325,7 +342,7 @@ class ConfParser {
          * @param   section     Sekce, ve které se bude hledat
          * @param   begin       Počáteční parametr, od kterého se bude hledat
          *  (použitelné v souborech s více stejně nazvanými parametry v jedné sekci)
-         * @param   flags       Viz ConfParser::flags, použitelné při získávání int
+         * @param   flags       Viz ConfParser::flags
          * @return  Ukazatel na nalezený parametr, pokud nebyl nalezen, vrací to
          *  samé jako ConfParser::parameterNotFound
          */
@@ -340,7 +357,7 @@ class ConfParser {
          * @param   section     Sekce, ve které se bude hledat
          * @param   begin       Počáteční parametr, od kterého se bude hledat
          *  (použitelné v souborech s více stejně nazvanými parametry v jedné sekci)
-         * @param   flags       Viz ConfParser::flags, použitelné při získávání int
+         * @param   flags       Viz ConfParser::flags
          * @return  Ukazatel na nalezený parametr, pokud nebyl nalezen, vrací to
          *  samé jako ConfParser::parameterNotFound
          */
@@ -355,7 +372,7 @@ class ConfParser {
          * @param   section     Sekce, ve které se bude hledat
          * @param   begin       Počáteční parametr, od kterého se bude hledat
          *  (použitelné v souborech s více stejně nazvanými parametry v jedné sekci)
-         * @param   flags       Viz ConfParser::flags, použitelné při získávání int
+         * @param   flags       Viz ConfParser::flags
          * @return  Ukazatel na nalezený parametr, pokud nebyl nalezen, vrací to
          *  samé jako ConfParser::parameterNotFound
          */
@@ -365,27 +382,21 @@ class ConfParser {
          *
          * @param   name        Název sekce
          * @param   begin       Počátek hledání (použitelné v souborech s více stejnými sekcemi)
+         * @param   flags       Viz ConfParser::flags
          * @return  Ukazatel na nalezenou sekci použitelný ve funkcích ConfParser::value,
          *  pokud nebyla nalezena, vrací to samé jako ConfParser::sectionNotFound
          */
-        sectionPointer section(const std::string& name, sectionPointer begin) const;
+        sectionPointer section(const std::string& name, sectionPointer begin, int flags = 0) const;
 
         /** @overload */
-        inline sectionPointer section(const std::string& name) const {
+        inline sectionPointer section(const std::string& name, int flags = 0) const {
             return section(name, sections.begin());
         }
     private:
-        std::ifstream file;                 /**< @brief Soubor s konfigurákem */
+        //std::ifstream file;                 /**< @brief Soubor s konfigurákem */
         std::string filename;               /**< @brief Jméno souboru s konfigurákem */
         std::vector<Parameter> parameters;  /**< @brief Vektor s parametry a komentáři */
         std::vector<Section> sections;      /**< @brief Vektor s názvy a pozicemi sekcí */
-
-        /**
-         * @brief Zničení objektu
-         *
-         * Uvolnění všech dat a uzavření souboru.
-         */
-        inline void destroy(void) { file.close(); }
 
         /**
          * @brief (Znovu)nalezení sekcí v konfiguráku

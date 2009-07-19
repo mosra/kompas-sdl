@@ -57,8 +57,8 @@ template<class Item> bool Matrix<Item>::moveUp(void) {
     while(it-- != sortedHorizontal.begin() && (**it).y == y) {
 
         /* Pokud je položka blíže aktuální než předešlý kandidát, přiřazení */
-        if( ((**it).x < x && (*actualItem).x < (**it).x) || /* vlevo od aktuální */
-            ((**it).x > x && (*actualItem).x > (**it).x)    /* vpravo od aktuální */
+        if( ((**it).x <= x && (*actualItem).x < (**it).x) || /* vlevo od aktuální */
+            ((**it).x >= x && (*actualItem).x > (**it).x)    /* vpravo od aktuální */
         ) actualItem = *it;
 
         /* Položka je dále než předešlý kandidát, konec */
@@ -91,8 +91,8 @@ template<class Item> bool Matrix<Item>::moveDown(void) {
     while(++it != sortedHorizontal.end() && (**it).y == y) {
 
         /* Pokud je položka blíže aktuální než předešlý kandidát, přiřazení */
-        if( ((**it).x < x && (*actualItem).x < (**it).x) || /* vlevo od aktuální */
-            ((**it).x > x && (*actualItem).x > (**it).x)    /* vpravo od aktuální */
+        if( ((**it).x <= x && (*actualItem).x < (**it).x) || /* vlevo od aktuální */
+            ((**it).x >= x && (*actualItem).x > (**it).x)    /* vpravo od aktuální */
         ) actualItem = *it;
 
         /* Položka je dále než předešlý kandidát, konec */
@@ -125,8 +125,8 @@ template<class Item> bool Matrix<Item>::moveLeft(void) {
     while(it-- != sortedVertical.begin() && (**it).x == x) {
 
         /* Pokud je položka blíže aktuální než předešlý kandidát, přiřazení */
-        if( ((**it).y < y && (*actualItem).y < (**it).y) || /* výše než aktuální */
-            ((**it).y > y && (*actualItem).y > (**it).y)    /* níže než aktuální */
+        if( ((**it).y <= y && (*actualItem).y < (**it).y) || /* výše než aktuální */
+            ((**it).y >= y && (*actualItem).y > (**it).y)    /* níže než aktuální */
         ) actualItem = *it;
 
         /* Položka je dále než předešlý kandidát, konec */
@@ -159,8 +159,8 @@ template<class Item> bool Matrix<Item>::moveRight(void) {
     while(++it != sortedVertical.end() && (**it).x == x) {
 
         /* Pokud je položka blíže aktuální než předešlý kandidát, přiřazení */
-        if( ((**it).y < y && (*actualItem).y < (**it).y) || /* výše než aktuální */
-            ((**it).y > y && (*actualItem).y > (**it).y)    /* níže než aktuální */
+        if( ((**it).y <= y && (*actualItem).y < (**it).y) || /* výše než aktuální */
+            ((**it).y >= y && (*actualItem).y > (**it).y)    /* níže než aktuální */
         ) actualItem = *it;
 
         /* Položka je dále než předešlý kandidát (už lepší nenajdeme), konec */

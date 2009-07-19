@@ -9,7 +9,7 @@ const std::string ConfParser::DEFAULT_SECTION = "default";
 
 /* Konstruktor */
 ConfParser::ConfParser(std::string _file): filename(_file) {
-    file.open(_file.c_str());
+    std::ifstream file(_file.c_str());
     if(!file.good()) {
         cerr << "Nelze otevřít soubor " << _file << "." << endl;
         return;
@@ -40,6 +40,8 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
             file.ignore(1);
             file.getline(buffer, ConfParser::MAX_LINE_LENGTH-1);
 
+            /** @todo Error při nadlimitní velikosti */
+
             Parameter parameter;
             parameter.parameter = "#";
             parameter.value = buffer;
@@ -53,7 +55,7 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
             file.ignore(1);
             file.get(buffer, ConfParser::MAX_LINE_LENGTH-1, ']');
             if(file.peek() != ']') {
-                cerr << "Neplatná sekce " << buffer << " v souboru " << filename << "." << endl;
+                cerr << "Neplatný název sekce " << buffer << " v souboru " << filename << "." << endl;
                 return;
             }
             file.ignore(ConfParser::MAX_LINE_LENGTH, '\n');
@@ -77,7 +79,7 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
         /* Získání parametru */
         file.get(buffer, ConfParser::MAX_LINE_LENGTH-1, '=');
         if(file.peek() != '=') {
-            cerr << "Neplatný parametr " << buffer << " v souboru " << filename << " na pozici " << file.tellg() << "." << endl;
+            cerr << "Neplatný prázdný parametr " << buffer << " v souboru " << filename << " na pozici " << file.tellg() << "." << endl;
             return;
         }
         file.ignore(1);
@@ -116,6 +118,9 @@ ConfParser::ConfParser(std::string _file): filename(_file) {
 
     }
 
+    /* Uzavření souboru */
+    file.close();
+
     /* Rozdělení konfiguráku na sekce */
     reloadSections();
 }
@@ -127,12 +132,17 @@ ConfParser& ConfParser::operator= (const ConfParser& conf) {
         if(&conf != this) {
             destroy();
             filename = conf.filename;
-            if(filename != "") file.open(filename.c_str());
             parameters = conf.parameters;
             reloadSections();
         }
 
         return *this;
+}
+
+/* Uvolnění všech dat */
+void ConfParser::destroy(void) {
+    parameters.clear();
+    sections.clear();
 }
 
 /* Nalezení sekcí v konfiguráku */
@@ -157,13 +167,13 @@ void ConfParser::reloadSections(void) {
 }
 
 /* Nalezení sekce */
-ConfParser::sectionPointer ConfParser::section(const string& name, ConfParser::sectionPointer begin) const {
+ConfParser::sectionPointer ConfParser::section(const string& name, ConfParser::sectionPointer begin, int flags) const {
     for(ConfParser::sectionPointer it = begin; it != sections.end(); ++it) {
         if((*it).section == name) return it;
     }
 
     /* Nic nenalezeno, pokud hledáme poprvé, chybové hlášení */
-    if(begin == sections.begin())
+    if(begin == sections.begin() && !(flags & SUPPRESS_ERRORS))
         cerr << "Sekce '" << name << "' nebyla v souboru '" << filename << "' nalezena." << endl;
 
     return sections.end();
@@ -186,7 +196,7 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
     }
 
     /* Nic nenalezeno, pokud hledáme poprvé, vyhození hlášky */
-    if(begin == (*section).begin)
+    if(begin == (*section).begin && !(flags & SUPPRESS_ERRORS))
         cerr << "Hodnota parametru '" << parameter << "' nebyla v sekci [" << (*section).section << "] souboru '" << filename << "' nalezena." << endl;
 
     return parameters.end();
