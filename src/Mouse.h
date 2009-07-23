@@ -56,11 +56,12 @@ class Mouse {
     protected:
 
         /**
-         * @brief Zjištění, zda bylo kliknutí v oblasti objektu
+         * @brief Zjištění, zda bylo kliknutí v oblasti
          *
          * @param   x       X-ová souřadnice
          * @param   y       Y-ová souřadnice
-         * @return  Zda bylo klinutí v oblasti objektu
+         * @param   area    Oblast
+         * @return  Zda bylo klinutí v oblasti
          */
         bool inArea(int x, int y, const SDL_Rect& area);
 };
