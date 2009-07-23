@@ -12,6 +12,7 @@
 #include <SDL/SDL_ttf.h>
 
 #include "Matrix.h"
+#include "Mouse.h"
 #include "utility.h"
 
 namespace MInterface {
@@ -52,7 +53,7 @@ struct ToolbarItem {
  * nejsou, hledá se v dalším sloupci. Analogický postup je ve vertikálním směru.
  * @todo Vypnutí "nekonečného procházení" ve flags
  */
-class Toolbar: public MToolkit::Matrix<ToolbarItem> {
+class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
     public:
         /**
          * @brief Flags pro toolbar
@@ -199,6 +200,18 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem> {
         inline int select(void) {
             return (*actualItem).action;
         }
+
+        /**
+         * @brief Kliknutí
+         *
+         * Vyvolá akci způsobenou kliknutím myši na příslušné souřadnice
+         * @param   x       X-ová souřadnice
+         * @param   y       Y-ová souřadnice
+         * @param   action  Pokud kliknutí spustilo nějakou akci, do této
+         *  proměnné se uloží její číslo (-1 pokud se žádná akce nespustila)
+         * @return  Zda bylo klinutí v oblasti objektu
+         */
+        bool click(int x, int y, int& action);
 
         /**
          * @brief Vykreslení toolbaru

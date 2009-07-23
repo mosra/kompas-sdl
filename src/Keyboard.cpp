@@ -216,7 +216,7 @@ bool Keyboard::click(int x, int y, int& action) {
     /* Procházení jednotlivých kláves */
     for(vector<KeyboardKey>::const_iterator it = items.begin(); it != items.end(); it++) {
         /* Nalezeno */
-        if(inArea(x, y, Effects::align(area, ALIGN_DEFAULT, (*it).position))) {
+        if(!((*it).flags & DISABLED) && inArea(x, y, Effects::align(area, ALIGN_DEFAULT, (*it).position))) {
             actualItem = it;
             select();
             return true;

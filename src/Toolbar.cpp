@@ -86,6 +86,25 @@ int Toolbar::moveRight(void) {
     else return -1;
 }
 
+/* Kliknutí */
+bool Toolbar::click(int x, int y, int& action) {
+    /* Oblast toolbaru */
+    SDL_Rect area = Effects::align(screen, *align, *position);
+
+    if(!inArea(x, y, area)) return false;
+
+    /* Procházení jednotlivých ikon */
+    for(vector<ToolbarItem>::const_iterator it = items.begin(); it != items.end(); ++it) {
+        if(!((*it).flags & DISABLED) && inArea(x, y, Effects::align(area, ALIGN_DEFAULT, *(*it).position))) {
+            actualItem = it;
+            action = select();
+            return true;
+        }
+    }
+
+    return true;
+}
+
 /* Zobrazení toolbaru */
 void Toolbar::view (void) {
     /* Pozice toolbaru */
