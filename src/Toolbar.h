@@ -210,6 +210,7 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
          * @param   action  Pokud kliknutí spustilo nějakou akci, do této
          *  proměnné se uloží její číslo (-1 pokud se žádná akce nespustila)
          * @return  Zda bylo klinutí v oblasti objektu
+         * @todo Rozdělit do mouseDown a mouseUp
          */
         bool click(int x, int y, int& action);
 

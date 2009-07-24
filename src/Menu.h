@@ -11,6 +11,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
+#include "Mouse.h"
 #include "utility.h"
 
 namespace MInterface {
@@ -26,7 +27,7 @@ namespace MInterface {
  * @todo Inline funkce jen tam, kde to je potřeba (kde budou často volané), zbytek
  *   přesunout do Menu.cpp
  */
-class Menu {
+class Menu: public Mouse {
     public:
         /**
          * @brief Flags pro celé menu
@@ -228,6 +229,19 @@ class Menu {
          * @return  Akce aktuální položky, pokud není zakázaná
          */
         int scrollUp(void);
+
+        /**
+         * @brief Kliknutí
+         *
+         * Vyvolá akci způsobenou kliknutím myši na příslušné souřadnice
+         * @param   x       X-ová souřadnice
+         * @param   y       Y-ová souřadnice
+         * @param   action  Pokud kliknutí spustilo nějakou akci, do této
+         *  proměnné se uloží její číslo (-1 pokud se žádná akce nespustila)
+         * @return  Zda bylo klinutí v oblasti objektu
+         * @todo rozdělit do mouseDown a mouseUp
+         */
+        bool click(int x, int y, int& action);
 
         /** @brief Zobrazení menu */
         void view(void);

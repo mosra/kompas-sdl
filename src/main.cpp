@@ -133,6 +133,13 @@ int main(int argc, char **argv) {
     Menu::sectionId section = menu.addSection(0, lang.get("caption", "menu"), NULL, skin.get<Align*>("itemsAlign", "menu"), 0);
     menu.addItem(section, 0, lang.get("playGame", "menu"), NULL, Menu::DISABLED);
     menu.addItem(section, 0, lang.get("about", "menu"));
+    menu.addItem(section, 0, lang.get("about", "menu"), NULL, Menu::DISABLED);
+    menu.addItem(section, 0, lang.get("about", "menu"));
+    menu.addItem(section, 0, lang.get("about", "menu"));
+    menu.addItem(section, 0, lang.get("about", "menu"));
+    menu.addItem(section, 0, lang.get("about", "menu"));
+    menu.addItem(section, 0, lang.get("about", "menu"));
+    menu.addItem(section, 0, lang.get("playGame", "menu"), NULL, Menu::DISABLED);
 
     /* Toolbar */
     Toolbar toolbar(screen,
@@ -208,14 +215,15 @@ int main(int argc, char **argv) {
 
     /* Hlavní smyčka programu */
     FPS();
-    int done = 0;
+    int done = 0; int action = -1;
     while (!done) {
         SDL_Event event;
         while (SDL_PollEvent (&event)) {
             switch(event.type) {
                 case SDL_MOUSEBUTTONDOWN:
-                    if(!keyboard.click(event.button.x, event.button.y, dummy))
-                        toolbar.click(event.button.x, event.button.y, dummy);
+                    if(!keyboard.click(event.button.x, event.button.y, action))
+                        if(!toolbar.click(event.button.x, event.button.y, action))
+                            menu.click(event.button.x, event.button.y, action);
                     break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {

@@ -114,6 +114,97 @@ int Menu::scrollUp (void) {
     return (*(*actualSection).actualItem).flags & DISABLED ? -1 : (*(*actualSection).actualItem).action;
 }
 
+/* Kliknutí */
+bool Menu::click(int x, int y, int& action) {
+    /* Oblast menu */
+    SDL_Rect area = Effects::align(screen, *menuAlign, *position);
+
+    if(!inArea(x, y, area)) return false;
+
+    /* Kliknutí na titulek - návrat do nadřazeného menu */
+    if((flags & CAPTION) && inArea(x, y, Effects::align(area, ALIGN_DEFAULT, *captionPosition))) {
+        parentSection();
+        return true;
+    }
+
+    /* Kliknutí na scrollbar */
+    if((flags & SCROLLBAR)) {
+        /* Kliknutí na šipku nahoru */
+        SDL_Rect temp = {(*scrollbarPosition).x, (*scrollbarPosition).y, (*scrollbarPosition).w, *scrollbarArrowHeight};
+        if(inArea(x, y, Effects::align(area, ALIGN_DEFAULT, temp))) {
+            scrollUp();
+            return true;
+        }
+
+        /* Kliknutí na šipku dolů */
+        temp.y += (*scrollbarPosition).h-*scrollbarArrowHeight;
+        if(inArea(x, y, Effects::align(area, ALIGN_DEFAULT, temp))) {
+            scrollDown();
+            return true;
+        }
+
+        /* Kliknutí do prostoru slideru */
+        temp.y = (*scrollbarPosition).y+(*scrollbarArrowHeight); temp.h = (*scrollbarPosition).h-2*(*scrollbarArrowHeight);
+        if((*actualSection).items.size() > 1 && inArea(x, y, (temp = Effects::align(area, ALIGN_DEFAULT, temp)))) {
+            /* Spočtení pozice */
+            int position = (*actualSection).items.size()*(y - temp.y)/temp.h;
+
+            (*actualSection).actualItem = (*actualSection).items.begin()+position;
+            return true;
+        }
+    }
+
+    /* Kliknutí do oblasti položek */
+    if(inArea(x, y, Effects::align(area, ALIGN_DEFAULT, *itemsPosition))) {
+        /* Půjčeno z Menu::view() */
+
+        /* Mezera mezi položkami, pokud není striktně definovaná. */
+        int _itemHeight = *itemHeight;
+        if(_itemHeight == 0) _itemHeight = TTF_FontLineSkip(*itemFont);
+        int itemsPerPage = (*itemsPosition).h/_itemHeight;
+
+        /* První a poslední zobrazená položka */
+        vector<Item>::const_iterator begin = (*actualSection).items.begin();
+        vector<Item>::const_iterator end = (*actualSection).items.end();
+
+        /* Pokud je položek více, než se na stránku vejde a aktuální položka není v
+        první polovině menu, upravení začátku tak, aby aktuální položka byla v polovině */
+        if(end-begin > itemsPerPage) {
+            if((*actualSection).actualItem-itemsPerPage/2 > begin) {
+                begin = (*actualSection).actualItem-itemsPerPage/2;
+
+                /* Pokud je položka blízko u konce, upravení začátku, aby bylo vypsáno
+                maximum položek */
+                if(end-begin < itemsPerPage)
+                    begin = end-itemsPerPage;
+            }
+
+            end = begin+itemsPerPage;
+        }
+
+        /* Plocha pro vykreslení položek. Prvně zarování celé plochy položek, až v ní
+        se podle počtu položek na stránku a vertikálního zarovnání (&0xF0) vypočítá
+        konečná plocha položek */
+        SDL_Rect itemArea = Effects::align(
+            Effects::align(area, ALIGN_DEFAULT, *itemsPosition),
+            (Align) (*(*actualSection).itemsAlign & 0xF0), (*itemsPosition).w, _itemHeight*(end-begin)
+        );
+        itemArea.h = _itemHeight;
+
+        /* Procházení položek */
+        for(vector<Item>::const_iterator it = begin; it != end; ++it) {
+            if(inArea(x, y, itemArea)) {
+                (*actualSection).actualItem = it;
+                action = select();
+                return true;
+            }
+
+            itemArea.y += _itemHeight;
+        }
+    }
+
+    return true;
+}
 
 /* Reload iterátorů */
 void Menu::reloadIterators (int section) {
