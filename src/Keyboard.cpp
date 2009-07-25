@@ -21,7 +21,7 @@ template class Matrix<MInterface::KeyboardKey>;
 namespace MInterface {
 
 /* Konstruktor */
-Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::string& _text): screen(_screen), skin(_skin), text(_text), shiftPushed(false) {
+Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::string& _text, int _flags): screen(_screen), skin(_skin), text(_text), flags(_flags), shiftPushed(false) {
     /* Otevření conf souboru */
     ConfParser keyboard(file);
 
@@ -223,6 +223,9 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
 
 /* Kliknutí myší */
 bool Keyboard::click(int x, int y, int& action) {
+    /* Klávesnice je schovaná, konec */
+    if(flags & HIDDEN) return false;
+
     /* Oblast klávesnice */
     SDL_Rect area = Effects::align(screen, *align, keyboardW, keyboardH, *keyboardX, *keyboardY);
 
@@ -305,6 +308,9 @@ void Keyboard::select(void) {
 
 /* Zobrazení klávesnice */
 void Keyboard::view(void) {
+    /* Klávesnice je schovaná, konec */
+    if(flags & HIDDEN) return;
+
     /* Plocha pro vykreslování klávesnice */
     SDL_Rect area = Effects::align(screen, *align, keyboardW, keyboardH, *keyboardX, *keyboardY);
 

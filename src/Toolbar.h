@@ -73,7 +73,8 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
              * @warning Tato flag se nastaví automaticky při volání funkce
              * Toolbar::configureCaptionPlace, ručně by se nastavovat neměla!
              */
-            CAPTION_IN_PLACE = 0x08
+            CAPTION_IN_PLACE = 0x08,
+            HIDDEN = 0x10               /**< @brief Toolbar je schovaný */
         };
 
         /**
@@ -213,6 +214,15 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
          * @todo Rozdělit do mouseDown a mouseUp
          */
         bool click(int x, int y, int& action);
+
+        /** @brief Schování toolbaru */
+        inline void hide(void) { flags |= HIDDEN; }
+
+        /** @brief Povolení zobrazení toolbaru */
+        inline void show(void) { flags &= ~HIDDEN; }
+
+        /** @brief Zjištění, jestli je povoleno zobrazení toolbaru */
+        inline operator bool(void) { return !(flags & HIDDEN); }
 
         /**
          * @brief Vykreslení toolbaru

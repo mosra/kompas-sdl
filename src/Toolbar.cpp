@@ -88,6 +88,9 @@ int Toolbar::moveRight(void) {
 
 /* Kliknutí */
 bool Toolbar::click(int x, int y, int& action) {
+    /* Pokud je toolbar schovaný, konec */
+    if(flags & HIDDEN) return false;
+
     /* Oblast toolbaru */
     SDL_Rect area = Effects::align(screen, *align, *position);
 
@@ -107,6 +110,9 @@ bool Toolbar::click(int x, int y, int& action) {
 
 /* Zobrazení toolbaru */
 void Toolbar::view (void) {
+    /* Pokud je toolbar schovaný, konec */
+    if(flags & HIDDEN) return;
+
     /* Pozice toolbaru */
     SDL_Rect area = Effects::align(screen, *align, *position);
 

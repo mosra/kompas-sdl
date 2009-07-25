@@ -346,6 +346,11 @@ struct KeyboardKey {
  */
 class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
     public:
+        /** @brief Flags */
+        enum Flags {
+            HIDDEN = 0x01       /**< @brief Klávesnice je schovaná */
+        };
+
         /**
          * @brief Konstruktor
          *
@@ -354,8 +359,9 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
          * @param   _skin   Reference na otevřenou skin
          * @param   file    Soubor s daty klávesnice
          * @param   _text   Ukazatel na proměnnou s textem ke zpracování
+         * @param   _flags  Flags (viz Keyboard::Flags)
          */
-        Keyboard(SDL_Surface* screen, Skin& _skin, std::string file, std::string& _text);
+        Keyboard(SDL_Surface* screen, Skin& _skin, std::string file, std::string& _text, int _flags = 0);
 
         /**
          * @brief Stisk klávesy
@@ -376,6 +382,15 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
          * @todo Rozdělit do mouseDown a mouseUp
          */
         bool click(int x, int y, int& action);
+
+        /** @brief Schování toolbaru */
+        inline void hide(void) { flags |= HIDDEN; }
+
+        /** @brief Povolení zobrazení toolbaru */
+        inline void show(void) { flags &= ~HIDDEN; }
+
+        /** @brief Zjištění, jestli je povoleno zobrazení toolbaru */
+        inline operator bool(void) { return !(flags & HIDDEN); }
 
         /** @brief Zobrazení klávesnice */
         void view(void);
@@ -413,6 +428,7 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
         SDL_Color *keyColor,    /**< @brief Barva popisků kláves (ze skinu) */
             *keyActiveColor,    /**< @brief Barva popisku aktivní klávesy (ze skinu) */
             *keySpecialActiveColor; /**< @brief Barva popisku stlačené spec. klávesy (ze skinu) */
+        int flags;              /**< @brief Flags (viz Toolbar::Flags) */
 
         /**
          * @brief Ukazatel na stlačenou speciální klávesu
