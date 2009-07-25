@@ -11,6 +11,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
+#include "FPS.h"
 #include "Matrix.h"
 #include "Mouse.h"
 #include "utility.h"
@@ -65,7 +66,19 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
     public:
         /** @brief Flags */
         enum Flags {
-            HIDDEN = 0x01       /**< @brief Klávesnice je schovaná */
+            HIDDEN = 0x01,      /**< @brief Klávesnice je schovaná */
+
+            /**
+             * @brief Zda ukazovat kurzor
+             *
+             * Touto flag lze určit, zda kurzor bude na počátku vykreslování
+             * viditelný, nebo ne. Tato flag je ale spíše jen pro vnitřní
+             * použití - po uplynutí doby stanovené v parametru
+             * @ref KeyboardCursorInterval "cursorInterval" v příslušné sekci
+             * skinu se viditelnost přepne do druhé polohy.
+             * @sa Keyboard::cursorBlink
+             */
+            SHOW_CURSOR = 0x02
         };
 
         /**
@@ -118,6 +131,7 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
         enum KeyFlags {
             DISABLED = 0x001,   /**< @brief Klávesa je zakázána (nutné pro Matrix) */
             SPECIAL = 0x002,    /**< @brief Klávesa je speciální */
+
             ENTER = 0x004,      /**< @brief Enter */
             SHIFT = 0x008,      /**< @brief Shift */
             BACKSPACE = 0x010,  /**< @brief Backspace */
@@ -125,6 +139,7 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
             LEFT_ARROW = 0x040, /**< @brief Šipka doleva */
             RIGHT_ARROW = 0x080 /**< @brief Šipka doprava */
         };
+
 
         SDL_Surface* screen;    /**< @brief Displejová surface */
         Skin& skin;             /**< @brief Globální skin */
@@ -156,6 +171,7 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
         MToolkit::Align* cursorAlign;   /**< @brief Vertikální zarovnání kurzoru (ze skinu) */
         int *cursorInterval;    /**< @brief Interval blikání kurzoru (ze skinu) */
 
+        MInterface::FPS::Data cursorBlink; /**< @brief Čas dalšího přebliknutí kurzoru */
         int flags;              /**< @brief Flags (viz Toolbar::Flags) */
 
         /**
@@ -247,6 +263,7 @@ cursorY=0
 cursorAlign="middle"
 cursorImage=gfx/cursor.png
 
+@anchor KeyboardCursorInterval
 \# Interval blikání kurzoru (= 300 ms viditelný, 300 ms ne)
 cursorInterval=300
 

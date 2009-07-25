@@ -21,7 +21,7 @@ template class Matrix<MInterface::KeyboardKey>;
 namespace MInterface {
 
 /* Konstruktor */
-Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::string& _text, int _flags): screen(_screen), skin(_skin), text(_text), cursor(text.end()), flags(_flags), shiftPushed(false) {
+Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::string& _text, int _flags): screen(_screen), skin(_skin), text(_text), cursor(text.end()), cursorBlink(0), flags(_flags), shiftPushed(false) {
     /* Otevření conf souboru */
     ConfParser keyboard(file);
 
@@ -414,9 +414,17 @@ void Keyboard::view(void) {
             (**cursorImage).w, (**cursorImage).h, *cursorX, *cursorY);
     }
 
+    /* Pokud nadešel čas, přepnutí kurzoru a nastavení dalšího času */
+    if(!FPS::paused(cursorBlink)) {
+        (flags & SHOW_CURSOR) ? flags &= ~SHOW_CURSOR : flags |= SHOW_CURSOR;
+        FPS::pause(*cursorInterval, cursorBlink);
+    }
+
     /* Vykreslení kurzoru */
-    SDL_Rect cursorCrop = {0, 0, _textPosition.w, _textPosition.h};
-    SDL_BlitSurface(*cursorImage, &cursorCrop, screen, &_textPosition);
+    if(flags & SHOW_CURSOR) {
+        SDL_Rect cursorCrop = {0, 0, _textPosition.w, _textPosition.h};
+        SDL_BlitSurface(*cursorImage, &cursorCrop, screen, &_textPosition);
+    }
 
     /* Jednotlivé klávesy */
     for(vector<KeyboardKey>::const_iterator it = items.begin(); it != items.end(); ++it) {
