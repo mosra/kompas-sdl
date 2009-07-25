@@ -180,11 +180,12 @@ posY=1
 name=ˇ^
 </pre>
  * @subsection KeyboardConfFunctionKeys Funkční klávesy
- * Conf soubor pokračuje nastavením funkčních kláves - kláves Space, Shift a
- * Enter. Jejich účel je jasný z názvů. Tyto klávesy mají většinou jiné rozměry
- * než ostatní klávesy, proto má každá své parametry pro určení velikosti.
- * Jejich pozadí je specifikováno v příslušné sekci skinu. Parametr <tt>name</tt>
- * není povinný, pokud je z pozadí klávesy dostatečně jasná její funkce.
+ * Conf soubor pokračuje nastavením funkčních kláves - kláves Space, Shift,
+ * Backspace a Enter. Jejich účel je jasný z názvů. Tyto klávesy mají většinou
+ * jiné rozměry než ostatní klávesy, proto má každá své parametry pro určení
+ * velikosti. Jejich pozadí je specifikováno v příslušné sekci skinu. Parametr
+ * <tt>name</tt> není povinný, pokud je z pozadí klávesy dostatečně jasná její
+ * funkce.
 <pre>\# Funkční klávesy
 
 \# Mezerník
