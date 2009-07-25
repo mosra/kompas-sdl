@@ -20,6 +20,164 @@ namespace MInterface {
 class Skin;
 
 /**
+ * @brief Klávesa klávesnice
+ *
+ * Struktura patřící do private sekce třídy Keyboard, bohužel kvůli dědění
+ * šablonové třídy musí být před deklarací třídy.
+ */
+struct KeyboardKey {
+    int x,                  /**< @brief X-ová pozice ve virtuální mřížce (viz Matrix) */
+        y;                  /**< @brief Y-ová pozice ve virtuální mřížce (viz Matrix) */
+    int flags;              /**< @brief Flags (viz Keyboard::Flags) */
+    SDL_Rect position;      /**< @brief Pozice klávesy */
+    SDL_Surface** image;    /**< @brief Pozadí klávesy */
+    SDL_Surface** activeImage;  /**<  @brief Pozadí stisknuté klávesy */
+    std::string name;       /**< @brief Popisek klávesy */
+
+    /**
+     * @brief Hodnoty klávesy
+     *
+     * Pokud se jedná o normální klávesu, jsou na zde tyto hodnoty:<br>
+     * Pozice 0 - normální hodnota klávesy<br>
+     * Pozice 1 - hodnota klávesy se Shiftem<br>
+     * Pozice 2 - hodnota klávesy v kombinaci s 1. spec. klávesou<br>
+     * Pozice 3 - hodnota klávesy v kombinaci s 1. spec. klávesou a Shiftem<br>
+     * Pozice 4 - hodnota klávesy v kombinaci s Shift + 1. spec. klávesou<br>
+     * Pozice 5 - hodnota klávesy v kombinaci s Shift + 1. spec. a Shiftem<br>
+     * Pozice 6 - hodnota klávesy v kombinaci s 2. spec. klávesou<br>
+     * Pozice 7 - hodnota klávesy v kombinaci s 2. spec. klávesou a Shiftem<br>
+     * ...
+     */
+    std::vector<std::string> values;
+};
+
+/**
+ * @brief Psaní textu pomocí klávesnice
+ *
+ * Plná konfigurovatelnost pomocí conf osuborů, podpora UTF-8 a skinů, dotykové
+ * ovládání.
+ * @todo Přepínání jiné klávesnice a dalšího textu ke zpracování
+ * @todo Nadpisek klávesnice
+ * @todo Propojení klávesnice a skinu!
+ * @todo Duplicitní ConfParser <=> Skin
+ */
+class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
+    public:
+        /** @brief Flags */
+        enum Flags {
+            HIDDEN = 0x01       /**< @brief Klávesnice je schovaná */
+        };
+
+        /**
+         * @brief Konstruktor
+         *
+         * Načte klávesnici z conf souboru
+         * @param   screen  Displejová surface
+         * @param   _skin   Reference na otevřenou skin
+         * @param   file    Soubor s daty klávesnice
+         * @param   _text   Ukazatel na proměnnou s textem ke zpracování
+         * @param   _flags  Flags (viz Keyboard::Flags)
+         */
+        Keyboard(SDL_Surface* screen, Skin& _skin, std::string file, std::string& _text, int _flags = 0);
+
+        /**
+         * @brief Stisk klávesy
+         *
+         * Zapíše znak klávesy do proměnné
+         */
+        void select(void);
+
+        /**
+         * @brief Kliknutí
+         *
+         * Vyvolá akci způsobenou kliknutím myši na příslušné souřadnice
+         * @param   x       X-ová souřadnice
+         * @param   y       Y-ová souřadnice
+         * @param   action  Pokud kliknutí spustilo nějakou akci, do této
+         *  proměnné se uloží její číslo (-1 pokud se žádná akce nespustila)
+         * @return  Zda bylo klinutí v oblasti objektu
+         * @todo Rozdělit do mouseDown a mouseUp
+         */
+        bool click(int x, int y, int& action);
+
+        /** @brief Schování toolbaru */
+        inline void hide(void) { flags |= HIDDEN; }
+
+        /** @brief Povolení zobrazení toolbaru */
+        inline void show(void) { flags &= ~HIDDEN; }
+
+        /** @brief Zjištění, jestli je povoleno zobrazení toolbaru */
+        inline operator bool(void) { return !(flags & HIDDEN); }
+
+        /** @brief Zobrazení klávesnice */
+        void view(void);
+    private:
+        /**
+         * @brief Flags klávesy
+         */
+        enum KeyFlags {
+            DISABLED = 0x001,   /**< @brief Klávesa je zakázána (nutné pro Matrix) */
+            SPECIAL = 0x002,    /**< @brief Klávesa je speciální */
+            ENTER = 0x004,      /**< @brief Enter */
+            SHIFT = 0x008,      /**< @brief Shift */
+            BACKSPACE = 0x010,  /**< @brief Backspace */
+            DELETE = 0x020,     /**< @brief Delete */
+            LEFT_ARROW = 0x040, /**< @brief Šipka doleva */
+            RIGHT_ARROW = 0x080 /**< @brief Šipka doprava */
+        };
+
+        SDL_Surface* screen;    /**< @brief Displejová surface */
+        Skin& skin;             /**< @brief Globální skin */
+        std::string& text;      /**< @brief Text ke zpracování */
+        std::string::iterator cursor;   /**< @brief Pozice kurzoru */
+
+        int keyboardW,          /**< @brief Šířka klávesnice (z konfiguráku) */
+            keyboardH;          /**< @brief Výška klávesnice (z konfiguráku) */
+        SDL_Rect textPosition;  /**< @brief Pozice zpracovávaného textu (z konfiguráku) */
+        MToolkit::Align textAlign;  /**< @brief Zarovnání textu (z konfiguráku) */
+
+        int *keyboardX,         /**< @brief X-ová pozice klávesnice (ze skinu) */
+            *keyboardY;         /**< @brief Y-ová pozice klávesnice (ze skinu) */
+        MToolkit::Align *align; /**< @brief Zarovnání klávesnice (ze skinu) */
+        SDL_Surface **image;    /**< @brief Pozadí klávesnice (ze skinu) */
+
+        TTF_Font **textFont;    /**< @brief Barva textu (ze skinu) */
+        SDL_Color *textColor;   /**< @brief Barva textu (ze skinu) */
+
+        MToolkit::Align *keyAlign;  /**< @brief Zarovnání popisku klávesy (ze skinu) */
+        TTF_Font **keyFont;     /**< @brief Font popisků kláves (ze skinu) */
+        SDL_Color *keyColor,    /**< @brief Barva popisků kláves (ze skinu) */
+            *keyActiveColor,    /**< @brief Barva popisku aktivní klávesy (ze skinu) */
+            *keySpecialActiveColor; /**< @brief Barva popisku stlačené spec. klávesy (ze skinu) */
+
+        SDL_Surface **cursorImage; /**< @brief Obrázek kurzoru (ze skinu) */
+        int *cursorX,           /**< @brief X-ové posunutí kurzoru (ze skinu) */
+            *cursorY;           /**< @brief Y-ové posunutí kurzoru (ze skinu) */
+        MToolkit::Align* cursorAlign;   /**< @brief Vertikální zarovnání kurzoru (ze skinu) */
+        int *cursorInterval;    /**< @brief Interval blikání kurzoru (ze skinu) */
+
+        int flags;              /**< @brief Flags (viz Toolbar::Flags) */
+
+        /**
+         * @brief Ukazatel na stlačenou speciální klávesu
+         *
+         * Pokud je rovno items.end(), žádná speciální klávesa nebyla stlačena.
+         */
+        std::vector<KeyboardKey>::const_iterator specialPushed;
+
+        /**
+         * @brief Ukazatel na stlačenou spec. klávesu se Shiftem
+         *
+         * Toto znamená, že uživatel stlačil kombinaci Shift a pak spec. klávesa.
+         * Pokud je rovno items.end(), tato kombinace nebyla stlačena.
+         */
+        std::vector<KeyboardKey>::const_iterator specialShiftPushed;
+
+        /** @brief Zda byl stlačen Shift */
+        bool shiftPushed;
+};
+
+/**
  * @page Keyboard Klávesnice na obrazovce
  * Klávesnice je určena pro editaci textu. Plně konfigurovatelná pomocí conf
  * souborů, skinovatelnost a plná podpora UTF-8.
@@ -303,164 +461,6 @@ shiftSpecial2ShiftVal=Ê
 </pre>
  * @todo Posunout pod definici třídy (všude - Conf, Skin...)
  */
-
-/**
- * @brief Klávesa klávesnice
- *
- * Struktura patřící do private sekce třídy Keyboard, bohužel kvůli dědění
- * šablonové třídy musí být před deklarací třídy.
- */
-struct KeyboardKey {
-    int x,                  /**< @brief X-ová pozice ve virtuální mřížce (viz Matrix) */
-        y;                  /**< @brief Y-ová pozice ve virtuální mřížce (viz Matrix) */
-    int flags;              /**< @brief Flags (viz Keyboard::Flags) */
-    SDL_Rect position;      /**< @brief Pozice klávesy */
-    SDL_Surface** image;    /**< @brief Pozadí klávesy */
-    SDL_Surface** activeImage;  /**<  @brief Pozadí stisknuté klávesy */
-    std::string name;       /**< @brief Popisek klávesy */
-
-    /**
-     * @brief Hodnoty klávesy
-     *
-     * Pokud se jedná o normální klávesu, jsou na zde tyto hodnoty:<br>
-     * Pozice 0 - normální hodnota klávesy<br>
-     * Pozice 1 - hodnota klávesy se Shiftem<br>
-     * Pozice 2 - hodnota klávesy v kombinaci s 1. spec. klávesou<br>
-     * Pozice 3 - hodnota klávesy v kombinaci s 1. spec. klávesou a Shiftem<br>
-     * Pozice 4 - hodnota klávesy v kombinaci s Shift + 1. spec. klávesou<br>
-     * Pozice 5 - hodnota klávesy v kombinaci s Shift + 1. spec. a Shiftem<br>
-     * Pozice 6 - hodnota klávesy v kombinaci s 2. spec. klávesou<br>
-     * Pozice 7 - hodnota klávesy v kombinaci s 2. spec. klávesou a Shiftem<br>
-     * ...
-     */
-    std::vector<std::string> values;
-};
-
-/**
- * @brief Psaní textu pomocí klávesnice
- *
- * Plná konfigurovatelnost pomocí conf osuborů, podpora UTF-8 a skinů, dotykové
- * ovládání.
- * @todo Přepínání jiné klávesnice a dalšího textu ke zpracování
- * @todo Nadpisek klávesnice
- * @todo Propojení klávesnice a skinu!
- * @todo Duplicitní ConfParser <=> Skin
- */
-class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
-    public:
-        /** @brief Flags */
-        enum Flags {
-            HIDDEN = 0x01       /**< @brief Klávesnice je schovaná */
-        };
-
-        /**
-         * @brief Konstruktor
-         *
-         * Načte klávesnici z conf souboru
-         * @param   screen  Displejová surface
-         * @param   _skin   Reference na otevřenou skin
-         * @param   file    Soubor s daty klávesnice
-         * @param   _text   Ukazatel na proměnnou s textem ke zpracování
-         * @param   _flags  Flags (viz Keyboard::Flags)
-         */
-        Keyboard(SDL_Surface* screen, Skin& _skin, std::string file, std::string& _text, int _flags = 0);
-
-        /**
-         * @brief Stisk klávesy
-         *
-         * Zapíše znak klávesy do proměnné
-         */
-        void select(void);
-
-        /**
-         * @brief Kliknutí
-         *
-         * Vyvolá akci způsobenou kliknutím myši na příslušné souřadnice
-         * @param   x       X-ová souřadnice
-         * @param   y       Y-ová souřadnice
-         * @param   action  Pokud kliknutí spustilo nějakou akci, do této
-         *  proměnné se uloží její číslo (-1 pokud se žádná akce nespustila)
-         * @return  Zda bylo klinutí v oblasti objektu
-         * @todo Rozdělit do mouseDown a mouseUp
-         */
-        bool click(int x, int y, int& action);
-
-        /** @brief Schování toolbaru */
-        inline void hide(void) { flags |= HIDDEN; }
-
-        /** @brief Povolení zobrazení toolbaru */
-        inline void show(void) { flags &= ~HIDDEN; }
-
-        /** @brief Zjištění, jestli je povoleno zobrazení toolbaru */
-        inline operator bool(void) { return !(flags & HIDDEN); }
-
-        /** @brief Zobrazení klávesnice */
-        void view(void);
-    private:
-        /**
-         * @brief Flags klávesy
-         */
-        enum KeyFlags {
-            DISABLED = 0x001,   /**< @brief Klávesa je zakázána (nutné pro Matrix) */
-            SPECIAL = 0x002,    /**< @brief Klávesa je speciální */
-            ENTER = 0x004,      /**< @brief Enter */
-            SHIFT = 0x008,      /**< @brief Shift */
-            BACKSPACE = 0x010,  /**< @brief Backspace */
-            DELETE = 0x020,     /**< @brief Delete */
-            LEFT_ARROW = 0x040, /**< @brief Šipka doleva */
-            RIGHT_ARROW = 0x080 /**< @brief Šipka doprava */
-        };
-
-        SDL_Surface* screen;    /**< @brief Displejová surface */
-        Skin& skin;             /**< @brief Globální skin */
-        std::string& text;      /**< @brief Text ke zpracování */
-        std::string::iterator cursor;   /**< @brief Pozice kurzoru */
-
-        int keyboardW,          /**< @brief Šířka klávesnice (z konfiguráku) */
-            keyboardH;          /**< @brief Výška klávesnice (z konfiguráku) */
-        SDL_Rect textPosition;  /**< @brief Pozice zpracovávaného textu (z konfiguráku) */
-        MToolkit::Align textAlign;  /**< @brief Zarovnání textu (z konfiguráku) */
-
-        int *keyboardX,         /**< @brief X-ová pozice klávesnice (ze skinu) */
-            *keyboardY;         /**< @brief Y-ová pozice klávesnice (ze skinu) */
-        MToolkit::Align *align; /**< @brief Zarovnání klávesnice (ze skinu) */
-        SDL_Surface **image;    /**< @brief Pozadí klávesnice (ze skinu) */
-
-        TTF_Font **textFont;    /**< @brief Barva textu (ze skinu) */
-        SDL_Color *textColor;   /**< @brief Barva textu (ze skinu) */
-
-        MToolkit::Align *keyAlign;  /**< @brief Zarovnání popisku klávesy (ze skinu) */
-        TTF_Font **keyFont;     /**< @brief Font popisků kláves (ze skinu) */
-        SDL_Color *keyColor,    /**< @brief Barva popisků kláves (ze skinu) */
-            *keyActiveColor,    /**< @brief Barva popisku aktivní klávesy (ze skinu) */
-            *keySpecialActiveColor; /**< @brief Barva popisku stlačené spec. klávesy (ze skinu) */
-
-        SDL_Surface **cursorImage; /**< @brief Obrázek kurzoru (ze skinu) */
-        int *cursorX,           /**< @brief X-ové posunutí kurzoru (ze skinu) */
-            *cursorY;           /**< @brief Y-ové posunutí kurzoru (ze skinu) */
-        MToolkit::Align* cursorAlign;   /**< @brief Vertikální zarovnání kurzoru (ze skinu) */
-        int *cursorInterval;    /**< @brief Interval blikání kurzoru (ze skinu) */
-
-        int flags;              /**< @brief Flags (viz Toolbar::Flags) */
-
-        /**
-         * @brief Ukazatel na stlačenou speciální klávesu
-         *
-         * Pokud je rovno items.end(), žádná speciální klávesa nebyla stlačena.
-         */
-        std::vector<KeyboardKey>::const_iterator specialPushed;
-
-        /**
-         * @brief Ukazatel na stlačenou spec. klávesu se Shiftem
-         *
-         * Toto znamená, že uživatel stlačil kombinaci Shift a pak spec. klávesa.
-         * Pokud je rovno items.end(), tato kombinace nebyla stlačena.
-         */
-        std::vector<KeyboardKey>::const_iterator specialShiftPushed;
-
-        /** @brief Zda byl stlačen Shift */
-        bool shiftPushed;
-};
 
 }
 
