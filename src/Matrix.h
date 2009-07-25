@@ -26,7 +26,27 @@ struct Item {
  * @endcode
  * Odvozené třídy můžou do této struktury přidávat jakékoli vlastnosti (a funkce),
  * flags jsou rozšiřitelné i na další položky (spojované binárním OR), ovšem
- * položka Matrix::DISABLED (0x01) musí zůstat.
+ * položka Matrix::DISABLED (<tt>0x01</tt>) musí zůstat.
+ *
+ * Posun mezi položkami není bezchybný, při malém počtu povolených položek může
+ * dojít k tomu, že některé položky budou pomocí kurzorových kláves nedostupné.
+ * <strong>První systém</strong> (který je zde implementovaný) hledá nejbližší
+ * sloupec (při horizontálním posunu) či řádek (při vertikálním posunu) a v něm
+ * položku nejblíže té aktuální. Bohužel při tomto rozvržení je položka dole
+ * nedostupná:
+<pre>
+00000
+0   0
+0 X 0
+</pre>
+ * <strong>Druhý systém</strong> hledá nejbližší položku ve svém sloupci či
+ * řádku, při nenalezení hledá v jiných. Při tomto rozvržení je nedostupná
+ * položka uprostřed:
+<pre>
+0 0
+ X
+0 0
+</pre>
  */
 template <class Item> class Matrix {
     public:

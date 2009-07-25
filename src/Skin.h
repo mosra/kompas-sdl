@@ -146,7 +146,7 @@ SDL_Rect* toolbarPosition = skin.get<SDL_Rect*>("", "toolbar");
 SDL_Rect* exitIconPosition = skin.get<SDL_Rect*>("exitIcon", "toolbar");
 @endcode
 @subsection SkinColor SDL_Color*
-Pro syntaxi ukládání tohoto typu viz @ref ConfTypeColor. Barvu lze načíst
+Pro syntaxi ukládání tohoto typu viz @ref ConfTypeInt. Barvu lze načíst
 pomocí Skin::get<SDL_Color*>.
 <pre>\# skin.conf
 [colors]
