@@ -57,12 +57,16 @@ void Skin::load (const string& file) {
         string file;
         conf.value((*it).parameter, file, conf.section((*it).section));
 
+        /* Konverze do formátu displeje */
         SDL_Surface* temp = IMG_Load(file.c_str());
-        if(temp == NULL)
+        if(temp == NULL) {
             cerr << "Nepodařilo se načíst obrázek '" << file << "'." << endl;
-
-        (*(*it).property) = SDL_DisplayFormatAlpha(temp);
-        SDL_FreeSurface(temp);
+            *(*it).property = NULL;
+        }
+        else {
+            *(*it).property = SDL_DisplayFormatAlpha(temp);
+            SDL_FreeSurface(temp);
+        }
     }
 
     /* Načtení fontů z nového skinu */
