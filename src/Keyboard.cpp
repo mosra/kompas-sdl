@@ -21,7 +21,7 @@ template class Matrix<MInterface::KeyboardKey>;
 namespace MInterface {
 
 /* Konstruktor */
-Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::string& _text, int _flags): screen(_screen), skin(_skin), text(_text), flags(_flags), shiftPushed(false) {
+Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::string& _text, int _flags): screen(_screen), skin(_skin), text(_text), cursor(text.end()), flags(_flags), shiftPushed(false) {
     /* Otevření conf souboru */
     ConfParser keyboard(file);
 
@@ -47,6 +47,12 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
     SDL_Surface** keyActiveImage = skin.get<SDL_Surface**>("keyActiveImage", skinSection);
     SDL_Surface** keySpecialImage = skin.get<SDL_Surface**>("keySpecialImage", skinSection);
     SDL_Surface** keySpecialActiveImage = skin.get<SDL_Surface**>("keySpecialActiveImage", skinSection);
+
+    cursorX = skin.get<int*>("cursorX", skinSection);
+    cursorY = skin.get<int*>("cursorY", skinSection);
+    cursorAlign = skin.get<Align*>("cursorAlign", skinSection);
+    cursorImage = skin.get<SDL_Surface**>("cursorImage", skinSection);
+    cursorInterval = skin.get<int*>("cursorInterval", skinSection);
 
     /* Načtení globálních věcí z konfiguráku klávesnice */
     keyboard.value("w", keyboardW);
@@ -158,6 +164,51 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
     backspace.flags = BACKSPACE;
     items.push_back(backspace);
 
+    /* Delete */
+    section = keyboard.section("delete");
+    KeyboardKey del;
+    keyboard.value("x", del.position.x, section);
+    keyboard.value("y", del.position.y, section);
+    keyboard.value("w", del.position.w, section);
+    keyboard.value("h", del.position.h, section);
+    keyboard.value("posX", del.x, section);
+    keyboard.value("posY", del.y, section);
+    keyboard.value("name", del.name, section, ConfParser::SUPPRESS_ERRORS);
+    del.image = skin.get<SDL_Surface**>("deleteImage", skinSection);
+    del.activeImage = skin.get<SDL_Surface**>("deleteActiveImage", skinSection);
+    del.flags = DELETE;
+    items.push_back(del);
+
+    /* Šipka doleva */
+    section = keyboard.section("leftArrow");
+    KeyboardKey leftArrow;
+    keyboard.value("x", leftArrow.position.x, section);
+    keyboard.value("y", leftArrow.position.y, section);
+    keyboard.value("w", leftArrow.position.w, section);
+    keyboard.value("h", leftArrow.position.h, section);
+    keyboard.value("posX", leftArrow.x, section);
+    keyboard.value("posY", leftArrow.y, section);
+    keyboard.value("name", leftArrow.name, section, ConfParser::SUPPRESS_ERRORS);
+    leftArrow.image = skin.get<SDL_Surface**>("leftArrowImage", skinSection);
+    leftArrow.activeImage = skin.get<SDL_Surface**>("leftArrowActiveImage", skinSection);
+    leftArrow.flags = LEFT_ARROW;
+    items.push_back(leftArrow);
+
+    /* Šipka doprava */
+    section = keyboard.section("rightArrow");
+    KeyboardKey rightArrow;
+    keyboard.value("x", rightArrow.position.x, section);
+    keyboard.value("y", rightArrow.position.y, section);
+    keyboard.value("w", rightArrow.position.w, section);
+    keyboard.value("h", rightArrow.position.h, section);
+    keyboard.value("posX", rightArrow.x, section);
+    keyboard.value("posY", rightArrow.y, section);
+    keyboard.value("name", rightArrow.name, section, ConfParser::SUPPRESS_ERRORS);
+    rightArrow.image = skin.get<SDL_Surface**>("rightArrowImage", skinSection);
+    rightArrow.activeImage = skin.get<SDL_Surface**>("rightArrowActiveImage", skinSection);
+    rightArrow.flags = RIGHT_ARROW;
+    items.push_back(rightArrow);
+
     /* Běžné klávesy */
     section = keyboard.section("key");
     while(section != keyboard.sectionNotFound()) {
@@ -256,10 +307,25 @@ void Keyboard::select(void) {
 
     /* Backspace */
     } else if(((*actualItem).flags & BACKSPACE)) {
-        if(!text.empty()) text.erase(
-            prevUTF8Character(&text, text.end()),
-            text.end()
+        if(cursor != text.begin()) cursor = text.erase(
+            prevUTF8Character(&text, cursor),
+            cursor
         );
+
+    /* Delete */
+    } else if(((*actualItem).flags & DELETE)) {
+        if(cursor != text.end()) cursor = text.erase(
+            cursor,
+            nextUTF8Character(&text, cursor)
+        );
+
+    /* Šipka doleva */
+    } else if(((*actualItem).flags & LEFT_ARROW)) {
+        cursor = prevUTF8Character(&text, cursor);
+
+    /* Šipka doprava */
+    } else if(((*actualItem).flags & RIGHT_ARROW)) {
+        cursor = nextUTF8Character(&text, cursor);
 
     /* Speciální klávesy */
     } else if((*actualItem).flags & SPECIAL) {
@@ -297,7 +363,10 @@ void Keyboard::select(void) {
         /* Shift */
         if(shiftPushed) valuePosition++;
 
-        text += (*actualItem).values[valuePosition];
+        /* Přidání textu na pozici kurzoru, obnovení kurzoru */
+        size_t cursorPosition = cursor-text.begin();
+        text.insert(cursorPosition, (*actualItem).values[valuePosition]);
+        cursor = text.begin()+cursorPosition+(*actualItem).values[valuePosition].size();
 
         /* Reset modofikátorů */
         shiftPushed = false;
@@ -317,9 +386,10 @@ void Keyboard::view(void) {
     /* Pozadí */
     SDL_BlitSurface(*image, NULL, screen, &area);
 
+    SDL_Rect _textPosition = Effects::align(area, ALIGN_DEFAULT, textPosition);
+
     /* Pokud je nějaký editovaný text */
     if(!text.empty()) {
-        SDL_Rect _textPosition = Effects::align(area, ALIGN_DEFAULT, textPosition);
         SDL_Surface* _text = (*Effects::textRenderFunction())(*textFont, text.c_str(), *textColor);
 
         _textPosition = Effects::align(_textPosition, textAlign, (*_text).w, (*_text).h);
@@ -327,7 +397,26 @@ void Keyboard::view(void) {
         SDL_Rect textCrop = {0, 0, _textPosition.w, _textPosition.h};
         SDL_BlitSurface(_text, &textCrop, screen, &_textPosition);
         SDL_FreeSurface(_text);
+
+        /* Zjištění pozice kurzoru v textu */
+        string textBeforeCursor(text.begin(), cursor);
+        int w, h; TTF_SizeUTF8(*textFont, textBeforeCursor.c_str(), &w, &h);
+
+        /* Z kurzoru jen vertikální zarovnání, horizontálně se řadí nalevo */
+        _textPosition.x += w;
+        _textPosition = Effects::align(_textPosition, (Align) (*cursorAlign & 0xF0),
+            (**cursorImage).w, (**cursorImage).h, *cursorX, *cursorY);
+
+    /* Spočítání pozice kurzoru ručně */
+    } else {
+        /* Vertikální zarovnání z kurzoru, horizontální z textu */
+        _textPosition = Effects::align(_textPosition, (Align) ((*cursorAlign & 0xF0) | (textAlign & 0x0F)),
+            (**cursorImage).w, (**cursorImage).h, *cursorX, *cursorY);
     }
+
+    /* Vykreslení kurzoru */
+    SDL_Rect cursorCrop = {0, 0, _textPosition.w, _textPosition.h};
+    SDL_BlitSurface(*cursorImage, &cursorCrop, screen, &_textPosition);
 
     /* Jednotlivé klávesy */
     for(vector<KeyboardKey>::const_iterator it = items.begin(); it != items.end(); ++it) {

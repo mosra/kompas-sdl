@@ -83,6 +83,15 @@ textFont="gfx/DejaVuSans.ttf"
 textFontSize=12
 textColor=\#ffffff
 
+\# Posunutí, zarovnání a obrázek kurzoru
+cursorX=0
+cursorY=0
+cursorAlign="middle"
+cursorImage=gfx/cursor.png
+
+\# Interval blikání kurzoru (= 300 ms viditelný, 300 ms ne)
+cursorInterval=300
+
 \# Zarovnání popisku uvnitř klávesy, font
 keyAlign="center middle"
 keyFont="gfx/DejaVuSans.ttf"
@@ -106,10 +115,14 @@ enterImage=gfx/keyEnter.png
 enterActiveImage=gfx/keyEnterActive.png
 shiftImage=gfx/keyShift.png
 shiftActiveImage=gfx/keyShiftActive.png
-shiftImage=gfx/keyShift.png
-shiftActiveImage=gfx/keyShiftActive.png
 backspaceImage=gfx/keyBackspace.png
 backspaceActiveImage=gfx/keyBackspaceActive.png
+deleteImage=gfx/keyDelete.png
+deleteActiveImage=gfx/keyDeleteActive.png
+leftArrowImage=gfx/leftArrowImage.png
+leftArrowActiveImage=gfx/leftArrowActiveImage.png
+rightArrowImage=gfx/rightArrowImage.png
+rightArrowActiveImage=gfx/rightArrowActiveImage.png
 </pre>
  * @subsection KeyboardConfGlobal Globální nastavení klávesnice
  * Na začátku conf souboru klávesnice se nastavují globální parametry společné
@@ -181,11 +194,11 @@ name=ˇ^
 </pre>
  * @subsection KeyboardConfFunctionKeys Funkční klávesy
  * Conf soubor pokračuje nastavením funkčních kláves - kláves Space, Shift,
- * Backspace a Enter. Jejich účel je jasný z názvů. Tyto klávesy mají většinou
- * jiné rozměry než ostatní klávesy, proto má každá své parametry pro určení
- * velikosti. Jejich pozadí je specifikováno v příslušné sekci skinu. Parametr
- * <tt>name</tt> není povinný, pokud je z pozadí klávesy dostatečně jasná její
- * funkce.
+ * Backspace, Delete, kurzorové klávesy a Enter. Jejich účel je jasný z názvů.
+ * Tyto klávesy mají většinou jiné rozměry než ostatní klávesy, proto má každá
+ * své parametry pro určení velikosti. Jejich pozadí je specifikováno v
+ * příslušné sekci skinu. Parametr <tt>name</tt> není povinný, pokud je z pozadí
+ * klávesy dostatečně jasná její funkce.
 <pre>\# Funkční klávesy
 
 \# Mezerník
@@ -204,35 +217,23 @@ posY=4
 \# Název klávesy
 name=Space
 
-\# Klávesa enter
 [enter]
-x=264
-y=146
-w=48
-h=24
-posX=6
-posY=4
-name=Enter
+\# ...
 
-\# Klávesa shift
 [shift]
-x=0
-y=146
-w=48
-h=24
-posX=0
-posY=4
-name=Shift
+\# ...
 
-\# Klávesa backspace (mazání)
 [backspace]
-x=144
-y=146
-w=48
-h=24
-posX=6
-posY=4
-name=Bkspc
+\# ...
+
+[delete]
+\# ...
+
+[leftArrow]
+\# ...
+
+[rightArrow]
+\# ...
 </pre>
  * @subsection KeyboardConfKeys Běžné klávesy
  * Na konci conf souboru jsou uvedeny všechny běžné klávesy. Při neuvedení
@@ -400,16 +401,20 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
          * @brief Flags klávesy
          */
         enum KeyFlags {
-            DISABLED = 0x01,    /**< @brief Klávesa je zakázána (nutné pro Matrix) */
-            SPECIAL = 0x04,     /**< @brief Klávesa je speciální */
-            ENTER = 0x08,       /**< @brief Klávesa je Enter */
-            SHIFT = 0x10,       /**< @brief Klávesa je Shift */
-            BACKSPACE = 0x20    /**< @brief Klávesa je Backspace */
+            DISABLED = 0x001,   /**< @brief Klávesa je zakázána (nutné pro Matrix) */
+            SPECIAL = 0x002,    /**< @brief Klávesa je speciální */
+            ENTER = 0x004,      /**< @brief Enter */
+            SHIFT = 0x008,      /**< @brief Shift */
+            BACKSPACE = 0x010,  /**< @brief Backspace */
+            DELETE = 0x020,     /**< @brief Delete */
+            LEFT_ARROW = 0x040, /**< @brief Šipka doleva */
+            RIGHT_ARROW = 0x080 /**< @brief Šipka doprava */
         };
 
         SDL_Surface* screen;    /**< @brief Displejová surface */
         Skin& skin;             /**< @brief Globální skin */
         std::string& text;      /**< @brief Text ke zpracování */
+        std::string::iterator cursor;   /**< @brief Pozice kurzoru */
 
         int keyboardW,          /**< @brief Šířka klávesnice (z konfiguráku) */
             keyboardH;          /**< @brief Výška klávesnice (z konfiguráku) */
@@ -429,6 +434,13 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
         SDL_Color *keyColor,    /**< @brief Barva popisků kláves (ze skinu) */
             *keyActiveColor,    /**< @brief Barva popisku aktivní klávesy (ze skinu) */
             *keySpecialActiveColor; /**< @brief Barva popisku stlačené spec. klávesy (ze skinu) */
+
+        SDL_Surface **cursorImage; /**< @brief Obrázek kurzoru (ze skinu) */
+        int *cursorX,           /**< @brief X-ové posunutí kurzoru (ze skinu) */
+            *cursorY;           /**< @brief Y-ové posunutí kurzoru (ze skinu) */
+        MToolkit::Align* cursorAlign;   /**< @brief Vertikální zarovnání kurzoru (ze skinu) */
+        int *cursorInterval;    /**< @brief Interval blikání kurzoru (ze skinu) */
+
         int flags;              /**< @brief Flags (viz Toolbar::Flags) */
 
         /**
