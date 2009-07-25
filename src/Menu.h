@@ -177,10 +177,11 @@ class Menu: public Mouse {
          *
          * @return  Akce položky (viz Menu::addItem), pokud je položka neaktivní
          *  (Menu::disableItem nebo Menu::DISABLED ve flags), vrací -1
-         * @todo    Kliknutí na dosud nevybranou položku
          */
         inline int select(void) {
-            if((*(*actualSection).actualItem).flags & DISABLED) return -1;
+            /* Pokud není žádná aktivní položka (prázdné menu) nebo je zakázaná, konec */
+            if((*actualSection).actualItem == (*actualSection).items.end() ||
+                (*(*actualSection).actualItem).flags & DISABLED) return -1;
             return (*(*actualSection).actualItem).action;
         }
 
