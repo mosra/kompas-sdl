@@ -99,13 +99,17 @@ keyActiveImage=gfx/keyActive.png
 keySpecialImage=gfx/keySpecial.png
 keySpecialActiveImage=gfx/keySpecialActive.png
 
-\# Pozadí mezerníku, enteru, shiftu a jejich pozadí, když jsou vybrané
+\# Pozadí mezerníku, enteru, shiftu, backspace a jejich pozadí, když jsou vybrané
 spaceImage=gfx/keySpace.png
 spaceActiveImage=gfx/keySpaceActive.png
 enterImage=gfx/keyEnter.png
 enterActiveImage=gfx/keyEnterActive.png
-shiftImage=gfx/keyEnter.png
-shiftActiveImage=gfx/keyEnterActive.png
+shiftImage=gfx/keyShift.png
+shiftActiveImage=gfx/keyShiftActive.png
+shiftImage=gfx/keyShift.png
+shiftActiveImage=gfx/keyShiftActive.png
+backspaceImage=gfx/keyBackspace.png
+backspaceActiveImage=gfx/keyBackspaceActive.png
 </pre>
  * @subsection KeyboardConfGlobal Globální nastavení klávesnice
  * Na začátku conf souboru klávesnice se nastavují globální parametry společné
@@ -218,6 +222,16 @@ h=24
 posX=0
 posY=4
 name=Shift
+
+\# Klávesa backspace (mazání)
+[backspace]
+x=144
+y=146
+w=48
+h=24
+posX=6
+posY=4
+name=Bkspc
 </pre>
  * @subsection KeyboardConfKeys Běžné klávesy
  * Na konci conf souboru jsou uvedeny všechny běžné klávesy. Při neuvedení
@@ -285,6 +299,7 @@ shiftSpecial2ShiftVal=Ê
 
 # ... další klávesy ...
 </pre>
+ * @todo Posunout pod definici třídy (všude - Conf, Skin...)
  */
 
 /**
@@ -371,8 +386,9 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
         enum KeyFlags {
             DISABLED = 0x01,    /**< @brief Klávesa je zakázána (nutné pro Matrix) */
             SPECIAL = 0x04,     /**< @brief Klávesa je speciální */
-            SHIFT = 0x08,       /**< @brief Klávesa je Shift */
-            ENTER = 0x10        /**< @brief Klávesa je Enter */
+            ENTER = 0x08,       /**< @brief Klávesa je Enter */
+            SHIFT = 0x10,       /**< @brief Klávesa je Shift */
+            BACKSPACE = 0x20    /**< @brief Klávesa je Backspace */
         };
 
         SDL_Surface* screen;    /**< @brief Displejová surface */

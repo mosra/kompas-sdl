@@ -210,7 +210,7 @@ int main(int argc, char **argv) {
     );
 
     /* Klávesnice */
-    string text = "Tex t";
+    string text = "ěščřžýáíé";
     Keyboard keyboard(screen, skin, "keyboard/cz.conf", text);
 
     /* Hlavní smyčka programu */

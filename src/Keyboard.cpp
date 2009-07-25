@@ -143,6 +143,21 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
     shift.flags = SHIFT;
     items.push_back(shift);
 
+    /* Backspace */
+    section = keyboard.section("backspace");
+    KeyboardKey backspace;
+    keyboard.value("x", backspace.position.x, section);
+    keyboard.value("y", backspace.position.y, section);
+    keyboard.value("w", backspace.position.w, section);
+    keyboard.value("h", backspace.position.h, section);
+    keyboard.value("posX", backspace.x, section);
+    keyboard.value("posY", backspace.y, section);
+    keyboard.value("name", backspace.name, section, ConfParser::SUPPRESS_ERRORS);
+    backspace.image = skin.get<SDL_Surface**>("backspaceImage", skinSection);
+    backspace.activeImage = skin.get<SDL_Surface**>("backspaceActiveImage", skinSection);
+    backspace.flags = BACKSPACE;
+    items.push_back(backspace);
+
     /* Běžné klávesy */
     section = keyboard.section("key");
     while(section != keyboard.sectionNotFound()) {
@@ -170,7 +185,7 @@ Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::str
         keyboard.value("shiftVal", temp, section, ConfParser::SUPPRESS_ERRORS);
         key.values.push_back(temp);
 
-        /* Speciální klávesy (je jich items.size()-3 (enter, space a shift) */
+        /* Speciální klávesy */
         for(vector<KeyboardKey>::size_type i = 0; i != specialKeyCount; ++i) {
             std::ostringstream number;
             number << i;
@@ -228,10 +243,20 @@ bool Keyboard::click(int x, int y, int& action) {
 
 /* Vybrání znaku */
 void Keyboard::select(void) {
+    /* Enter */
+    if((*actualItem).flags & ENTER) {
+
     /* Shift */
-    if((*actualItem).flags & SHIFT) {
+    } else if((*actualItem).flags & SHIFT) {
         /* Cyklické zapínání / vypínání shiftu */
         shiftPushed = shiftPushed ? false : true;
+
+    /* Backspace */
+    } else if(((*actualItem).flags & BACKSPACE)) {
+        if(!text.empty()) text.erase(
+            prevUTF8Character(&text, text.end()),
+            text.end()
+        );
 
     /* Speciální klávesy */
     } else if((*actualItem).flags & SPECIAL) {
@@ -255,9 +280,6 @@ void Keyboard::select(void) {
             /* Stlačeno samostatně */
             else specialPushed = actualItem;
         }
-
-    /* Enter */
-    } else if((*actualItem).flags & ENTER) {
 
     /* Běžné klávesy */
     } else {
@@ -289,15 +311,17 @@ void Keyboard::view(void) {
     /* Pozadí */
     SDL_BlitSurface(*image, NULL, screen, &area);
 
-    /* Editovaný text */
-    SDL_Rect _textPosition = Effects::align(area, ALIGN_DEFAULT, textPosition);
-    SDL_Surface* _text = (*Effects::textRenderFunction())(*textFont, text.c_str(), *textColor);
+    /* Pokud je nějaký editovaný text */
+    if(!text.empty()) {
+        SDL_Rect _textPosition = Effects::align(area, ALIGN_DEFAULT, textPosition);
+        SDL_Surface* _text = (*Effects::textRenderFunction())(*textFont, text.c_str(), *textColor);
 
-    _textPosition = Effects::align(_textPosition, textAlign, (*_text).w, (*_text).h);
-    /** @todo Ořezy tak, aby bylo vidět co píšu */
-    SDL_Rect textCrop = {0, 0, _textPosition.w, _textPosition.h};
-    SDL_BlitSurface(_text, &textCrop, screen, &_textPosition);
-    SDL_FreeSurface(_text);
+        _textPosition = Effects::align(_textPosition, textAlign, (*_text).w, (*_text).h);
+        /** @todo Ořezy tak, aby bylo vidět co píšu */
+        SDL_Rect textCrop = {0, 0, _textPosition.w, _textPosition.h};
+        SDL_BlitSurface(_text, &textCrop, screen, &_textPosition);
+        SDL_FreeSurface(_text);
+    }
 
     /* Jednotlivé klávesy */
     for(vector<KeyboardKey>::const_iterator it = items.begin(); it != items.end(); ++it) {
@@ -311,7 +335,7 @@ void Keyboard::view(void) {
 
         /* Popisek - Pokud je nastaveno jméno klávesy, bude vypsáno vždy */
         string label;
-        if((*it).name != "") label = (*it).name;
+        if(!(*it).name.empty()) label = (*it).name;
 
         /* Jinak se vypisuje podle toho, jaké modifikátory jsou aktivní a jestli existuje nějaká hodnota */
         else {
@@ -330,7 +354,7 @@ void Keyboard::view(void) {
         }
 
         /* Pokud je vůbec nějaký popisek */
-        if(label != "") {
+        if(!label.empty()) {
             /* Barva popisku */
             SDL_Color color;
 
@@ -345,9 +369,9 @@ void Keyboard::view(void) {
             /* Běžná klávesa */
             else color = *keyColor;
 
-            _text = (*Effects::textRenderFunction())(*keyFont, label.c_str(), color);
+            SDL_Surface* _text = (*Effects::textRenderFunction())(*keyFont, label.c_str(), color);
 
-            _textPosition = Effects::align(keyArea, *keyAlign, (*_text).w, (*_text).h);
+            SDL_Rect _textPosition = Effects::align(keyArea, *keyAlign, (*_text).w, (*_text).h);
             SDL_Rect _textCrop = {0, 0, _textPosition.w, _textPosition.h};
             SDL_BlitSurface(_text, &_textCrop, screen, &_textPosition);
             SDL_FreeSurface(_text);
