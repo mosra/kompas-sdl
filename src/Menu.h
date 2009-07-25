@@ -188,19 +188,23 @@ class Menu: public Mouse {
          * @brief Přepnutí na jinou sekci
          *
          * @param   section     ID sekce (viz Menu::addSection)
+         * @return  Vrací false, pokud byla aktivní stejná sekce, jako ta, na
+         *  kterou se přepínalo
          * @todo Vrátit akci vybrané položky
          */
-        inline void changeSection(sectionId section) {
-            actualSection = sections.begin()+section;
+        inline bool changeSection(sectionId section) {
+            if(actualSection == sections.begin()+section) return false;
+            actualSection = sections.begin()+section; return true;
         }
 
         /**
          * @brief Přepnutí na nadřazenou sekci
-         *
+         * @return  Vrací false, pokud je nadřazená sekce ta samá
          * @todo Vrátit akci vybrané položky
          */
-        inline void parentSection(void) {
-            actualSection = sections.begin()+(*actualSection).parent;
+        inline bool parentSection(void) {
+            if(actualSection == sections.begin()+(*actualSection).parent) return false;
+            actualSection = sections.begin()+(*actualSection).parent; return true;
         }
 
         /**
