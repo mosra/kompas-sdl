@@ -90,8 +90,17 @@ class FPS {
          * @param   ms      Doba pozastavení v milisekundách
          * @param   object  Ukazatel na objekt pro uložení dat (viz FPS::Data)
          */
-        inline static void pause(int ms, Data* object) {
-            *object = 0-(SDL_GetTicks()+ms);
+        inline static void pause(int ms, Data& object) {
+            object = 0-(SDL_GetTicks()+ms);
+        }
+
+        /**
+         * @brief Zjištění, zda je objekt pozastaven
+         *
+         * @return True, když je objekt pozastaven
+         */
+        inline static bool paused(Data object) {
+            return (unsigned int) (0-object) > SDL_GetTicks();
         }
 
     private:
