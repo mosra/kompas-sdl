@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
         skin.get<SDL_Color*>("activeItemColor", "menu"),
         skin.get<SDL_Color*>("disabledItemColor", "menu"),
         skin.get<SDL_Color*>("activeDisabledItemColor", "menu"),
-        0
+        Menu::HIDDEN
     );
     menu.configureCaption(
         skin.get<SDL_Rect*>("caption", "menu"),
@@ -130,16 +130,26 @@ int main(int argc, char **argv) {
         skin.get<SDL_Surface**>("scrollbarArrowDown", "menu"),
         skin.get<SDL_Surface**>("scrollbarSlider", "menu")
     );
-    Menu::sectionId section = menu.addSection(0, lang.get("caption", "menu"), NULL, skin.get<Align*>("itemsAlign", "menu"), 0);
-    menu.addItem(section, 0, lang.get("playGame", "menu"), NULL, Menu::DISABLED);
-    menu.addItem(section, 0, lang.get("about", "menu"));
-    menu.addItem(section, 0, lang.get("about", "menu"), NULL, Menu::DISABLED);
-    menu.addItem(section, 0, lang.get("about", "menu"));
-    menu.addItem(section, 0, lang.get("about", "menu"));
-    menu.addItem(section, 0, lang.get("about", "menu"));
-    menu.addItem(section, 0, lang.get("about", "menu"));
-    menu.addItem(section, 0, lang.get("about", "menu"));
-    menu.addItem(section, 0, lang.get("playGame", "menu"), NULL, Menu::DISABLED);
+
+    enum Actions {
+        ZOOMIN, ZOOMOUT, OPEN, SAVE, OPTIONS, MAPOPTIONS, EXIT,
+        OPTIONS_FPS, OPTIONS_LANGUAGE, OPTIONS_SMOOTHTEXT, OPTIONS_ABOUT,
+        OPTIONS_CHANGEABLE_TEXT
+    };
+
+    Align* menuItemsAlign = skin.get<Align*>("itemsAlign", "menu");
+
+    /* Sekce nastavení */
+    Menu::sectionId optionsSection = menu.addSection(0, lang.get("options", "toolbar"), NULL, menuItemsAlign, 0);
+    menu.addItem(optionsSection, OPTIONS_FPS, lang.get("maxFPS", "optionsMenu"), NULL, Menu::DISABLED);
+    menu.addItem(optionsSection, OPTIONS_LANGUAGE, lang.get("language", "optionsMenu"), NULL, Menu::DISABLED);
+    menu.addItem(optionsSection, OPTIONS_SMOOTHTEXT, lang.get("smoothText", "optionsMenu"), NULL, Menu::DISABLED);
+    string text = "Měnitelný text položky";
+    menu.addItem(optionsSection, OPTIONS_CHANGEABLE_TEXT, &text);
+    menu.addItem(optionsSection, OPTIONS_ABOUT, lang.get("about", "optionsMenu"), NULL, Menu::DISABLED);
+
+    /* Sekce otevření mapového balíčku */
+    Menu::sectionId openSection = menu.addSection(1, lang.get("open", "toolbar"), NULL, menuItemsAlign, 0);
 
     /* Toolbar */
     Toolbar toolbar(screen,
@@ -157,7 +167,7 @@ int main(int argc, char **argv) {
     toolbar.addImage(NULL, skin.get<SDL_Surface**>("image", "toolbar"));
     toolbar.addItem(
         skin.get<SDL_Rect*>("zoomInPosition", "toolbar"),
-        0, 0, 0,
+        0, 0, ZOOMIN,
         skin.get<SDL_Surface**>("zoomInIcon", "toolbar"),
         skin.get<SDL_Surface**>("zoomInIconActive", "toolbar"),
         skin.get<SDL_Surface**>("zoomInIconDisabled", "toolbar"),
@@ -165,7 +175,7 @@ int main(int argc, char **argv) {
     );
     toolbar.addItem(
         skin.get<SDL_Rect*>("zoomOutPosition", "toolbar"),
-        1, 0, 0,
+        1, 0, ZOOMOUT,
         skin.get<SDL_Surface**>("zoomOutIcon", "toolbar"),
         skin.get<SDL_Surface**>("zoomOutIconActive", "toolbar"),
         skin.get<SDL_Surface**>("zoomOutIconDisabled", "toolbar"),
@@ -173,14 +183,14 @@ int main(int argc, char **argv) {
     );
     toolbar.addItem(
         skin.get<SDL_Rect*>("openPosition", "toolbar"),
-        2, 0, 0,
+        2, 0, OPEN,
         skin.get<SDL_Surface**>("openIcon", "toolbar"),
         skin.get<SDL_Surface**>("openIconActive", "toolbar"),
         NULL, lang.get("open", "toolbar")
     );
     toolbar.addItem(
         skin.get<SDL_Rect*>("savePosition", "toolbar"),
-        3, 0, 0,
+        3, 0, SAVE,
         skin.get<SDL_Surface**>("saveIcon", "toolbar"),
         skin.get<SDL_Surface**>("saveIconActive", "toolbar"),
         skin.get<SDL_Surface**>("saveIconDisabled", "toolbar"),
@@ -188,14 +198,14 @@ int main(int argc, char **argv) {
     );
     toolbar.addItem(
         skin.get<SDL_Rect*>("optionsPosition", "toolbar"),
-        4, 0, 0,
+        4, 0, OPTIONS,
         skin.get<SDL_Surface**>("optionsIcon", "toolbar"),
         skin.get<SDL_Surface**>("optionsIconActive", "toolbar"),
         NULL, lang.get("options", "toolbar")
     );
     toolbar.addItem(
         skin.get<SDL_Rect*>("mapOptionsPosition", "toolbar"),
-        5, 0, 0,
+        5, 0, MAPOPTIONS,
         skin.get<SDL_Surface**>("mapOptionsIcon", "toolbar"),
         skin.get<SDL_Surface**>("mapOptionsIconActive", "toolbar"),
         skin.get<SDL_Surface**>("mapOptionsIconDisabled", "toolbar"),
@@ -203,27 +213,29 @@ int main(int argc, char **argv) {
     );
     toolbar.addItem(
         skin.get<SDL_Rect*>("exitPosition", "toolbar"),
-        5, 0, 0,
+        5, 0, EXIT,
         skin.get<SDL_Surface**>("exitIcon", "toolbar"),
         skin.get<SDL_Surface**>("exitIconActive", "toolbar"),
         NULL, lang.get("exit", "toolbar")
     );
 
     /* Klávesnice */
-    string text = "ěščřžýáíé";
-    Keyboard keyboard(screen, skin, "keyboard/cz.conf", text);
+    Keyboard keyboard(screen, skin, "keyboard/cz.conf", text, Keyboard::HIDDEN);
 
     /* Hlavní smyčka programu */
-    FPS();
-    int done = 0; int action = -1;
+    FPS(); FPS::limit = 50;
+    int done = 0;
     while (!done) {
+        int action = -1;
+
+        /* Projití událostí */
         SDL_Event event;
         while (SDL_PollEvent (&event)) {
             switch(event.type) {
                 case SDL_MOUSEBUTTONDOWN:
                     if(!keyboard.click(event.button.x, event.button.y, action))
-                        if(!toolbar.click(event.button.x, event.button.y, action))
-                            menu.click(event.button.x, event.button.y, action);
+                        if(!menu.click(event.button.x, event.button.y, action))
+                            toolbar.click(event.button.x, event.button.y, action);
                     break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
@@ -231,32 +243,41 @@ int main(int argc, char **argv) {
                             if (event.key.keysym.mod& (KMOD_LCTRL|KMOD_RCTRL))
                             done = 1;
                             break;
-                        case SDLK_s:
-                            skin.load("skin2.conf");
-                            break;
-                        case SDLK_d:
-                            skin.load("skin.conf");
-                            break;
                         case SDLK_UP:
-                            keyboard.moveUp();
+                            if(keyboard) keyboard.moveUp();
+                            else if(menu) menu.moveUp();
+                            else if(toolbar) toolbar.moveUp();
                             break;
                         case SDLK_DOWN:
-                            keyboard.moveDown();
+                            if(keyboard) keyboard.moveDown();
+                            else if(menu) menu.moveDown();
+                            else if(toolbar) toolbar.moveDown();
                             break;
                         case SDLK_RIGHT:
-                            keyboard.moveRight();
+                            if(keyboard) keyboard.moveRight();
+                            else if(!menu && toolbar) toolbar.moveRight();
                             break;
                         case SDLK_LEFT:
-                            keyboard.moveLeft();
+                            if(keyboard) keyboard.moveLeft();
+                            else if(!menu && toolbar) toolbar.moveLeft();
                             break;
                         case SDLK_RETURN:
-                            keyboard.select();
+                            if(keyboard) keyboard.select();
+                            else if(menu) action = menu.select();
+                            else if(toolbar) action = toolbar.select();
                             break;
                         case SDLK_PAGEUP:
-                            menu.scrollUp();
+                            if(menu) menu.scrollUp();
                             break;
                         case SDLK_PAGEDOWN:
-                            menu.scrollDown();
+                            if(menu) menu.scrollDown();
+                            break;
+                        case SDLK_ESCAPE:
+                            if(keyboard) {
+                                keyboard.hide();
+                                menu.show();
+                            }
+                            else if(menu) menu.hide();
                             break;
                         default:
                             break;
@@ -268,6 +289,29 @@ int main(int argc, char **argv) {
                     done = 1;
                     break;
             }
+        }
+
+        /* Spuštěné akce */
+        switch(action) {
+            case OPEN:
+                /* Pokud přepínáme z jiné sekce, neschovávání menu */
+                if(menu.changeSection(openSection)) menu.show();
+                else menu ? menu.hide() : menu.show();
+                break;
+            case OPTIONS:
+                /* Pokud přepínáme z jiné sekce, neschovávání menu */
+                if(menu.changeSection(optionsSection)) menu.show();
+                else menu ? menu.hide() : menu.show();
+                break;
+            case EXIT:
+                done = 1;
+                break;
+            case OPTIONS_CHANGEABLE_TEXT:
+                menu.hide();
+                keyboard.show();
+                break;
+            default:
+                break;
         }
 
         skinText = *skinAuthor + *author;
