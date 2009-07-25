@@ -85,7 +85,7 @@ class Menu: public Mouse {
          *  (může být NULL, pokud nebudou nikde zakázané položky)
          * @param   _flags              Flags
          */
-        Menu(SDL_Surface* _screen, SDL_Surface** _image, SDL_Rect* _position, MToolkit::Align* _menuAlign, SDL_Rect* _itemsPosition, int* _itemHeight, int* _iconWidth, TTF_Font** _itemFont, SDL_Color* _itemColor, SDL_Color* _activeItemColor, SDL_Color* _disabledItemColor, SDL_Color* _activeDisabledItemColor, int _flags):
+        Menu(SDL_Surface* _screen, SDL_Surface** _image, SDL_Rect* _position, MToolkit::Align* _menuAlign, SDL_Rect* _itemsPosition, int* _itemHeight, int* _iconWidth, TTF_Font** _itemFont, SDL_Color* _itemColor, SDL_Color* _activeItemColor, SDL_Color* _disabledItemColor, SDL_Color* _activeDisabledItemColor, int _flags = 0):
             screen(_screen), image(_image), position(_position), menuAlign(_menuAlign),
             itemsPosition(_itemsPosition), itemHeight(_itemHeight), iconWidth(_iconWidth),
             itemFont(_itemFont), itemColor(_itemColor), activeItemColor(_activeItemColor),
@@ -169,7 +169,7 @@ class Menu: public Mouse {
          * @param   item        ID položky (viz Menu::addItem)
          */
         inline void enableItem(sectionId section, itemId item) {
-            sections[section].items[item].flags &= !DISABLED;
+            sections[section].items[item].flags &= ~DISABLED;
         }
 
         /**
@@ -235,7 +235,7 @@ class Menu: public Mouse {
         inline void hide(void) { flags |= HIDDEN; }
 
         /** @brief Zobrazení menu */
-        inline void show(void) { flags &= !HIDDEN; }
+        inline void show(void) { flags &= ~HIDDEN; }
 
         /**
          * @brief Kliknutí

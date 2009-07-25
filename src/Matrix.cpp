@@ -14,7 +14,7 @@ template<class Item> void Matrix<Item>::disableItem(itemId item) {
 
 /* Povolení položky */
 template<class Item> void Matrix<Item>::enableItem(itemId item) {
-    items[item].flags &= !DISABLED;
+    items[item].flags &= ~DISABLED;
     reloadItems();
 }
 
