@@ -17,6 +17,9 @@ string trim(const string& str) {
     return str.substr(begin, end-begin+1);
 }
 
+/* Doxygen neví, že std::string::iterator == string::iterator */
+#ifndef GENERATING_DOXYGEN_OUTPUT
+
 /* Pozice dalšího znaku v UTF-8 sekvenci */
 string::iterator nextUTF8Character(string* str, string::iterator position) {
     /* Prázdný string, pozice je na konci nebo úplně v háji, konec */
@@ -143,5 +146,7 @@ string::iterator prevUTF8Character(string* str, string::iterator position) {
          << " na pozici " << position - (*str).begin() << "." << endl;
     return position;
 }
+
+#endif
 
 }
