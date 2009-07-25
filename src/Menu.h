@@ -231,12 +231,6 @@ class Menu: public Mouse {
          */
         int scrollUp(void);
 
-        /** @brief Schování menu */
-        inline void hide(void) { flags |= HIDDEN; }
-
-        /** @brief Zobrazení menu */
-        inline void show(void) { flags &= ~HIDDEN; }
-
         /**
          * @brief Kliknutí
          *
@@ -249,6 +243,15 @@ class Menu: public Mouse {
          * @todo rozdělit do mouseDown a mouseUp
          */
         bool click(int x, int y, int& action);
+
+        /** @brief Schování menu */
+        inline void hide(void) { flags |= HIDDEN; }
+
+        /** @brief Povolení zobrazení menu */
+        inline void show(void) { flags &= ~HIDDEN; }
+
+        /** @brief Zjištění, jestli je povoleno zobrazení menu */
+        inline operator bool(void) { return !(flags & HIDDEN); }
 
         /** @brief Zobrazení menu */
         void view(void);
