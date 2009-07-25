@@ -234,7 +234,7 @@ class ConfParser {
 };
 
 /**
-@page ConfParser API pro práci s conf soubory
+@page ConfParser Conf soubory
 Konfigurační soubory mají jednoduchou sytaxi, která je pohodlná pro uživatele i
 pro parser. Konfigurační soubor je možné dělit do sekcí a libovolně opatřovat
 komentáři.
