@@ -97,6 +97,7 @@ class FPS {
         /**
          * @brief Zjištění, zda je objekt pozastaven
          *
+         * @param   object  Ukazatel na objekt s daty (viz FPS::Data)
          * @return True, když je objekt pozastaven
          */
         inline static bool paused(Data object) {

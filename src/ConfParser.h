@@ -16,7 +16,8 @@ namespace MToolkit {
 /**
  * @brief Parser konfiguračních souborů
  *
- * @ref ConfParser
+ * Podrobný popis syntaxe conf souborů a způsobu získávání hodnot v samostané
+ * sekci @ref ConfParser.
  * @todo Testovat parametry jen na alfanumerické znaky
  * @todo Ošetřit escape znaky
  * @todo Default sekce jen když obsahuje nějaké parametry
@@ -238,6 +239,7 @@ class ConfParser {
 Konfigurační soubory mají jednoduchou sytaxi, která je pohodlná pro uživatele i
 pro parser. Konfigurační soubor je možné dělit do sekcí a libovolně opatřovat
 komentáři.
+@sa ConfParser
 @section ConfSyntax Syntaxe conf souboru
 <pre>
 parametr=hodnota
@@ -334,9 +336,9 @@ param=Čtvrtý
 </pre>
 Kód v C++:
 @code
-ConfParser conf("file.conf");
+MToolkit::ConfParser conf("file.conf");
 string value;
-ConfParser::parameterPointer position = conf.value("param", value);
+MToolkit::ConfParser::parameterPointer position = conf.value("param", value);
 
 while(position != conf.parameterNotFound()) {
     cout << value << endl;
@@ -371,8 +373,8 @@ komentář="Já bych všechny ty internety zakázala"
 </pre>
 Kód v C++:
 @code
-ConfParser conf("file.conf");
-ConfParser::sectionPointer section = conf.section("osoba");
+MToolkit::ConfParser conf("file.conf");
+MToolkit::ConfParser::sectionPointer section = conf.section("osoba");
 while(section != conf.sectionNotFound()) {
     string jmeno, prijmeni, komentar;
     int vek;

@@ -56,7 +56,8 @@ struct KeyboardKey {
  * @brief Psaní textu pomocí klávesnice
  *
  * Plná konfigurovatelnost pomocí conf osuborů, podpora UTF-8 a skinů, dotykové
- * ovládání.
+ * ovládání. Podrobný popis konfiguračních souborů a ovládání v samostatné sekci
+ * @ref Keyboard.
  * @todo Přepínání jiné klávesnice a dalšího textu ke zpracování
  * @todo Nadpisek klávesnice
  * @todo Propojení klávesnice a skinu!
@@ -197,6 +198,7 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
  * @page Keyboard Klávesnice na obrazovce
  * Klávesnice je určena pro editaci textu. Plně konfigurovatelná pomocí conf
  * souborů, skinovatelnost a plná podpora UTF-8.
+ * @sa Keyboard
  * @section KeyboardModifiers Modifikátory
  * Klávesnice má kromě běžných kláves také modifikátory, které přidávají
  * klávesám další hodnoty. Klávesa <strong>Shift</strong> přidává klávesám druhou
