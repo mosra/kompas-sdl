@@ -30,8 +30,9 @@ class Effects {
         /**
          * @brief Zarovnání objektu do dané oblasti
          *
-         * Zarovná objekt do oblasti a ořízne jej, aby nepřesahoval hranice
-         * oblasti. Z výsledku se šířka a výška dá poté použít k ořezu.
+         * Zarovná objekt do dané oblasti podle předaného zarovnání a poté jej
+         * případně posune. Šířka a výška vrácené pozice se dá poté použít k
+         * dodatečnému ořezání objektu.
          * @param   area        Oblast
          * @param   _align      Zarovnání objektu
          * @param   objectW     Šířka objektu

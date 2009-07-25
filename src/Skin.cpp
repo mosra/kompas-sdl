@@ -113,6 +113,7 @@ void Skin::load (const string& file) {
     }
 }
 
+#ifndef GENERATING_DOXYGEN_OUTPUT
 /* Inicializace a získání ukazatele na surface */
 template<> SDL_Surface** Skin::get(const string& parameter, string section) {
     string file;
@@ -260,5 +261,6 @@ template<> Align* Skin::get(const string& parameter, string section) {
 
     return i;
 }
+#endif
 
 }
