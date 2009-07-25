@@ -119,7 +119,8 @@ bool Menu::click(int x, int y, int& action) {
     /* Oblast menu */
     SDL_Rect area = Effects::align(screen, *menuAlign, *position);
 
-    if(!inArea(x, y, area)) return false;
+    /* Menu je schované nebo klik nebyl v jeho oblasti, konec */
+    if(flags & HIDDEN || !inArea(x, y, area)) return false;
 
     /* Kliknutí na titulek - návrat do nadřazeného menu */
     if((flags & CAPTION) && inArea(x, y, Effects::align(area, ALIGN_DEFAULT, *captionPosition))) {
@@ -224,6 +225,9 @@ void Menu::reloadIterators (int section) {
 
 /* Zobrazení menu */
 void Menu::view (void) {
+    /* Menu je schované */
+    if(flags & HIDDEN) return;
+
     /* Plocha pro vykreslování menu */
     SDL_Rect area = Effects::align(screen, *menuAlign, *position);
 

@@ -38,7 +38,8 @@ class Menu: public Mouse {
          */
         enum Flags {
             CAPTION = 0x01,     /**< @brief Povolení zobrazení nadpisku sekce */
-            SCROLLBAR = 0x02    /**< @brief Povolení zobrazení scrollbaru */
+            SCROLLBAR = 0x02,   /**< @brief Povolení zobrazení scrollbaru */
+            HIDDEN = 0x04       /**< @brief Menu je schované */
         };
 
         /**
@@ -229,6 +230,12 @@ class Menu: public Mouse {
          * @return  Akce aktuální položky, pokud není zakázaná
          */
         int scrollUp(void);
+
+        /** @brief Schování menu */
+        inline void hide(void) { flags |= HIDDEN; }
+
+        /** @brief Zobrazení menu */
+        inline void show(void) { flags &= !HIDDEN; }
 
         /**
          * @brief Kliknutí
