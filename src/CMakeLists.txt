@@ -1,7 +1,11 @@
 # src/CMakeLists.txt
 
 #Masochismus
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
+if(TOOLCHAIN_GP2X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+else(TOOLCHAIN_GP2X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
+endif(TOOLCHAIN_GP2X)
 
 #Konfigurák (pro zapsání SVN verze)
 configure_file(${CMAKE_SOURCE_DIR}/src/configure.h.cmake ${CMAKE_BINARY_DIR}/configure.h)
