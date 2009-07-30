@@ -14,8 +14,7 @@ configure_file(${CMAKE_SOURCE_DIR}/src/configure.h.cmake ${CMAKE_BINARY_DIR}/con
 find_package(SDL)
 find_package(SDL_image)
 find_package(SDL_ttf)
-include_directories(${CMAKE_BINARY_DIR} ${SDL_INCLUDE_DIR} ${SDLIMAGE_INCLUDE_DIR}
-    ${SDLTTF_INCLUDE_DIR} ${SDLTIMER_INCLUDE_DIR})
+include_directories(${CMAKE_BINARY_DIR})
 
 #Knihovny
 # MToolkit
