@@ -39,9 +39,10 @@ class Effects {
          * @param   objectH     Výška objektu
          * @param   moveX       Dodatečné X-posunutí objektu po zarovnání
          * @param   moveY       Dodatečné Y-posunutí objektu po zarovnání
+         * @param   crop        Ořezový obdélník
          * @return  Pozice objektu
          */
-        static SDL_Rect align(const SDL_Rect& area, MToolkit::Align _align, int objectW, int objectH, int moveX = 0, int moveY = 0);
+        static SDL_Rect align(const SDL_Rect& area, MToolkit::Align _align, int objectW, int objectH, int moveX = 0, int moveY = 0, SDL_Rect* crop = NULL);
 
         /**
          * @brief Zarovnání objektu do dané oblasti
@@ -50,10 +51,11 @@ class Effects {
          * @param   area        Oblast
          * @param   _align      Zarovnání objektu
          * @param   object      Objekt
+         * @param   crop        Ořezový obdélník
          * @return  Pozice objektu
          */
-        inline static SDL_Rect align(const SDL_Rect& area, MToolkit::Align _align, const SDL_Rect& object) {
-            return align(area, _align, object.w, object.h, object.x, object.y);
+        inline static SDL_Rect align(const SDL_Rect& area, MToolkit::Align _align, const SDL_Rect& object, SDL_Rect* crop = NULL) {
+            return align(area, _align, object.w, object.h, object.x, object.y, crop);
         }
 
 
@@ -66,11 +68,12 @@ class Effects {
          * @param   objectH     Výška objektu
          * @param   moveX       Dodatečné X-posunutí objektu po zarovnání
          * @param   moveY       Dodatečné Y-posunutí objektu po zarovnání
+         * @param   crop        Ořezový obdélník
          * @return  Pozice objektu
          */
-        inline static SDL_Rect align(SDL_Surface* screen, MToolkit::Align _align, int objectW, int objectH, int moveX = 0, int moveY = 0) {
+        inline static SDL_Rect align(SDL_Surface* screen, MToolkit::Align _align, int objectW, int objectH, int moveX = 0, int moveY = 0, SDL_Rect* crop = NULL) {
             SDL_Rect area = {0, 0, (*screen).w, (*screen).h};
-            return align(area, _align, objectW, objectH, moveX, moveY);
+            return align(area, _align, objectW, objectH, moveX, moveY, crop);
         }
 
         /**
@@ -80,11 +83,12 @@ class Effects {
          * @param   screen      Displejová surface
          * @param   _align      Zarovnání objektu
          * @param   object      Objekt
+         * @param   crop        Ořezový obdélník
          * @return  Pozice objektu
          */
-        inline static SDL_Rect align(SDL_Surface* screen, MToolkit::Align _align, const SDL_Rect& object) {
+        inline static SDL_Rect align(SDL_Surface* screen, MToolkit::Align _align, const SDL_Rect& object, SDL_Rect* crop = NULL) {
             SDL_Rect area = {0, 0, (*screen).w, (*screen).h};
-            return align(area, _align, object.w, object.h, object.x, object.y);
+            return align(area, _align, object.w, object.h, object.x, object.y, crop);
         }
 
         /**

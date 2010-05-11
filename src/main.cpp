@@ -9,6 +9,7 @@
 #include "Keyboard.h"
 #include "Localize.h"
 #include "Menu.h"
+#include "Map.h"
 #include "Skin.h"
 #include "Splash.h"
 #include "Toolbar.h"
@@ -16,6 +17,7 @@
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
 using namespace MToolkit;
 using namespace MInterface;
+using namespace MNavigation;
 
 /* GP2X button mapping */
 enum MAP_KEY {
@@ -219,8 +221,15 @@ int main(int argc, char **argv) {
         NULL, lang.get("exit", "toolbar")
     );
 
+    TTF_Font** mFont = skin.get<TTF_Font**>("captionFont", "toolbar");
+    SDL_Color* mColor = skin.get<SDL_Color*>("captionColor", "toolbar");
+
     /* Klávesnice */
     Keyboard keyboard(screen, skin, "keyboard/cz.conf", text, Keyboard::HIDDEN);
+
+    /* Mapa */
+    Map map(screen, NULL,
+        skin.get<SDL_Surface**>("tileNotFound", "map"));
 
     /* Hlavní smyčka programu */
     FPS(); FPS::limit = 50;
@@ -247,19 +256,23 @@ int main(int argc, char **argv) {
                             if(keyboard) keyboard.moveUp();
                             else if(menu) menu.moveUp();
                             else if(toolbar) toolbar.moveUp();
+                            else map.moveUp(10);
                             break;
                         case SDLK_DOWN:
                             if(keyboard) keyboard.moveDown();
                             else if(menu) menu.moveDown();
                             else if(toolbar) toolbar.moveDown();
+                            else map.moveDown(10);
                             break;
                         case SDLK_RIGHT:
                             if(keyboard) keyboard.moveRight();
                             else if(!menu && toolbar) toolbar.moveRight();
+                            else map.moveRight(10);
                             break;
                         case SDLK_LEFT:
                             if(keyboard) keyboard.moveLeft();
                             else if(!menu && toolbar) toolbar.moveLeft();
+                            else map.moveLeft(10);
                             break;
                         case SDLK_RETURN:
                             if(keyboard) keyboard.select();
@@ -278,6 +291,8 @@ int main(int argc, char **argv) {
                                 menu.show();
                             }
                             else if(menu) menu.hide();
+                            else if(toolbar) toolbar.hide();
+                            else toolbar.show();
                             break;
                         default:
                             break;
@@ -316,6 +331,7 @@ int main(int argc, char **argv) {
 
         skinText = *skinAuthor + *author;
         splash.view();
+        map.view(mFont, mColor);
         toolbar.view();
         menu.view();
         keyboard.view();
