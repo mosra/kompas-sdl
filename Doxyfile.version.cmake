@@ -1,1 +1,0 @@
-PROJECT_NUMBER         = "SVN ${SVN_VERSION}"
