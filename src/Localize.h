@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-#include "ConfParser.h"
+#include "Utility/Configuration.h"
 
 namespace Map2X { namespace Sdl {
 
@@ -41,10 +41,10 @@ class Localize {
         /**
          * @brief Constructor
          * @param file          Language file
-         * @param fallback      Fallback language
+         * @param _fallback     Fallback language
          */
-        Localize(const std::string& file, const std::string& fallback = "")
-            { load(file, fallback); }
+        Localize(const std::string& file, const std::string& _fallback = ""):
+            lang(file), fallback(_fallback) {}
 
         /** @brief Destructor */
         ~Localize(void);
@@ -65,7 +65,7 @@ class Localize {
          * @param key           Key
          * @param section       Section
          */
-        std::string* get(const std::string& parameter, const std::string& section = ConfParser::DEFAULT_SECTION);
+        std::string* get(const std::string& parameter, const std::string& section = "");
 
     private:
         struct Localization {
@@ -74,9 +74,11 @@ class Localize {
             std::string* text;
         };
 
-        ConfParser lang;
-        ConfParser fallback;
+        Utility::Configuration lang;
+        Utility::Configuration fallback;
         std::vector<Localization> localizations;
+
+        bool get(const std::string& key, const std::string& group, std::string* text, const Map2X::Utility::Configuration* file) const;
 };
 
 }}
