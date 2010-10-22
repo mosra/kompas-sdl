@@ -21,33 +21,28 @@ using namespace std;
 
 namespace Map2X { namespace Sdl {
 
-/* Destruktor */
 Localize::~Localize (void) {
     for(vector<Localization>::const_iterator it = localizations.begin(); it != localizations.end(); ++it) {
         delete (*it).text;
     }
 }
 
-/* Načtení lokalizace */
 void Localize::load (const string& file, const string& _fallback) {
-    /* Pokud načítáme jinou lokalizaci než tu, která už je načtena */
+    /* Load new language file and fallback, if specified */
     lang = ConfParser(file);
-
-    /* Fallback jen když ho uživatel specifikoval */
     if(_fallback != "") fallback = ConfParser(_fallback);
 
-    /* Načtení lokalizovaných textů z nového souboru */
+    /* Reload all localizations from new files */
     for(vector<Localization>::const_iterator it = localizations.begin(); it != localizations.end(); ++it) {
         (*(*it).text).clear();
 
-        /* Pokus o načtení z primární lokalizace, pak fallback */
+        /* If not found in primary language file, get from fallback */
         if(lang.value((*it).parameter, *(*it).text, lang.section((*it).section)) == lang.parameterNotFound())
             if(!fallback || fallback.value((*it).parameter, *(*it).text, fallback.section((*it).section)) == fallback.parameterNotFound())
                 *(*it).text = "localizeMe{ [" + (*it).section + "] " + (*it).parameter + " }";
     }
 }
 
-/* Získání lokalizace */
 string* Localize::get (const string& parameter, const string& section) {
     string* text = new string;
     if(lang.value(parameter, *text, lang.section(section)) == lang.parameterNotFound())

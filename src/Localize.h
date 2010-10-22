@@ -15,9 +15,8 @@
     GNU Lesser General Public License version 3 for more details.
 */
 
-/**
- * @file Localize.h
- * @brief Třída Localize
+/** @file
+ * @brief Class Map2X::Sdl::Localize
  */
 
 #include <string>
@@ -28,58 +27,56 @@
 namespace Map2X { namespace Sdl {
 
 /**
- * @brief Jazykové lokalizace
+ * @brief Localizations
  *
- * Umožňuje jazykovou lokalizaci programu z conf souborů, možnost změny jazyka
- * za běhu, fallback jazyk pro dosud nepřeložené části programu. Funkce, které
- * používají tyto lokalizace, pracují s ukazateli, takže může být jazyk změněn
- * bez jejich spoluúčasti.
+ * Allows application localization via configuration files. Features:
+ *  - switching application language on-the-fly (without restart)
+ *  - fallback language for not-yet-translated strings
+ *
+ * Localized strings are provided via pointers, so no overhead is needed for
+ * localization usage.
  */
 class Localize {
     public:
         /**
-         * @brief Konstruktor
-         *
-         * @param   file        Soubor s jazykem
-         * @param   fallback    Fallback soubor (použije se, pokud některé
-         *  parametry v hlavním souboru chybí)
+         * @brief Constructor
+         * @param file          Language file
+         * @param fallback      Fallback language
          */
         Localize(const std::string& file, const std::string& fallback = "")
             { load(file, fallback); }
 
-        /** @brief Destruktor */
+        /** @brief Destructor */
         ~Localize(void);
 
         /**
-         * @brief Načtení jazyka
+         * @brief Load a language
+         * @param file          Language file
+         * @param _fallback     Fallback language
          *
-         * Všechny texty získané přetím pomocí Localize::get se naleznou v novém
-         * souboru, případně ve fallbacku.
-         * @param   file        Soubor s jazykem
-         * @param   _fallback   Fallback soubor (použije se, pokud některé
-         *  parametry v hlavním souboru chybí)
+         * Use for loading another language. All strings which were requested
+         * before via get() are gotten from new file or from fallback, if
+         * needed.
          */
         void load(const std::string& file, const std::string& _fallback = "");
 
         /**
-         * @brief Získání lokalizovaného textu
-         *
-         * @param   parameter   Parametr
-         * @param   section     Sekce
+         * @brief Get localized string
+         * @param key           Key
+         * @param section       Section
          */
         std::string* get(const std::string& parameter, const std::string& section = ConfParser::DEFAULT_SECTION);
 
     private:
-        /** @brief Lokalizovaný text */
         struct Localization {
-            std::string parameter;  /**< @brief Název parametru z conf souboru */
-            std::string section;    /**< @brief Název sekce z conf souboru */
-            std::string* text;      /**< @brief Ukazatel na lokalizovaný text */
+            std::string parameter;
+            std::string section;
+            std::string* text;
         };
 
-        ConfParser lang;            /**< @brief Konfigurák s jazykem */
-        ConfParser fallback;        /**< @brief Fallback jazyk */
-        std::vector<Localization> localizations;    /**< @brief Vektor s lokalizovanými texty */
+        ConfParser lang;
+        ConfParser fallback;
+        std::vector<Localization> localizations;
 };
 
 }}
