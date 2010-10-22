@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(Map2X)
+project(Map2XSdl)
 
-#Zdrojáky programu
 add_subdirectory(src)
