@@ -4,7 +4,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
-#include "configure.h"      /* SVN_VERSION */
 #include "FPS.h"
 #include "Keyboard.h"
 #include "Localize.h"
@@ -96,7 +95,7 @@ int main(int argc, char **argv) {
         skin.get<Align*>("authorAlign", "splash"),
         &skinText
     );
-    string version = SVN_VERSION;
+    string version = "Git";
     splash.addText(
         skin.get<TTF_Font**>("versionFont", "splash"),
         skin.get<SDL_Color*>("versionColor", "splash"),
