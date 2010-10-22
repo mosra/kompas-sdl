@@ -4,7 +4,7 @@
 
 using std::string;      using std::vector;      using std::cout;    using std::endl;
 
-namespace MToolkit {
+namespace Map2X { namespace Sdl {
 
 /* Destruktor */
 Localize::~Localize (void) {
@@ -48,4 +48,4 @@ string* Localize::get (const string& parameter, const string& section) {
     return text;
 }
 
-}
+}}

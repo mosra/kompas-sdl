@@ -7,9 +7,8 @@
 
 using std::string;  using std::cout;    using std::endl;    using std::cerr;
 using std::vector;
-using namespace MToolkit;
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /* Destruktor */
 Skin::~Skin(void) {
@@ -263,4 +262,4 @@ template<> Align* Skin::get(const string& parameter, string section) {
 }
 #endif
 
-}
+}}

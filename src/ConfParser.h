@@ -1,5 +1,5 @@
-#ifndef MTOOLKIT_CONFPARSER_H
-#define MTOOLKIT_CONFPARSER_H
+#ifndef Map2X_Sdl_ConfParser_h
+#define Map2X_Sdl_ConfParser_h
 
 /**
  * @file ConfParser.h
@@ -11,7 +11,7 @@
 
 #include "utility.h"
 
-namespace MToolkit {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Parser konfiguračních souborů
@@ -336,9 +336,9 @@ param=Čtvrtý
 </pre>
 Kód v C++:
 @code
-MToolkit::ConfParser conf("file.conf");
+ConfParser conf("file.conf");
 string value;
-MToolkit::ConfParser::parameterPointer position = conf.value("param", value);
+ConfParser::parameterPointer position = conf.value("param", value);
 
 while(position != conf.parameterNotFound()) {
     cout << value << endl;
@@ -373,8 +373,8 @@ komentář="Já bych všechny ty internety zakázala"
 </pre>
 Kód v C++:
 @code
-MToolkit::ConfParser conf("file.conf");
-MToolkit::ConfParser::sectionPointer section = conf.section("osoba");
+ConfParser conf("file.conf");
+ConfParser::sectionPointer section = conf.section("osoba");
 while(section != conf.sectionNotFound()) {
     string jmeno, prijmeni, komentar;
     int vek;
@@ -407,6 +407,6 @@ nevypisují, aby na konci každého @ref ConfDuplicateParameter "vyhledávacího
 (kdy už žádný další parametr / sekce neexistuje) nevypadlo chybové hlášení.
  */
 
-}
+}}
 
 #endif

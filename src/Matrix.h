@@ -1,5 +1,5 @@
-#ifndef MTOOLKIT_MATRIX_H
-#define MTOOLKIT_MATRIX_H
+#ifndef Map2X_Sdl_Matrix_h
+#define Map2X_Sdl_Matrix_h
 
 /**
  * @file Matrix.h
@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace MToolkit {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Matice položek s možností efektivního pohybu mezi nimi
@@ -156,6 +156,6 @@ template <class Item> class Matrix {
         }
 };
 
-}
+}}
 
 #endif

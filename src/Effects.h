@@ -1,5 +1,5 @@
-#ifndef MINTERFACE_EFFECTS_H
-#define MINTERFACE_EFFECTS_H
+#ifndef Map2X_Sdl_Effects_h
+#define Map2X_Sdl_Effects_h
 
 /**
  * @file Effects.h
@@ -17,7 +17,7 @@
  * Třídy tvořící uživatelské rozhraní programu (menu, toolbary, klávesnice...)
  * závislé na SDL.
  */
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Funkce pro zarovnávání, posouvání textu a další fičurky
@@ -42,7 +42,7 @@ class Effects {
          * @param   crop        Ořezový obdélník
          * @return  Pozice objektu
          */
-        static SDL_Rect align(const SDL_Rect& area, MToolkit::Align _align, int objectW, int objectH, int moveX = 0, int moveY = 0, SDL_Rect* crop = NULL);
+        static SDL_Rect align(const SDL_Rect& area, Align _align, int objectW, int objectH, int moveX = 0, int moveY = 0, SDL_Rect* crop = NULL);
 
         /**
          * @brief Zarovnání objektu do dané oblasti
@@ -54,7 +54,7 @@ class Effects {
          * @param   crop        Ořezový obdélník
          * @return  Pozice objektu
          */
-        inline static SDL_Rect align(const SDL_Rect& area, MToolkit::Align _align, const SDL_Rect& object, SDL_Rect* crop = NULL) {
+        inline static SDL_Rect align(const SDL_Rect& area, Align _align, const SDL_Rect& object, SDL_Rect* crop = NULL) {
             return align(area, _align, object.w, object.h, object.x, object.y, crop);
         }
 
@@ -71,7 +71,7 @@ class Effects {
          * @param   crop        Ořezový obdélník
          * @return  Pozice objektu
          */
-        inline static SDL_Rect align(SDL_Surface* screen, MToolkit::Align _align, int objectW, int objectH, int moveX = 0, int moveY = 0, SDL_Rect* crop = NULL) {
+        inline static SDL_Rect align(SDL_Surface* screen, Align _align, int objectW, int objectH, int moveX = 0, int moveY = 0, SDL_Rect* crop = NULL) {
             SDL_Rect area = {0, 0, (*screen).w, (*screen).h};
             return align(area, _align, objectW, objectH, moveX, moveY, crop);
         }
@@ -86,7 +86,7 @@ class Effects {
          * @param   crop        Ořezový obdélník
          * @return  Pozice objektu
          */
-        inline static SDL_Rect align(SDL_Surface* screen, MToolkit::Align _align, const SDL_Rect& object, SDL_Rect* crop = NULL) {
+        inline static SDL_Rect align(SDL_Surface* screen, Align _align, const SDL_Rect& object, SDL_Rect* crop = NULL) {
             SDL_Rect area = {0, 0, (*screen).w, (*screen).h};
             return align(area, _align, object.w, object.h, object.x, object.y, crop);
         }
@@ -112,6 +112,6 @@ class Effects {
          }
 };
 
-}
+}}
 
 #endif

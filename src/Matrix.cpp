@@ -4,7 +4,7 @@
 
 using std::vector;  using std::sort;
 
-namespace MToolkit {
+namespace Map2X { namespace Sdl {
 
 /* Zakázání položky */
 template<class Item> void Matrix<Item>::disableItem(itemId item) {
@@ -174,4 +174,4 @@ template<class Item> bool Matrix<Item>::moveRight(void) {
     return true;
 }
 
-}
+}}

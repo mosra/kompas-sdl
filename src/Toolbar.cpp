@@ -3,18 +3,17 @@
 #include <iostream>
 
 #include "Effects.h"
+#include "Matrix.cpp"
 
 using std::vector;      using std::cout;    using std::endl;
-using namespace MToolkit;
+
+namespace Map2X { namespace Sdl {
 
 #ifndef GENERATING_DOXYGEN_OUTPUT
 /* Předdefinování určitě používaných template, aby linker neházel chyby o tom,
     že v knihovně taková template nejsou instancovaná */
-#include "Matrix.cpp"
-template class Matrix<MInterface::ToolbarItem>;
+template class Matrix<ToolbarItem>;
 #endif
-
-namespace MInterface {
 
 /* Nastavení pozice nadpisku */
 void Toolbar::configureCaptionPlace (SDL_Rect* _position, Align* _align) {
@@ -193,4 +192,4 @@ void Toolbar::view (void) {
     }
 }
 
-}
+}}

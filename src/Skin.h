@@ -1,5 +1,5 @@
-#ifndef MINTERFACE_SKIN_H
-#define MINTERFACE_SKIN_H
+#ifndef Map2X_Sdl_Skin_h
+#define Map2X_Sdl_Skin_h
 
 /**
  * @file Skin.h
@@ -14,7 +14,7 @@
 #include "ConfParser.h"
 #include "utility.h"
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Skiny
@@ -59,7 +59,7 @@ class Skin {
          * @param   section     Sekce
          * @return  Ukazatel na vlastnost
          */
-        template<class T> T get(const std::string& parameter, std::string section = MToolkit::ConfParser::DEFAULT_SECTION);
+        template<class T> T get(const std::string& parameter, std::string section = ConfParser::DEFAULT_SECTION);
 
     private:
         /** @brief Vlastnost skinu */
@@ -70,13 +70,13 @@ class Skin {
         };
 
         SDL_Surface* screen;    /**< @brief Displejová surface */
-        MToolkit::ConfParser conf;        /**< @brief Konfigurák skinu */
+        ConfParser conf;        /**< @brief Konfigurák skinu */
 
         std::vector<Property<SDL_Surface**> > surfaces; /**< @brief Vektor se surfacy */
         std::vector<Property<TTF_Font**> > fonts;       /**< @brief Vektor s fonty */
         std::vector<Property<SDL_Rect*> > positions;    /**< @brief Vektor s pozicemi */
         std::vector<Property<SDL_Color*> > colors;      /**< @brief Vektor s barvami */
-        std::vector<Property<MToolkit::Align*> > aligns;          /**< @brief Vektor se zarovnáními */
+        std::vector<Property<Align*> > aligns;          /**< @brief Vektor se zarovnáními */
         std::vector<Property<std::string*> > texts;     /**< @brief Vektor s texty */
         std::vector<Property<int*> > numbers;           /**< @brief Vektor s čísly */
 };
@@ -103,7 +103,7 @@ NULL. Segfault při normálním blittingu nehrozí.
 splash=gfx/splash.png
 </pre>
 @code
-MInterface::Skin skin("skin.conf");
+Skin skin("skin.conf");
 SDL_Surface** splashImage = skin.get<SDL_Surface**>("image", "splash");
 @endcode
 @subsection SkinFont TTF_Font**
@@ -119,7 +119,7 @@ captionFont=gfx/DejaVuSans.ttf
 captionFontSize=12
 </pre>
 @code
-MInterface::Skin skin("skin.conf");
+Skin skin("skin.conf");
 TTF_Font** font = skin.get<TTF_Font**>("captionFont", "menu");
 @endcode
 @subsection SkinPosition SDL_Rect*
@@ -141,7 +141,7 @@ exitIconW=24
 exitIconH=24
 </pre>
 @code
-MInterface::Skin skin("skin.conf");
+Skin skin("skin.conf");
 SDL_Rect* toolbarPosition = skin.get<SDL_Rect*>("", "toolbar");
 SDL_Rect* exitIconPosition = skin.get<SDL_Rect*>("exitIcon", "toolbar");
 @endcode
@@ -153,18 +153,18 @@ pomocí Skin::get<SDL_Color*>.
 blood=#910503
 </pre>
 @code
-MInterface::Skin skin("skin.conf");
+Skin skin("skin.conf");
 SDL_Color* bloodColor = skin.get<SDL_Color*>("blood", "colors");
 @endcode
-@subsection SkinAlign MToolkit::Align*
+@subsection SkinAlign Align*
 Pro syntaxi ukládání a získávání tohoto typu z conf souboru viz
 @ref ConfTypeAlign. Zarovnání lze načíst pomocí Skin::get<Align*>.
 <pre>\# skin.conf
 killSwitchAlign="right bottom"
 </pre>
 @code
-MInterface::Skin skin("skin.conf");
-MToolkit::Align* killSwitchAlign = skin.get<MToolkit::Align*>("killSwitchAlign");
+Skin skin("skin.conf");
+Align* killSwitchAlign = skin.get<Align*>("killSwitchAlign");
 @endcode
 @subsection SkinString std::string*
 Lze načíst pomocí Skin::get<std::string*>.
@@ -172,7 +172,7 @@ Lze načíst pomocí Skin::get<std::string*>.
 author="Vladimír Vondruš"
 </pre>
 @code
-MInterface::Skin skin("skin.conf");
+Skin skin("skin.conf");
 string* skinAuthor = skin.get<string*>("author");
 @endcode
 @subsection SkinInt int*
@@ -181,7 +181,7 @@ Lze načíst pomocí Skin::get<int*>.
 emergency=911
 </pre>
 @code
-MInterface::Skin skin("skin.conf");
+Skin skin("skin.conf");
 int* skinAuthor = skin.get<int*>("emergency");
 @endcode
 @section SkinTips Tipy a triky při tvoření skinu
@@ -204,6 +204,6 @@ align="bottom center"
 </pre>
  */
 
-}
+}}
 
 #endif

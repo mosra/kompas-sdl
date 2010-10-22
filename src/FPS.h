@@ -1,5 +1,5 @@
-#ifndef MINTERFACE_FPS_H
-#define MINTERFACE_FPS_H
+#ifndef Map2X_Sdl_FPS_h
+#define Map2X_Sdl_FPS_h
 
 /**
  * @file FPS.h
@@ -9,7 +9,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_timer.h>
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Omezování %FPS a vypočítávání rychlosti
@@ -109,6 +109,6 @@ class FPS {
         static unsigned int lastFrameTime;  /**< @brief Čas zpracování posledního snímku */
 };
 
-}
+}}
 
 #endif

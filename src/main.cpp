@@ -14,9 +14,7 @@
 #include "Toolbar.h"
 
 using std::cout;    using std::cerr;    using std::endl;        using std::string;
-using namespace MToolkit;
-using namespace MInterface;
-using namespace MNavigation;
+using namespace Map2X::Sdl;
 
 /* GP2X button mapping */
 enum MAP_KEY {

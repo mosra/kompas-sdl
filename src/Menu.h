@@ -1,5 +1,5 @@
-#ifndef MINTERFACE_MENU_H
-#define MINTERFACE_MENU_H
+#ifndef Map2X_Sdl_Menu_h
+#define Map2X_Sdl_Menu_h
 
 /**
  * @file Menu.h
@@ -14,7 +14,7 @@
 #include "Mouse.h"
 #include "utility.h"
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Textové menu s případnými ikonami
@@ -85,7 +85,7 @@ class Menu: public Mouse {
          *  (může být NULL, pokud nebudou nikde zakázané položky)
          * @param   _flags              Flags
          */
-        Menu(SDL_Surface* _screen, SDL_Surface** _image, SDL_Rect* _position, MToolkit::Align* _menuAlign, SDL_Rect* _itemsPosition, int* _itemHeight, int* _iconWidth, TTF_Font** _itemFont, SDL_Color* _itemColor, SDL_Color* _activeItemColor, SDL_Color* _disabledItemColor, SDL_Color* _activeDisabledItemColor, int _flags = 0):
+        Menu(SDL_Surface* _screen, SDL_Surface** _image, SDL_Rect* _position, Align* _menuAlign, SDL_Rect* _itemsPosition, int* _itemHeight, int* _iconWidth, TTF_Font** _itemFont, SDL_Color* _itemColor, SDL_Color* _activeItemColor, SDL_Color* _disabledItemColor, SDL_Color* _activeDisabledItemColor, int _flags = 0):
             screen(_screen), image(_image), position(_position), menuAlign(_menuAlign),
             itemsPosition(_itemsPosition), itemHeight(_itemHeight), iconWidth(_iconWidth),
             itemFont(_itemFont), itemColor(_itemColor), activeItemColor(_activeItemColor),
@@ -101,7 +101,7 @@ class Menu: public Mouse {
          * @param   font        Font
          * @param   color       Barva
          */
-        void configureCaption(SDL_Rect* _position, MToolkit::Align* align, TTF_Font** font, SDL_Color* color);
+        void configureCaption(SDL_Rect* _position, Align* align, TTF_Font** font, SDL_Color* color);
 
         /**
          * @brief Nastavení scrollbaru
@@ -115,7 +115,7 @@ class Menu: public Mouse {
          * @param   arrowHeight Výška šipky (pro odsazení slideru od šipek)
          * @param   slider      Slider
          */
-        void configureScrollbar(SDL_Rect* _position, MToolkit::Align* align, int* arrowHeight, SDL_Surface** topArrow, SDL_Surface** bottomArrow, SDL_Surface** slider);
+        void configureScrollbar(SDL_Rect* _position, Align* align, int* arrowHeight, SDL_Surface** topArrow, SDL_Surface** bottomArrow, SDL_Surface** slider);
 
         /**
          * @brief Vytvoření sekce menu
@@ -128,7 +128,7 @@ class Menu: public Mouse {
          * @return  ID sekce, použitelné při přidávání a mazání položek menu v této sekci
          * @todo Jiné barvy a font pro každou sekci menu?
          */
-        sectionId addSection(sectionId parent, std::string* caption, MToolkit::Align* iconAlign, MToolkit::Align* itemsAlign, int flags = 0);
+        sectionId addSection(sectionId parent, std::string* caption, Align* iconAlign, Align* itemsAlign, int flags = 0);
 
         /**
          * @brief Přidání položky do menu
@@ -274,8 +274,8 @@ class Menu: public Mouse {
         struct Section {
             sectionId parent;       /**< @brief ID nadřazené sekce */
             std::string* caption;   /**< @brief Nadpisek sekce (může být NULL) */
-            MToolkit::Align* iconAlign;     /**< @brief Zarovnání ikon (může být NULL) */
-            MToolkit::Align* itemsAlign;    /**< @brief Zarovnání položek */
+            Align* iconAlign;     /**< @brief Zarovnání ikon (může být NULL) */
+            Align* itemsAlign;    /**< @brief Zarovnání položek */
             int flags;              /**< @brief Flags (viz Menu::SectionFlags) */
 
             std::vector<Item> items;    /**< @brief Vektor s jednotlivými položkami */
@@ -285,15 +285,15 @@ class Menu: public Mouse {
         SDL_Surface* screen;        /**< @brief Displejová surface */
         SDL_Surface** image;        /**< @brief Pozadí menu */
         SDL_Rect* position;         /**< @brief Pozice menu */
-        MToolkit::Align *menuAlign; /**< @brief Zarovnání menu */
+        Align *menuAlign; /**< @brief Zarovnání menu */
 
         SDL_Rect* captionPosition;      /**< @brief Pozice nadpisku */
-        MToolkit::Align* captionAlign;  /**< @brief Zarovnání nadpisku */
+        Align* captionAlign;  /**< @brief Zarovnání nadpisku */
         TTF_Font** captionFont;         /**< @brief Font nadpisku */
         SDL_Color* captionColor;        /**< @brief Barva nadpisku */
 
         SDL_Rect* scrollbarPosition;    /**< @brief Pozice scrollbaru */
-        MToolkit::Align *scrollbarAlign;    /**< @brief Zarovnání scrollbaru */
+        Align *scrollbarAlign;    /**< @brief Zarovnání scrollbaru */
         SDL_Surface **scrollbarArrowUp, /**< @brief Horní šipka scrollbaru */
             **scrollbarArrowDown,       /**< @brief Spodní šipka scrollbaru */
             **scrollbarSlider;          /**< @brief Posuvník scrollbaru */
@@ -322,6 +322,6 @@ class Menu: public Mouse {
         void reloadIterators(int section = -1);
 };
 
-}
+}}
 
 #endif

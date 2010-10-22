@@ -1,8 +1,6 @@
 #include "Effects.h"
 
-using namespace MToolkit;
-
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /* Vyhlazení textu je defaultně zapnuto */
 bool Effects::smoothText = true;
@@ -48,4 +46,4 @@ SDL_Rect Effects::align (const SDL_Rect& area, Align _align, int objectW, int ob
     return ret;
 }
 
-}
+}}

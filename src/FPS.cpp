@@ -1,6 +1,6 @@
 #include "FPS.h"
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /* Default limit FPS */
 unsigned int FPS::limit = 100;
@@ -42,4 +42,4 @@ int FPS::move (unsigned int pps, FPS::Data* object) {
     return move;
 }
 
-}
+}}

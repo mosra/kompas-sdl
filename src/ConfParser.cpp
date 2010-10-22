@@ -9,7 +9,7 @@ using std::string;      using std::cout;            using std::cerr;
 using std::vector;      using std::istringstream;   using std::endl;
 using std::hex;
 
-namespace MToolkit {
+namespace Map2X { namespace Sdl {
 
 const int ConfParser::MAX_LINE_LENGTH = 256;
 const std::string ConfParser::DEFAULT_SECTION = "default";
@@ -282,4 +282,4 @@ template<> ConfParser::parameterPointer ConfParser::value(const string& paramete
     return position;
 }
 
-}
+}}

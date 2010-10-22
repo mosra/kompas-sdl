@@ -4,7 +4,7 @@
 
 using std::string;  using std::cout;    using std::endl;    using std::cerr;
 
-namespace MToolkit {
+namespace Map2X { namespace Sdl {
 
 /* Oseknutí mezer */
 string trim(const string& str) {
@@ -149,4 +149,4 @@ string::iterator prevUTF8Character(string* str, string::iterator position) {
 
 #endif
 
-}
+}}

@@ -1,5 +1,5 @@
-#ifndef MTOOLKIT_UTILITY_H
-#define MTOOLKIT_UTILITY_H
+#ifndef Map2X_Sdl_Utility_h
+#define Map2X_Sdl_Utility_h
 
 /**
  * @file utility.h
@@ -14,7 +14,7 @@
  * Funkce a třídy nezávislé na žádné externí knihovně, pro správu konfigurace,
  * lokalizace atd.
  */
-namespace MToolkit {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Zarovnání
@@ -71,6 +71,6 @@ std::string::iterator nextUTF8Character(std::string* str, std::string::iterator 
  */
 std::string::iterator prevUTF8Character(std::string* str, std::string::iterator position);
 
-}
+}}
 
 #endif

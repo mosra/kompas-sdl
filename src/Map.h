@@ -1,5 +1,5 @@
-#ifndef MAP_H
-#define MAP_H
+#ifndef Map2X_Sdl_Map_h
+#define Map2X_Sdl_Map_h
 
 /**
  * @file Map.h
@@ -11,7 +11,7 @@
 #include <SDL/SDL_ttf.h>
 #include "FPS.h"
 
-namespace MNavigation {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Zobrazení mapy
@@ -76,7 +76,7 @@ class Map {
 
         unsigned int moveX,         /** @brief X-ové posunutí zobrazení matice */
                      moveY;         /** @brief Y-ové posunutí zobrazení matice */
-        MInterface::FPS::Data
+        FPS::Data
             moveXData,              /** @brief Data pro X-ové posunutí */
             moveYData;              /** @brief Data pro Y-ové posunutí */
 
@@ -112,6 +112,6 @@ class Map {
         virtual void loadTiles(void);
 };
 
-}
+}}
 
 #endif

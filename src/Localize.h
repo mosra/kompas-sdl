@@ -1,5 +1,5 @@
-#ifndef MTOOLKIT_LOCALIZE_H
-#define MTOOLKIT_LOCALIZE_H
+#ifndef Map2X_Sdl_Localize_h
+#define Map2X_Sdl_Localize_h
 
 /**
  * @file Localize.h
@@ -11,7 +11,7 @@
 
 #include "ConfParser.h"
 
-namespace MToolkit {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Jazykové lokalizace
@@ -68,6 +68,6 @@ class Localize {
         std::vector<Localization> localizations;    /**< @brief Vektor s lokalizovanými texty */
 };
 
-}
+}}
 
 #endif

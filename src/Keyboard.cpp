@@ -6,19 +6,18 @@
 #include "ConfParser.h"
 #include "Effects.h"
 #include "Skin.h"
+#include "Matrix.cpp"
 
 using std::string;  using std::vector;  using std::cout;    using std::endl;
 using std::cerr;
-using namespace MToolkit;
+
+namespace Map2X { namespace Sdl {
 
 #ifndef GENERATING_DOXYGEN_OUTPUT
 /* Předdefinování určitě používaných template, aby linker neházel chyby o tom,
     že v knihovně taková template nejsou instancovaná */
-#include "Matrix.cpp"
-template class Matrix<MInterface::KeyboardKey>;
+template class Matrix<KeyboardKey>;
 #endif
-
-namespace MInterface {
 
 /* Konstruktor */
 Keyboard::Keyboard(SDL_Surface* _screen, Skin& _skin, std::string file, std::string& _text, int _flags): screen(_screen), skin(_skin), text(_text), cursor(text.end()), cursorBlink(0), flags(_flags), shiftPushed(false) {
@@ -482,4 +481,4 @@ void Keyboard::view(void) {
     }
 }
 
-}
+}}

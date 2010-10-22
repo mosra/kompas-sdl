@@ -1,5 +1,5 @@
-#ifndef MINTERFACE_SPLASH_H
-#define MINTERFACE_SPLASH_H
+#ifndef Map2X_Sdl_Splash_h
+#define Map2X_Sdl_Splash_h
 
 /**
  * @file Splash.h
@@ -13,7 +13,7 @@
 
 #include "utility.h"
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Zobrazení splashe
@@ -31,7 +31,7 @@ class Splash {
          * @param   _align      Zarovnání rámce vůči displeji
          * @todo Možné problémy při resize screen (ztráta cíle ukazatele) => dvojitý?
          */
-        inline Splash(SDL_Surface* _screen, SDL_Surface** _image, SDL_Rect* _position, MToolkit::Align* _align):
+        inline Splash(SDL_Surface* _screen, SDL_Surface** _image, SDL_Rect* _position, Align* _align):
             screen(_screen), image(_image), position(_position), align(_align) {}
 
         /**
@@ -43,7 +43,7 @@ class Splash {
          * @param   _align      Zarovnání textu
          * @param   text        Text
          */
-        void addText(TTF_Font** font, SDL_Color* color, SDL_Rect* _position, MToolkit::Align* _align, std::string* text);
+        void addText(TTF_Font** font, SDL_Color* color, SDL_Rect* _position, Align* _align, std::string* text);
 
         /** @brief Zobrazení splashe */
         void view(void);
@@ -53,17 +53,17 @@ class Splash {
             TTF_Font** font;        /**< @brief Font textu */
             SDL_Color* color;       /**< @brief Barva textu */
             SDL_Rect* position;     /**< @brief Pozice textu */
-            MToolkit::Align* align; /**< @brief Zarovnání textu */
+            Align* align; /**< @brief Zarovnání textu */
             std::string* text;      /**< @brief Text */
         };
 
         SDL_Surface *screen,        /**< @brief Displejová surface */
                     **image;        /**< @brief Obrázek splashe */
         SDL_Rect* position;         /**< @brief Pozice splashe */
-        MToolkit::Align* align;     /**< @brief Zarování splashe vůči displeji */
+        Align* align;     /**< @brief Zarování splashe vůči displeji */
         std::vector<Text> texts;    /**< @brief Vektor s texty */
 };
 
-}
+}}
 
 #endif

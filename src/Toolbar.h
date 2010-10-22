@@ -1,5 +1,5 @@
-#ifndef MINTERFACE_TOOLBAR_H
-#define MINTERFACE_TOOLBAR_H
+#ifndef Map2X_Sdl_Toolbar_h
+#define Map2X_Sdl_Toolbar_h
 
 /**
  * @file Toolbar.h
@@ -15,7 +15,7 @@
 #include "Mouse.h"
 #include "utility.h"
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Struktura položky toolbaru
@@ -53,7 +53,7 @@ struct ToolbarItem {
  * nejsou, hledá se v dalším sloupci. Analogický postup je ve vertikálním směru.
  * @todo Vypnutí "nekonečného procházení" ve flags
  */
-class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
+class Toolbar: public Matrix<ToolbarItem>, public Mouse {
     public:
         /**
          * @brief Flags pro toolbar
@@ -112,7 +112,7 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
          *  NULL, pokud nebudou nadpisky u ikon)
          * @param   _flags          Flags (viz Toolbar::ToolbarFlags)
          */
-        Toolbar(SDL_Surface* _screen, SDL_Rect* _position, MToolkit::Align* _align, MToolkit::Align* _itemAlign, int* _iconSize, TTF_Font** _captionFont, SDL_Color* _captionColor, SDL_Color* _captionActiveColor, SDL_Color* _captionDisabledColor, int _flags):
+        Toolbar(SDL_Surface* _screen, SDL_Rect* _position, Align* _align, Align* _itemAlign, int* _iconSize, TTF_Font** _captionFont, SDL_Color* _captionColor, SDL_Color* _captionActiveColor, SDL_Color* _captionDisabledColor, int _flags):
             screen(_screen), position(_position), align(_align), itemAlign(_itemAlign),
             iconSize(_iconSize), captionFont(_captionFont), captionColor(_captionColor),
             captionDisabledColor(_captionDisabledColor) {}
@@ -125,7 +125,7 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
          * @param   _position       Pozice
          * @param   _align          Zarovnání textu
          */
-        void configureCaptionPlace(SDL_Rect* _position, MToolkit::Align* _align);
+        void configureCaptionPlace(SDL_Rect* _position, Align* _align);
 
         /**
          * @brief Přidání obrázku do toolbaru
@@ -167,7 +167,7 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
          * @param   color           Barva textu
          * @param   _text           Text
          */
-        void addText(SDL_Rect* _position, MToolkit::Align* _align, TTF_Font** font, SDL_Color* color, std::string* _text);
+        void addText(SDL_Rect* _position, Align* _align, TTF_Font** font, SDL_Color* color, std::string* _text);
 
         /**
          * @brief Posun nahoru
@@ -242,7 +242,7 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
         /** @brief Struktura textu */
         struct Text {
             SDL_Rect* position;     /**< @brief Pozice textu */
-            MToolkit::Align* align; /**< @brief Zarovnání textu */
+            Align* align; /**< @brief Zarovnání textu */
             TTF_Font** font;        /**< @brief Font */
             SDL_Color* color;       /**< @brief Barva textu */
             std::string* text;      /**< @brief Text */
@@ -250,11 +250,11 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
 
         SDL_Surface* screen;        /**< @brief Displejová surface */
         SDL_Rect* position;         /**< @brief Pozice toolbaru */
-        MToolkit::Align* align;     /**< @brief Zarovnání toolbaru */
-        MToolkit::Align* itemAlign; /**< @brief Zarovnání položky (viz Toolbar::Toolbar) */
+        Align* align;     /**< @brief Zarovnání toolbaru */
+        Align* itemAlign; /**< @brief Zarovnání položky (viz Toolbar::Toolbar) */
         int* iconSize;              /**< @brief Velikost ikony (viz Toolbar::Toolbar) */
         SDL_Rect* captionPosition;  /**< @brief Pozice centralizovaného popisku (jen při flagu Toolbar::CAPTION_IN_PLACE) */
-        MToolkit::Align* captionAlign;  /**< @brief Zarovnání centralizovaného popisku (jen při flagu Toolbar::CAPTION_IN_PLACE) */
+        Align* captionAlign;  /**< @brief Zarovnání centralizovaného popisku (jen při flagu Toolbar::CAPTION_IN_PLACE) */
         TTF_Font** captionFont;     /**< @brief Font popisků položek (může být NULL) */
         SDL_Color *captionColor,    /**< @brief Barva popisků položek (může být NULL) */
             *captionActiveColor,    /**< @brief Barva popisku aktivní položky (může být NULL) */
@@ -265,6 +265,6 @@ class Toolbar: public MToolkit::Matrix<ToolbarItem>, public Mouse {
         std::vector<Text> texts;    /**< @brief Vektor s texty */
 };
 
-}
+}}
 
 #endif

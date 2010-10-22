@@ -5,9 +5,8 @@
 #include "Effects.h"
 
 using std::cout;    using std::endl;        using std::vector;
-using namespace MToolkit;
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /* Nastavení nadpisku */
 void Menu::configureCaption (SDL_Rect* _position, Align* align, TTF_Font** font, SDL_Color* color) {
@@ -357,4 +356,4 @@ void Menu::view (void) {
     }
 }
 
-}
+}}

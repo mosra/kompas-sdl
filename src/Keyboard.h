@@ -1,5 +1,5 @@
-#ifndef MINTERFACE_KEYBOARD_H
-#define MINTERFACE_KEYBOARD_H
+#ifndef Map2X_Sdl_Keyboard_h
+#define Map2X_Sdl_Keyboard_h
 
 /**
  * @file Keyboard.h
@@ -16,7 +16,7 @@
 #include "Mouse.h"
 #include "utility.h"
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 class Skin;
 
@@ -63,7 +63,7 @@ struct KeyboardKey {
  * @todo Propojení klávesnice a skinu!
  * @todo Duplicitní ConfParser <=> Skin
  */
-class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
+class Keyboard: public Matrix<KeyboardKey>, public Mouse {
     public:
         /** @brief Flags */
         enum Flags {
@@ -150,17 +150,17 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
         int keyboardW,          /**< @brief Šířka klávesnice (z konfiguráku) */
             keyboardH;          /**< @brief Výška klávesnice (z konfiguráku) */
         SDL_Rect textPosition;  /**< @brief Pozice zpracovávaného textu (z konfiguráku) */
-        MToolkit::Align textAlign;  /**< @brief Zarovnání textu (z konfiguráku) */
+        Align textAlign;  /**< @brief Zarovnání textu (z konfiguráku) */
 
         int *keyboardX,         /**< @brief X-ová pozice klávesnice (ze skinu) */
             *keyboardY;         /**< @brief Y-ová pozice klávesnice (ze skinu) */
-        MToolkit::Align *align; /**< @brief Zarovnání klávesnice (ze skinu) */
+        Align *align; /**< @brief Zarovnání klávesnice (ze skinu) */
         SDL_Surface **image;    /**< @brief Pozadí klávesnice (ze skinu) */
 
         TTF_Font **textFont;    /**< @brief Barva textu (ze skinu) */
         SDL_Color *textColor;   /**< @brief Barva textu (ze skinu) */
 
-        MToolkit::Align *keyAlign;  /**< @brief Zarovnání popisku klávesy (ze skinu) */
+        Align *keyAlign;  /**< @brief Zarovnání popisku klávesy (ze skinu) */
         TTF_Font **keyFont;     /**< @brief Font popisků kláves (ze skinu) */
         SDL_Color *keyColor,    /**< @brief Barva popisků kláves (ze skinu) */
             *keyActiveColor,    /**< @brief Barva popisku aktivní klávesy (ze skinu) */
@@ -169,10 +169,10 @@ class Keyboard: public MToolkit::Matrix<KeyboardKey>, public MInterface::Mouse {
         SDL_Surface **cursorImage; /**< @brief Obrázek kurzoru (ze skinu) */
         int *cursorX,           /**< @brief X-ové posunutí kurzoru (ze skinu) */
             *cursorY;           /**< @brief Y-ové posunutí kurzoru (ze skinu) */
-        MToolkit::Align* cursorAlign;   /**< @brief Vertikální zarovnání kurzoru (ze skinu) */
+        Align* cursorAlign;   /**< @brief Vertikální zarovnání kurzoru (ze skinu) */
         int *cursorInterval;    /**< @brief Interval blikání kurzoru (ze skinu) */
 
-        MInterface::FPS::Data cursorBlink; /**< @brief Čas dalšího přebliknutí kurzoru */
+        FPS::Data cursorBlink; /**< @brief Čas dalšího přebliknutí kurzoru */
         int flags;              /**< @brief Flags (viz Toolbar::Flags) */
 
         /**
@@ -481,6 +481,6 @@ shiftSpecial2ShiftVal=Ê
  * @todo Posunout pod definici třídy (všude - Conf, Skin...)
  */
 
-}
+}}
 
 #endif

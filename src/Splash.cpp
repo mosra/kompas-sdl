@@ -5,9 +5,8 @@
 #include "Effects.h"
 
 using std::vector;      using std::string;      using std::cout;    using std::endl;
-using namespace MToolkit;
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /* Zobrazení splashe */
 void Splash::view(void){
@@ -44,4 +43,4 @@ void Splash::addText (TTF_Font** font, SDL_Color* color, SDL_Rect* _position, Al
     texts.push_back(_text);
 }
 
-}
+}}

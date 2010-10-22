@@ -1,5 +1,5 @@
-#ifndef MINTERFACE_MOUSE_H
-#define MINTERFACE_MOUSE_H
+#ifndef Map2X_Sdl_Mouse_h
+#define Map2X_Sdl_Mouse_h
 
 /**
  * @file Mouse.h
@@ -8,7 +8,7 @@
 
 #include <SDL/SDL.h>
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /**
  * @brief Ovládání objektu myší
@@ -66,6 +66,6 @@ class Mouse {
         bool inArea(int x, int y, const SDL_Rect& area);
 };
 
-}
+}}
 
 #endif

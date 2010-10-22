@@ -1,6 +1,6 @@
 #include "Mouse.h"
 
-namespace MInterface {
+namespace Map2X { namespace Sdl {
 
 /* Zjištění, zda byl klik v oblasti */
 bool Mouse::inArea(int x, int y, const SDL_Rect& area) {
@@ -10,4 +10,4 @@ bool Mouse::inArea(int x, int y, const SDL_Rect& area) {
     return false;
 }
 
-}
+}}

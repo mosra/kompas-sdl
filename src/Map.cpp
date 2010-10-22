@@ -6,10 +6,8 @@
 #include "utility.h"
 
 using std::vector;  using std::cout;    using std::cerr;    using std::endl;
-using namespace MInterface;
-using namespace MToolkit;
 
-namespace MNavigation {
+namespace Map2X { namespace Sdl {
 
 /* Konstruktor */
 Map::Map(SDL_Surface* _screen, SDL_Surface** _tileLoading, SDL_Surface** _tileNotFound):
@@ -292,4 +290,4 @@ void Map::view(TTF_Font** font, SDL_Color* color) {
     }
 }
 
-}
+}}
