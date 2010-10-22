@@ -20,8 +20,7 @@
 
 #include "Effects.h"
 
-using std::string;  using std::cout;    using std::endl;    using std::cerr;
-using std::vector;
+using namespace std;
 
 namespace Map2X { namespace Sdl {
 

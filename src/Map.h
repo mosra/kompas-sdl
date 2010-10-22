@@ -23,6 +23,7 @@
 #include <vector>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+
 #include "FPS.h"
 
 namespace Map2X { namespace Sdl {

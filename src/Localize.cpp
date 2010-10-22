@@ -17,7 +17,7 @@
 
 #include <iostream>
 
-using std::string;      using std::vector;      using std::cout;    using std::endl;
+using namespace std;
 
 namespace Map2X { namespace Sdl {
 

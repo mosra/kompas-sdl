@@ -20,9 +20,7 @@
 #include <sstream>      /* std::istringstream */
 #include <cstring>      /* strcmp() */
 
-using std::string;      using std::cout;            using std::cerr;
-using std::vector;      using std::istringstream;   using std::endl;
-using std::hex;
+using namespace std;
 
 namespace Map2X { namespace Sdl {
 

@@ -15,7 +15,6 @@
 
 #include <iostream>
 #include <string>
-
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
@@ -28,7 +27,7 @@
 #include "Splash.h"
 #include "Toolbar.h"
 
-using std::cout;    using std::cerr;    using std::endl;        using std::string;
+using namespace std;
 using namespace Map2X::Sdl;
 
 /* GP2X button mapping */

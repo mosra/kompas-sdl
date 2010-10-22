@@ -17,10 +17,11 @@
 
 #include <iostream>
 #include <sstream>
+
 #include "Effects.h"
 #include "utility.h"
 
-using std::vector;  using std::cout;    using std::cerr;    using std::endl;
+using namespace std;
 
 namespace Map2X { namespace Sdl {
 

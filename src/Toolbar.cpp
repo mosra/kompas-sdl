@@ -20,7 +20,7 @@
 #include "Effects.h"
 #include "Matrix.cpp"
 
-using std::vector;      using std::cout;    using std::endl;
+using namespace std;
 
 namespace Map2X { namespace Sdl {
 

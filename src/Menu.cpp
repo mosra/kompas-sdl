@@ -19,7 +19,7 @@
 
 #include "Effects.h"
 
-using std::cout;    using std::endl;        using std::vector;
+using namespace std;
 
 namespace Map2X { namespace Sdl {
 

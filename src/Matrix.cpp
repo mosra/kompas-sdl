@@ -17,7 +17,7 @@
 
 #include <algorithm>    /* sort() */
 
-using std::vector;  using std::sort;
+using namespace std;
 
 namespace Map2X { namespace Sdl {
 
