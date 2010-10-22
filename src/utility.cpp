@@ -21,17 +21,6 @@ using namespace std;
 
 namespace Map2X { namespace Sdl {
 
-/* Oseknutí mezer */
-string trim(const string& str) {
-    size_t begin = str.find_first_not_of(" \t");
-    size_t end = str.find_last_not_of(" \t");
-
-    /* Nenalezen žádný smysluplný znak */
-    if((begin == string::npos) || (end == string::npos)) return "";
-
-    return str.substr(begin, end-begin+1);
-}
-
 /* Doxygen neví, že std::string::iterator == string::iterator */
 #ifndef GENERATING_DOXYGEN_OUTPUT
 

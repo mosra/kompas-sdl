@@ -20,7 +20,10 @@
 #include <sstream>      /* std::istringstream */
 #include <cstring>      /* strcmp() */
 
+#include "Utility/utilities.h"
+
 using namespace std;
+using namespace Map2X::Utility;
 
 namespace Map2X { namespace Sdl {
 

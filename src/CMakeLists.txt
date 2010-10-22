@@ -8,6 +8,10 @@ find_package(SDL)
 find_package(SDL_image)
 find_package(SDL_ttf)
 
+find_package(Map2XCore REQUIRED)
+
+include_directories(${MAP2X_CORE_INCLUDE_DIR})
+
 set(Map2X_Sdl_SRCS
     ConfParser.cpp
     Effects.cpp
@@ -26,4 +30,4 @@ set(Map2X_Sdl_SRCS
 )
 
 add_executable(map2x-sdl ${Map2X_Sdl_SRCS})
-target_link_libraries(map2x-sdl ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${SDLTTF_LIBRARY})
+target_link_libraries(map2x-sdl ${MAP2X_CORE_LIBRARY} ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${SDLTTF_LIBRARY})

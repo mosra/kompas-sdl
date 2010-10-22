@@ -47,14 +47,6 @@ enum Align {
 };
 
 /**
- * @brief Oseknutí mezer obalujících string
- *
- * @param   str         String k oseknutí
- * @return  Oseknutý string
- */
-std::string trim (const std::string& str);
-
-/**
  * @brief Nalezení pozice dalšího znaku v UTF-8 řetězci
  *
  * Pokud je na aktuální pozici neplatný uvozovací znak UTF-8 sekvence, vrací
