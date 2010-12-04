@@ -1,22 +1,22 @@
-#ifndef Map2X_Sdl_Localize_h
-#define Map2X_Sdl_Localize_h
+#ifndef Kompas_Sdl_Localize_h
+#define Kompas_Sdl_Localize_h
 /*
     Copyright © 2007, 2008, 2009, 2010 Vladimír Vondruš <mosra@centrum.cz>
 
-    This file is part of Map2X.
+    This file is part of Kompas.
 
-    Map2X is free software: you can redistribute it and/or modify
+    Kompas is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License version 3
     only, as published by the Free Software Foundation.
 
-    Map2X is distributed in the hope that it will be useful,
+    Kompas is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License version 3 for more details.
 */
 
 /** @file
- * @brief Class Map2X::Sdl::Localize
+ * @brief Class Kompas::Sdl::Localize
  */
 
 #include <string>
@@ -24,7 +24,7 @@
 
 #include "Utility/Configuration.h"
 
-namespace Map2X { namespace Sdl {
+namespace Kompas { namespace Sdl {
 
 /**
  * @brief Localizations
@@ -78,7 +78,7 @@ class Localize {
         Utility::Configuration fallback;
         std::vector<Localization> localizations;
 
-        bool get(const std::string& key, const std::string& group, std::string* text, const Map2X::Utility::Configuration* file) const;
+        bool get(const std::string& key, const std::string& group, std::string* text, const Kompas::Utility::Configuration* file) const;
 };
 
 }}

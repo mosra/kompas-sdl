@@ -8,11 +8,11 @@ find_package(SDL)
 find_package(SDL_image)
 find_package(SDL_ttf)
 
-find_package(Map2XCore REQUIRED)
+find_package(KompasCore REQUIRED)
 
-include_directories(${MAP2X_CORE_INCLUDE_DIR})
+include_directories(${KOMPAS_CORE_INCLUDE_DIR})
 
-set(Map2X_Sdl_SRCS
+set(Kompas_Sdl_SRCS
     ConfParser.cpp
     Effects.cpp
     FPS.cpp
@@ -29,5 +29,5 @@ set(Map2X_Sdl_SRCS
     utility.cpp
 )
 
-add_executable(map2x-sdl ${Map2X_Sdl_SRCS})
-target_link_libraries(map2x-sdl ${MAP2X_CORE_LIBRARY} ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${SDLTTF_LIBRARY})
+add_executable(kompas-sdl ${Kompas_Sdl_SRCS})
+target_link_libraries(kompas-sdl ${KOMPAS_CORE_LIBRARY} ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${SDLTTF_LIBRARY})
