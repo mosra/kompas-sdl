@@ -63,14 +63,17 @@ class Localize {
         /**
          * @brief Get localized string
          * @param key           Key
-         * @param section       Section
+         * @param group         Group
          */
-        std::string* get(const std::string& parameter, const std::string& section = "");
+        std::string* get(const std::string& key, const std::string& group = "");
 
     private:
         struct Localization {
-            std::string parameter;
-            std::string section;
+            std::string key;
+            std::string group;
+
+            /* This must be via pointer because vector automatically rearranges
+               itself */
             std::string* text;
         };
 

@@ -38,17 +38,17 @@ void Localize::load (const string& file, const string& _fallback) {
         (*(*it).text).clear();
 
         /* If not found in primary language or in fallback, return error text */
-        get(it->parameter, it->section, it->text, &lang);
+        get(it->key, it->group, it->text, &lang);
     }
 }
 
-string* Localize::get (const string& parameter, const string& section) {
+string* Localize::get (const string& key, const string& group) {
     string* text = new string;
-    get(parameter, section, text, &lang);
+    get(key, group, text, &lang);
 
     Localization loc;
-    loc.parameter = parameter;
-    loc.section = section;
+    loc.key = key;
+    loc.group = group;
     loc.text = text;
     localizations.push_back(loc);
 
